@@ -1,4 +1,4 @@
-import { Authenticator } from '@aws-amplify/ui-react';
+import { Authenticator, Image } from '@aws-amplify/ui-react';
 import { useAppDispatch } from "../store/hooks"
 import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
@@ -52,6 +52,17 @@ function Login() {
       {({user }) => (
         <main>
           <h1>Hello {user?.signInDetails?.loginId}</h1>
+          <Image
+            alt="Luah logo"
+            src={fileURL}
+            objectFit="initial"
+            objectPosition="50% 50%"
+            backgroundColor="initial"
+            height="20%"
+            width="20%"
+            opacity="100%"
+            onClick={() => alert('📸 Say cheese!')}
+          />
           <a href={fileURL} target="_blank" rel="noreferrer">
             {fileURL} 
           </a>
