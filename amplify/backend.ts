@@ -10,9 +10,3 @@ const backend = defineBackend({
 });
 
 
-// backend.addOutput({
-//   storage: {
-//     aws_region: "eu-central-1",
-//     bucket_name: "lu-ah-s373636-master"
-//   },
-// });

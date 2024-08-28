@@ -26,16 +26,35 @@ I18n.putVocabularies({
   },
 });
 import { userLogout } from '../actions/userActions';
+import { useEffect,  useState} from 'react';
+import { getUrl } from 'aws-amplify/storage';
 
 
 function Login() {
   const dispatch = useAppDispatch()
-  
+  const[fileURL,setFileURL]=useState("")
+
+  useEffect(() => {
+    async function setURLs(){
+    const linkToStorageFile = await getUrl({
+      path: "public/media/Logo.png",
+      // Alternatively, path: ({identityId}) => `album/{identityId}/1.jpg`
+    });
+    console.log('signed URL: ', linkToStorageFile.url.toString());
+    setFileURL(linkToStorageFile.url.toString())
+    console.log('URL expires at: ', linkToStorageFile.expiresAt);
+  }
+  setURLs()
+}, [dispatch])
+
   return (
     <Authenticator components={components}>
       {({user }) => (
         <main>
           <h1>Hello {user?.signInDetails?.loginId}</h1>
+          <a href={fileURL} target="_blank" rel="noreferrer">
+            {fileURL} 
+          </a>
           <button onClick={()=>dispatch(userLogout())}>Sign out </button>
         </main>
       )}
