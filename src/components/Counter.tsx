@@ -71,7 +71,7 @@ export const Counter = () => {
             isRegistered: false,
             isAdmin: false,
             treasure: 0,
-            sessionStart: current,
+            sessionStart: current.toString(),
             computerIP: "",
             address: {
               id: "",
