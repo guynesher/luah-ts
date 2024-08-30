@@ -11,7 +11,7 @@ const schema = a.schema({
     .model({
       content: a.string(),
     })
-    .authorization((allow) => [allow.publicApiKey(),allow.guest().to(['read'])]),
+    .authorization((allow) => [allow.guest().to(['read'])]),
   // User: a
   //   .model({
   //     content: a.string(),

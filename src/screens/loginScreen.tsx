@@ -37,7 +37,7 @@ function Login() {
   useEffect(() => {
     async function setURLs(){
     const linkToStorageFile = await getUrl({
-      path: "global/media/Logo.png",
+      path: "global/Logo.png",
       // Alternatively, path: ({identityId}) => `album/{identityId}/1.jpg`
     });
     console.log('signed URL: ', linkToStorageFile.url.toString());
