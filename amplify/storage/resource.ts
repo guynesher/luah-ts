@@ -7,7 +7,7 @@ export const storage = defineStorage({
       allow.guest.to(['read']) // additional actions such as "write" and "delete" can be specified depending on your use case
     ],
     'public/media/*': [
-      allow.authenticated.to(['read']) // additional actions such as "write" and "delete" can be specified depending on your use case
+      allow.groups(['Users']).to(['read']) // additional actions such as "write" and "delete" can be specified depending on your use case
     ]
   })
 });
