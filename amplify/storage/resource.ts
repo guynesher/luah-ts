@@ -4,10 +4,11 @@ export const storage = defineStorage({
   name: 'Luah-ts',
   access: (allow) => ({
     'global/*': [
-      allow.guest.to(['read']) // additional actions such as "write" and "delete" can be specified depending on your use case
+      allow.guest.to(['read']),
+      allow.authenticated.to(['read']),
     ],
     'public/media/*': [
-      allow.groups(['Users']).to(['read']) // additional actions such as "write" and "delete" can be specified depending on your use case
+      allow.authenticated.to(['read']) // additional actions such as "write" and "delete" can be specified depending on your use case
     ]
   })
 });
