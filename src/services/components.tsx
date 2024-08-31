@@ -9,7 +9,7 @@ export const components = {
         <View textAlign="center" padding={tokens.space.large}>
           <Image
             alt="Luah logo"
-            src="src\assets\Logo.png"
+            src="../src/assets/Logo.png"
             objectFit="initial"
             objectPosition="50% 50%"
             backgroundColor="initial"
