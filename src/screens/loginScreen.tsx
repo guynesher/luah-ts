@@ -40,9 +40,9 @@ function Login() {
       path: "global/Logo.png",
       // Alternatively, path: ({identityId}) => `album/{identityId}/1.jpg`
     });
-    console.log('signed URL: ', linkToStorageFile.url.toString());
+    //console.log('signed URL: ', linkToStorageFile.url.toString());
     setFileURL(linkToStorageFile.url.toString())
-    console.log('URL expires at: ', linkToStorageFile.expiresAt);
+    //console.log('URL expires at: ', linkToStorageFile.expiresAt);
   }
   setURLs()
 }, [dispatch])
