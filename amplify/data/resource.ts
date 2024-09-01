@@ -2,7 +2,7 @@ import { type ClientSchema, a, defineData, defineFunction } from "@aws-amplify/b
 
 
 const functionWithToDoAccess = defineFunction({
-  entry: '../functions/todo-access.ts'
+  entry: '../functions/todo-access/handler.ts'
 });
 
 const schema = a.schema({
