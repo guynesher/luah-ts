@@ -1,9 +1,5 @@
 import { type ClientSchema, a, defineData, defineFunction } from "@aws-amplify/backend";
-
-
-const functionWithToDoAccess = defineFunction({
-  entry: '../functions/todo-access/handler.ts'
-});
+import { todoAccess } from '../functions/todo-access/resource';
 
 const schema = a.schema({
   Todo: a
@@ -16,7 +12,7 @@ const schema = a.schema({
   //     content: a.string(),
   //   })
   //   .authorization((allow) => [allow.publicApiKey()]),
-}).authorization(allow => [allow.resource(functionWithToDoAccess)]);;
+}).authorization(allow => [allow.resource(todoAccess)]);;
 
 export type Schema = ClientSchema<typeof schema>;
 
