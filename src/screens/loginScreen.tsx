@@ -28,11 +28,18 @@ I18n.putVocabularies({
 import { userLogout } from '../actions/userActions';
 import { useEffect,  useState} from 'react';
 import { getUrl } from 'aws-amplify/storage';
-
+import { Hub } from 'aws-amplify/utils';
+import { get } from 'aws-amplify/api';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 function Login() {
   const dispatch = useAppDispatch()
   const[fileURL,setFileURL]=useState("")
+  const[show,setShow]=useState(false)
+  
+  Hub.listen('auth', (data) => {
+    if(!show && data) setShow(true)
+  });
 
   useEffect(() => {
     async function setURLs(){
@@ -43,10 +50,33 @@ function Login() {
     //console.log('signed URL: ', linkToStorageFile.url.toString());
     setFileURL(linkToStorageFile.url.toString())
     //console.log('URL expires at: ', linkToStorageFile.expiresAt);
-  }
-  setURLs()
-}, [dispatch])
+    }
+    setURLs()
+  }, [dispatch])
 
+  useEffect(() => {
+  async function getItem() {
+    try {
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString()
+      const Auth: string=  token!;
+
+      const restOperation = get({ 
+          apiName: 'luah-ts-api',
+          path: 'cognito-auth-path',
+          options: {
+            headers: {Authorization:Auth},
+          },
+        });
+        const { body } = await restOperation.response;
+        console.log('GET call succeeded: ', await body.json());
+      } catch (error) {
+        console.log('GET call failed: ',error);
+      }
+    }
+    if(show) getItem()
+  }, [show])
+  
   return (
     <Authenticator components={components}>
       {({user }) => (
