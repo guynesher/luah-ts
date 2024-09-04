@@ -1,25 +1,27 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
-//import { todoAccess } from '../functions/todo-access/resource';
+import { todoAccess } from '../functions/todo-access/resource';
 
 const schema = a.schema({
   Todo: a
     .model({
       content: a.string(),
     })
-    .authorization((allow) => [allow.publicApiKey(),allow.guest().to(['read'])]),
+    .authorization((allow) => [//allow.publicApiKey()
+      allow.guest().to(['read']),allow.groups(['Users','Admins']).to(['create','delete','list','get'])
+    ]),
   // User: a
   //   .model({
   //     content: a.string(),
   //   })
   //   .authorization((allow) => [allow.publicApiKey()]),
-})//.authorization(allow => [allow.resource(todoAccess)]);;
+}).authorization(allow => [allow.resource(todoAccess)]);;
 
 export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
+    defaultAuthorizationMode: "userPool",
     // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
