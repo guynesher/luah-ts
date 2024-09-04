@@ -6,14 +6,16 @@ const schema = a.schema({
     .model({
       content: a.string(),
     })
-    .authorization((allow) => [//allow.publicApiKey()
-      allow.guest().to(['read']),allow.groups(['Users','Admins']).to(['create','delete','list','get'])
+    .authorization((allow) => [allow.publicApiKey().to(['create','read','update']),
+      allow.groups(['Users','Admins']).to(['create','delete','read','update'])
     ]),
   // User: a
   //   .model({
   //     content: a.string(),
   //   })
-  //   .authorization((allow) => [allow.publicApiKey()]),
+  //   .authorization((allow) => [allow.group('Users').to(['create','get','update']),
+  //                              allow.group('Admins').to(['create','delete','read','update'])
+  //   ]),
 }).authorization(allow => [allow.resource(todoAccess)]);;
 
 export type Schema = ClientSchema<typeof schema>;

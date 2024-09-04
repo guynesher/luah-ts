@@ -8,13 +8,13 @@ function DataScreen() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
 
   useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
+    client.models.Todo.observeQuery({authMode: "apiKey"}).subscribe({
       next: (data) => setTodos([...data.items]),
     });
   }, []);
 
   function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+    client.models.Todo.create({ content: window.prompt("Todo content")  }, {authMode: "apiKey"});
   }
     
   function deleteTodo(id: string) {
