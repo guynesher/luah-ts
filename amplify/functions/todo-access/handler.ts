@@ -43,33 +43,33 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   });
    
   console.log("event", event);
-  const query = `
-    query MyQuery {
-      listTodos {
-        items {
-          content
-          createdAt
-          id
-          updatedAt
-        }
-      }
-    }
-`;  
+//   const query = `
+//     query MyQuery {
+//       listTodos {
+//         items {
+//           content
+//           createdAt
+//           id
+//           updatedAt
+//         }
+//       }
+//     }
+// `;  
 
-  const graphqlQuery = {
-    "operationName": "MyQuery",
-    "query": query,
-    "variables": {}
-  };
+//   const graphqlQuery = {
+//     "operationName": "MyQuery",
+//     "query": query,
+//     "variables": {}
+//   };
 
-  const options = {
-    "method": "POST",
-    "headers": {
-      "x-api-key": env.APIKEY,
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify(graphqlQuery)
-  };
+//   const options = {
+//     "method": "POST",
+//     "headers": {
+//       "x-api-key": env.APIKEY,
+//       "Content-Type": "application/json"
+//     },
+//     "body": JSON.stringify(graphqlQuery)
+//   };
   //const response = await fetch(env.APIURL, options);
   //const res = await response.json();
   return {

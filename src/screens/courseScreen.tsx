@@ -1,12 +1,16 @@
-import { Authenticator, Image } from '@aws-amplify/ui-react';
+import { Authenticator } from '@aws-amplify/ui-react';
 import { useAppDispatch } from "../store/hooks"
+import {components} from '../services/components'
+import { userLogout } from '../actions/userActions';
+import { useEffect,  useState} from 'react';
+import { Hub } from 'aws-amplify/utils';
+import { get } from 'aws-amplify/api';
+import { fetchAuthSession } from 'aws-amplify/auth';
+import { useNavigate } from 'react-router-dom';
 import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
-import {components} from '../services/components'
-
 I18n.putVocabularies(translations);
 I18n.setLanguage('he');
-
 I18n.putVocabularies({
   he: {
     'Sign In': 'התחבר',
@@ -25,34 +29,18 @@ I18n.putVocabularies({
     'Reset Password': 'אפס סיסמא',
   },
 });
-import { userLogout } from '../actions/userActions';
-import { useEffect,  useState} from 'react';
-import { getUrl } from 'aws-amplify/storage';
-import { Hub } from 'aws-amplify/utils';
-import { get } from 'aws-amplify/api';
-import { fetchAuthSession } from 'aws-amplify/auth';
-
-function Login() {
+function CoursesScreen() {
   const dispatch = useAppDispatch()
-  const[fileURL,setFileURL]=useState("")
   const[show,setShow]=useState(false)
-  
+  const navigate=useNavigate()
+
   Hub.listen('auth', (data) => {
     if(!show && data) setShow(true)
   });
 
-  useEffect(() => {
-    async function setURLs(){
-    const linkToStorageFile = await getUrl({
-      path: "global/Logo.png",
-      // Alternatively, path: ({identityId}) => `album/{identityId}/1.jpg`
-    });
-    //console.log('signed URL: ', linkToStorageFile.url.toString());
-    setFileURL(linkToStorageFile.url.toString())
-    //console.log('URL expires at: ', linkToStorageFile.expiresAt);
-    }
-    setURLs()
-  }, [dispatch])
+  //DB connections: 
+  //Listen to current user changes + get user
+
 
   useEffect(() => {
   async function getItem() {
@@ -82,25 +70,14 @@ function Login() {
       {({user }) => (
         <main>
           <h1>Hello {user?.signInDetails?.loginId}</h1>
-          <Image
-            alt="Luah logo"
-            src={fileURL}
-            objectFit="initial"
-            objectPosition="50% 50%"
-            backgroundColor="initial"
-            height="20%"
-            width="20%"
-            opacity="100%"
-            onClick={() => alert('📸 Say cheese!')}
-          />
-          <a href={fileURL} target="_blank" rel="noreferrer">
-            {fileURL} 
-          </a>
           <button onClick={()=>dispatch(userLogout())}>Sign out </button>
+          <button onClick={()=>navigate('/CourseMap1')}>Map1 Screen</button>
+          <button onClick={()=>navigate('/CourseMap2')}>Map2 Screen</button>
+          <button onClick={()=>navigate('/Admin')}>Admin Screen</button>
         </main>
       )}
     </Authenticator>
   );
 }
 
-export default Login
+export default CoursesScreen

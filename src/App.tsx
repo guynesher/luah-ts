@@ -1,7 +1,7 @@
 //import { useState } from 'react'
 import './App.css'
-import Login from './screens/loginScreen';
-import Data from './screens/dataScreen';
+import Login from './services/loginScreen';
+import Data from './services/dataScreen';
 import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import outputs from "../amplify_outputs.json";
@@ -10,20 +10,25 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Counter } from './components/Counter';
+import HomeScreen from './screens/homeScreen';
+import LandingPage from './screens/landingPage';
+import CoursesScreen from './screens/courseScreen';
+import Map1 from './screens/map1';
+import Map2 from './screens/map2';
+import QuestionScreen from './screens/questionScreen';
+import AdminScreen from './screens/adminScreen';
 
 const router = createBrowserRouter([
-  {
-    path: "/Login/",
-    element: <Login/>,
-  },
-  {
-    path: "/",
-    element: <Data/>,
-  },
-  {
-    path: "/Counter/",
-    element: <Counter/>,
-  },
+  { path: "/", element: <HomeScreen/>, },
+  { path: "/LandingPage/", element: <LandingPage/>, },
+  { path: "/Courses/", element: <CoursesScreen/>, },
+  { path: "/CourseMap1/", element: <Map1/>, },
+  { path: "/CourseMap2/", element: <Map2/>, },
+  { path: "/Question/", element: <QuestionScreen/>, },
+  { path: "/Admin/", element: <AdminScreen/>, },  
+  { path: "/Login/", element: <Login/>, },
+  { path: "/Data/", element: <Data/>, },
+  { path: "/Counter/", element: <Counter/>, },
 ]);
 
 Amplify.configure(outputs);

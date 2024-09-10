@@ -42,7 +42,7 @@ export const counterSlice = createAppSlice({
     // code can then be executed and other actions can be dispatched. Thunks are
     // typically used to make async requests.
     incrementAsync: create.asyncThunk(
-      async (amount: number) => {
+      async (amount: string) => {
         const response = await fetchCount(amount)
         // The value we return becomes the `fulfilled` action payload
         return response.data
@@ -53,7 +53,7 @@ export const counterSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.status = "idle"
-          state.value += action.payload
+          state.value += Number(action.payload)
         },
         rejected: state => {
           state.status = "failed"
