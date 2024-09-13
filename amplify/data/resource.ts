@@ -96,6 +96,7 @@ const schema = a.schema({
                           //currentStatus=nextQuestion = first question of the program.
         isOpen: a.boolean(),
         expiredAt: a.timestamp(),
+        treasure: a.integer(),
         currentStatus: a.json(), //Maximal level the user reached - includes {level, chapter, bundle, question, premutation}
         nextQuestion: a.json(), //Next question the user was suggested based on his progress 
       })

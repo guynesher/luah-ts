@@ -23,9 +23,7 @@ export const userLogout = () => async (dispatch: (action: { type: string }) => v
         phone: "",
         email: "" ,
         picture: "",
-        isRegistered: false,
         isAdmin: false,
-        treasure: 0,
         sessionStart: new Date().toString(),
         computerIP: "",
         address: {
@@ -41,7 +39,7 @@ export const userLogout = () => async (dispatch: (action: { type: string }) => v
         orders: [],
         recommendation: [],
         contact: [],
-        data: [],
+        userData: [],
         }));
     //dispatch({ type: USER_LOGOUT })
     // dispatch({ type: MIS_LOGOUT })

@@ -68,9 +68,7 @@ export const Counter = () => {
             phone: "",
             email: "" ,
             picture: "",
-            isRegistered: false,
             isAdmin: false,
-            treasure: 0,
             sessionStart: current.toString(),
             computerIP: "",
             address: {
@@ -86,7 +84,7 @@ export const Counter = () => {
             orders: [],
             recommendation: [],
             contact: [],
-            data: [],
+            userData: [],
           }))}
         >
           Set User

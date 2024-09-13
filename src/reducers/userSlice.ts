@@ -11,6 +11,25 @@ interface Address {
   zipcode: string
 }
 
+interface Question {
+  programId: string
+  levelId: string
+  chapterNumber: string []
+  questionId: string
+  permutationNumber: string
+}
+
+interface UserProgram {
+  userProgramId: string
+  programName: string
+  email: string
+  isOpen: string
+  expiredAt: string
+  treasure: string
+  currentStatus: Question
+  nextQuestion: Question
+}
+
 interface User {
   id: string
   cognitoUserName: String 
@@ -19,18 +38,16 @@ interface User {
   phone: string
   email: string 
   picture: string
-  isRegistered: boolean
   isAdmin: boolean
-  treasure: number
   sessionStart: string
   computerIP: String
   address: Address 
-  programs: []
+  programs: UserProgram []
   cards: [] 
   orders: []
   recommendation: []
   contact: []
-  data: []
+  userData: []
 }
 
 export interface UserSliceState {
@@ -50,9 +67,7 @@ const initialState: UserSliceState = {
     phone: "",
     email: "" ,
     picture: "",
-    isRegistered: false,
     isAdmin: false,
-    treasure: 0,
     sessionStart: current.toString(),
     computerIP: "",
     address: {
@@ -68,7 +83,7 @@ const initialState: UserSliceState = {
     orders: [],
     recommendation: [],
     contact: [],
-    data: [],
+    userData: [],
   }, 
   status: "idle",
 }
@@ -120,6 +135,7 @@ export const userSlice = createAppSlice({
       },
     ),
   }),
+
   // You can define your selectors here. These selectors receive the slice
   // state as their first argument.
   selectors: {
@@ -130,9 +146,9 @@ export const userSlice = createAppSlice({
 })
 
 // Action creators are generated for each case reducer function.
-export const { setSurname, setName, setUser, setUserNameAsync } =
+export const { setSurname, setName, setUser, setUserNameAsync} =
   userSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectName, selectSurname, selectStatus } = userSlice.selectors
+export const { selectName, selectSurname, selectStatus  } = userSlice.selectors
 
