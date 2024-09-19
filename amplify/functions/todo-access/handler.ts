@@ -42,8 +42,12 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   const res = await dataClient.graphql({
     query: listTodos,
   });
-   
-  console.log("event", event);
+
+  let a=event.body?JSON.parse(event.body):"NA";
+  let params=[];
+  for (const [key, value] of Object.entries(a)) {
+    if(key==="params") params.push(value);
+  }
 //   const query = `
 //     query MyQuery {
 //       listTodos {
@@ -80,6 +84,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       "Access-Control-Allow-Origin": "*", // Restrict this to domains you trust
       "Access-Control-Allow-Headers": "*", // Specify only the headers you need to allow
     },
-    body: JSON.stringify({res:res,name:env.NAME}),
+    body: JSON.stringify({res:res,name:env.NAME,a:event,b:event.body,c:params}),
   };
 };
