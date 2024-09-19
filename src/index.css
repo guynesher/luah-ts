@@ -1,12 +1,31 @@
 body {
-  margin: 0;
-  background: linear-gradient(180deg, rgb(117, 81, 194), rgb(255, 255, 255));
-  display: flex;
+  background: hsl(300, 95%, 95%);
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  height: 100vh;
-  width: 100vw;
+
   justify-content: center;
   align-items: center;
+  text-align: center;
+  background-repeat: repeat;
+  direction: rtl;
+  position:absolute; /* putting element in front of another*/
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  display: flexbox;
+  box-sizing:border-box;
+  -ms-transform: rotate(0.00deg);
+  -webkit-transform: rotate(0.00deg);
+  transform: rotate(0.00deg);
+  -ms-transform-origin: center;
+  -webkit-transform-origin: center;
+  transform-origin: center;
+  opacity: 1;
+  cursor: default;
+  background: hsl(300, 95%, 95%);
 }
 
 main {
@@ -17,7 +36,7 @@ main {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 10px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -62,4 +81,21 @@ li:hover {
 a {
   font-weight: 800;
   text-decoration: none;
+}
+
+.btn {
+  border-radius: 8px;
+  border: 2px solid transparent;
+  padding: 0.6em 1.2em;
+  background-color: hsl(300, 95%, 30%);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: white;
+}
+.btn:hover {
+  border-color: hsl(0, 0%, 100%);
+}
+.btn:focus,
+.btn:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }

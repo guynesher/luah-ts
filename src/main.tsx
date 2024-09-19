@@ -15,17 +15,10 @@ Amplify.configure({
     ...existingConfig.API,
     REST: outputs.custom.API,
   },
-  // API: {
-  //   REST: {
-  //     headers: async () => {
-  //       return {Authorization: `${(await fetchAuthSession()).tokens.idToken.toString()}`};
-  //     },
-  //   }
-  // }
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-    <App />
+      <App />
   </Provider>
 );

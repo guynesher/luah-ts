@@ -38,6 +38,7 @@ Amplify.configure(
 const dataClient = generateClient<Schema>();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+  
   const res = await dataClient.graphql({
     query: listTodos,
   });

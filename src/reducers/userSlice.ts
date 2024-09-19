@@ -142,6 +142,7 @@ export const userSlice = createAppSlice({
     selectName: user => user.user.name,
     selectSurname: user => user.user.surname,
     selectStatus: user => user.status,
+    selectUser: user => user.user,
   },
 })
 
@@ -150,5 +151,5 @@ export const { setSurname, setName, setUser, setUserNameAsync} =
   userSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectName, selectSurname, selectStatus  } = userSlice.selectors
+export const { selectName, selectSurname, selectStatus, selectUser  } = userSlice.selectors
 

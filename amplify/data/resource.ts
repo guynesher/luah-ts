@@ -30,6 +30,10 @@ const schema = a.schema({
         userDatas: a.hasMany('UserData','userId') //the datas that the user create during his work for AI work
       })
       .identifier(["userId"])
+      .secondaryIndexes((index) => [
+        index("email")
+          .queryField("getUserByEmail"),
+      ])
       .authorization((allow) => [allow.publicApiKey().to(['create','read','update']),
         allow.groups(['Users','Admins']).to(['create','delete','read','update'])
       ]),

@@ -1,7 +1,7 @@
 import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
 
-function AuthScreen() {
+function authScreen() {
     I18n.putVocabularies(translations);
     I18n.setLanguage('he');
     I18n.putVocabularies({
@@ -25,5 +25,5 @@ function AuthScreen() {
   return;
 }
 
-export default AuthScreen
+export default authScreen
 
