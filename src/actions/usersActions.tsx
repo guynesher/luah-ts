@@ -5,18 +5,18 @@ import { type Schema } from '../../amplify/data/resource'
 
 const client = generateClient<Schema>();
 
-export default async function getFromRestAPI(params:string[]) {
+export default async function getFromRestAPI(params:any) {
     try {
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString()
       const Auth: string=  token!;
-
+        console.log(params)
       const restOperation = get({ 
           apiName: 'luah-ts-api',
           path: 'cognito-auth-path',
           options: {
             headers: {Authorization:Auth},
-            body: params,
+            queryParams:params,
           },
         });
         const { body } = await restOperation.response;
