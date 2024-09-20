@@ -1,8 +1,9 @@
 import '@aws-amplify/ui-react/styles.css';
-import { Divider, Flex, Menu, MenuButton, MenuItem, Text } from '@aws-amplify/ui-react';
-import { VscAccount } from 'react-icons/vsc';
+import { Divider, Flex, Menu, MenuButton, MenuItem, Text, View } from '@aws-amplify/ui-react';
+import { VscAccount, VscAdd, VscEdit } from 'react-icons/vsc';
 import { useAppSelector } from '../store/hooks';
 import { selectUser } from '../reducers/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface BackToParent {
   setValue: (value: string) => void;
@@ -19,7 +20,8 @@ const MenuBar: React.FC<BackToParent> = ({ setValue, contents, trig, current}) =
       <Text color={user.id!==""?'#6bfc03':'#fc0303'} padding={'5px'}>{current}</Text>
     </MenuButton>
   ):(null) 
-  
+  const navigate=useNavigate()
+
   return (
     <Flex direction="row" justifyContent="flex-start">
       <Menu
@@ -33,7 +35,22 @@ const MenuBar: React.FC<BackToParent> = ({ setValue, contents, trig, current}) =
       {contents&& contents.map((content, index) =>
         content?<MenuItem key={"item"+index} onClick={() => setValue(content)} 
                     color="purple.90" style={{background: "hsl(300, 85%, 85%)"}}>
-          {content}
+          {(content!=="הגדרות" && content!=="ניהול חשבון" && content!=="יציאה" && content!=="צור קשר" && 
+            content!=="המלצות" && content!=="שירים וסרטונים" && content!=="התוכנית" && content!=="קצת עלינו") && 
+                <View
+                  as="span"
+                  ariaLabel="View example"
+                  backgroundColor="hsl(300, 85%, 85%)"
+                  color="var(--amplify-colors-blue-60)"
+                  height="3.2rem"
+                  maxWidth="100%"
+                  padding="1rem"
+                  width="7rem"
+                  onClick={()=>navigate ("/profileSettings")}
+                  >{content==="הוספת פרופיל"?<VscAdd/>:<VscEdit /> }
+                </View>    
+              }
+              {content} 
         </MenuItem> :<Divider key={"div"+index}/>
         )}
       </Menu>

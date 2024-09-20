@@ -17,6 +17,8 @@ import Map1 from './screens/map1';
 import Map2 from './screens/map2';
 import QuestionScreen from './screens/questionScreen';
 import AdminScreen from './screens/adminScreen';
+import AccountSettings from './screens/accountSettings';
+import ProfileSettings from './screens/profileSettings';
 
 const router = createBrowserRouter([
   { path: "/", element: <HomeScreen/>, },
@@ -26,6 +28,9 @@ const router = createBrowserRouter([
   { path: "/CourseMap2/", element: <Map2/>, },
   { path: "/Question/", element: <QuestionScreen/>, },
   { path: "/Admin/", element: <AdminScreen/>, },  
+  { path: "/accountSettings/", element: <AccountSettings/>, }, 
+  { path: "/profileSettings/", element: <ProfileSettings/>, }, 
+
   { path: "/Login/", element: <Login/>, },
   { path: "/Data/", element: <Data/>, },
   { path: "/Counter/", element: <Counter/>, },

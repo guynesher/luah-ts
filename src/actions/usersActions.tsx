@@ -28,13 +28,18 @@ export default async function getFromRestAPI(params:any) {
 
 export async function createUserWithAdressAndPrograms(parmas:string[]) { //[cognitoUserName,email,computerIP,profileNumber,...programIds]
     async function getItems() {
+        const up:string[]=[]
+        for (let i = 4; i < parmas.length; i++) {
+          up.push(parmas[3]+parmas[0]+parmas[i]);
+        }
         const user = await client.models.User.create({
             userId: parmas[3]+parmas[0], //Can have more than one profile
             email: parmas[1],
             cognitoUserName: parmas[0],
             isAdmin: false, 
             sessionStart: Date.now(), 
-            computerIP: parmas[2], 
+            computerIP: parmas[2],
+            userPrograms: up, 
         }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
 
         if (user?.data?.userId) await client.models.Adress.create({userId:user?.data?.userId,})

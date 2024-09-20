@@ -47,7 +47,7 @@ export const userLogout = () => async (dispatch: (action: { type: string }) => v
     // dispatch({ type: PRODUCT_LOGOUT })
     // dispatch({ type: PROGRAM_LOGOUT })
     // dispatch({ type: ADMIN_LOGOUT })   
-    // localStorage.setItem('lu-ah1', JSON.stringify({}));
+    localStorage.setItem('luah-user', JSON.stringify({}));
     // localStorage.setItem('lu-ah2', JSON.stringify({}));
     // localStorage.setItem('lu-ah3', JSON.stringify({}));
     // localStorage.setItem('lu-ah4', JSON.stringify({}));

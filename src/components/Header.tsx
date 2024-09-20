@@ -1,11 +1,26 @@
 import { Grid, View, useTheme, Flex, Button, Image, } from '@aws-amplify/ui-react';
 import { useEffect, useState } from 'react';
 import MenuBar from './menuBar';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { userLogout } from '../actions/userActions';
+import { generateClient } from 'aws-amplify/data';
+import { type Schema } from '../../amplify/data/resource'
+import { selectUser } from '../reducers/userSlice';
+import getFromRestAPI from '../actions/usersActions';
+
+const client = generateClient<Schema>();
 
 export const Header = () => {
   const { tokens } = useTheme();
   const [width, setWidth] = useState(window.innerWidth);
   const [value, setValue] = useState<string>();
+  const [profile, setProfile] = useState<string>();
+  const [profilesListData, setProfilesListData] = useState<any>([]);
+  const [profilesList, setProfilesList] = useState<any>([]);
+  const navigate=useNavigate()
+  const dispatch = useAppDispatch()
+  const lsUser = useAppSelector(selectUser)
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -13,10 +28,56 @@ export const Header = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    async function getProfilesList() {
+        return await client.models.User.list({
+            filter: {
+              email: {
+                eq: lsUser.email
+              }
+            }
+          })
+        .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
+     }
+     if(lsUser.email!=="") {(async () => { 
+        setProfilesListData(await getProfilesList())
+        console.log(await getFromRestAPI(["listUsersbyEmail",lsUser.email]))
+        //Put profiles in store to prevent more DB actions
+        })() }
+  }, [lsUser.email]);
+
+  useEffect(() => {
+    if(profilesListData?.data){
+        const profs=[]
+        for (let index = 0; index < profilesListData?.data.length; index++) {
+            profs.push(profilesListData?.data[index]?.name?profilesListData?.data[index]?.name:"שלום");
+        }
+        setProfilesList(profs)
+    }
+  }, [profilesListData]);
+
+  useEffect(() => {
+    if(value==="הגדרות" || value==="הוספת פרופיל") { navigate ("/profileSettings") }
+    if(value==="ניהול חשבון") { navigate ("/accountSettings") }
+    if(value==="צור קשר") { navigate ("/") }
+    if(value==="המלצות") { navigate ("/") }
+    if(value==="שירים וסרטונים") { navigate ("/") }
+    if(value==="התוכנית") { navigate ("/") }
+    if(value==="קצת עלינו") { navigate ("/") }
+    if(value==="יציאה") { 
+        dispatch(userLogout());
+        navigate ("/");
+    }
+    if(value!=="הגדרות" && value!=="ניהול חשבון" && value!=="יציאה" && value!=="צור קשר" && value!=="הוספת פרופיל" &&
+        value!=="המלצות" && value!=="שירים וסרטונים" && value!=="התוכנית" && value!=="קצת עלינו") {
+        setProfile(value)
+    }
+  }, [value]);
+
   return (
     <Grid
       templateColumns=" 1fr"
-      templateRows=" 4rem"
+      templateRows=" 6rem"
       gap={tokens.space.small}
     >
     <View
@@ -34,18 +95,20 @@ export const Header = () => {
                 width="65px"
                 opacity="100%"
                 />
-            <MenuBar setValue={setValue} contents={["פרופיל 1","פרופיל 2",null,"הגדרות","ניהול חשבון",null,"יציאה"]} 
-                    trig={true} current={value?value:""}/>
-            {width>720 && 
+            <MenuBar setValue={setValue} 
+                    contents={[...profilesList,"הוספת פרופיל",null,"הגדרות","ניהול חשבון",null,"יציאה"]} 
+                    trig={true} current={profile?profile:"שלום"}/>
+            {width>800 && 
                 <>
-                <Button className="btn">קצת עלינו</Button>
-                <Button className="btn">התוכנית</Button>
-                <Button className="btn">המלצות </Button>
-                <Button className="btn">צור קשר</Button>
-                <Button className="btn">שירים וסרטונים </Button>
+                <Button className="btn" onClick={()=>setValue("קצת עלינו")}>קצת עלינו</Button>
+                <Button className="btn" onClick={()=>setValue("התוכנית")}>התוכנית</Button>
+                <Button className="btn" onClick={()=>setValue("המלצות")}>המלצות </Button>
+                <Button className="btn" onClick={()=>setValue("צור קשר")}>צור קשר</Button>
+                <Button className="btn" onClick={()=>setValue("שירים וסרטונים")}>שירים וסרטונים </Button>
                 </>
             }
-            <MenuBar setValue={setValue} contents={["קצת עלינו","התוכנית","שירים וסרטונים",null,"המלצות","צור קשר"]} 
+            <MenuBar setValue={setValue} 
+                    contents={["קצת עלינו","התוכנית","שירים וסרטונים",null,"המלצות","צור קשר"]} 
                     trig={false} current="גיא"/>
         </Flex>
     </View>

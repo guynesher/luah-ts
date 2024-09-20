@@ -58,32 +58,34 @@ export interface UserSliceState {
 const current=new Date()
 current.setHours(current.getHours() +3);
 
+const ls: Record<string, any> | null = localStorage.getItem('luah-user') ? JSON.parse(localStorage.getItem('luah-user') as string) : null;
+//console. log(ls)
 const initialState: UserSliceState = {
   user: {
-    id: "",
-    cognitoUserName: "",
-    name: "",
-    surname: "",
-    phone: "",
-    email: "" ,
-    picture: "",
-    isAdmin: false,
-    sessionStart: current.toString(),
-    computerIP: "",
+    id: ls?.id?ls.id:"",
+    cognitoUserName: ls?.id?ls.cognitoUserName:"",
+    name: ls?.id?ls.name:"",
+    surname: ls?.id?ls.surname:"",
+    phone: ls?.id?ls.phone:"",
+    email: ls?.id?ls.email:"" ,
+    picture: ls?.id?ls.picture:"",
+    isAdmin: ls?.id?ls.isAdmin:"",
+    sessionStart: ls?.id?ls.sessionStart:"",
+    computerIP: ls?.id?ls.computerIP:"",
     address: {
-      id: "",
-      street: "",
-      house: "",
-      appartment: "",
-      city: "",
-      zipcode: "",
+      id: ls?.address?.id?ls.address.id:"",
+      street: ls?.address?.id?ls.address.street:"",
+      house: ls?.address?.id?ls.address.house:"",
+      appartment: ls?.address?.id?ls.address.appartment:"",
+      city: ls?.address?.id?ls.address.city:"",
+      zipcode: ls?.address?.id?ls.address.zipcode:"",
     } ,
-    programs: [],
-    cards: [] ,
-    orders: [],
-    recommendation: [],
-    contact: [],
-    userData: [],
+    programs: ls?.id?ls.programs:"",
+    cards: ls?.id?ls.cards:"",
+    orders: ls?.id?ls.programs:"",
+    recommendation: ls?.id?ls.orders:"",
+    contact: ls?.id?ls.contact:"",
+    userData: ls?.id?ls.userData:"",
   }, 
   status: "idle",
 }
@@ -109,6 +111,7 @@ export const userSlice = createAppSlice({
     setUser: create.reducer(
       (state, action: PayloadAction<User>) => {
         state.user=action.payload
+        localStorage.setItem('luah-user',JSON.stringify(state.user))
       },
     ),
     // The function below is called a thunk and allows us to perform async logic. It

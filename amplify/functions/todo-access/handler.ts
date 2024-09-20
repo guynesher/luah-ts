@@ -39,15 +39,25 @@ const dataClient = generateClient<Schema>();
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   
-  const res = await dataClient.graphql({
-    query: listTodos,
-  });
+  // const res = await dataClient.graphql({
+  //   query: listTodos,
+  // });
 
   let a=event.queryStringParameters?event.queryStringParameters:"NA";
   let params=[];
   for (const [key, value] of Object.entries(a)) {
     params.push(value);
   }
+
+  const res = await dataClient.models.User.list({
+    filter: {
+      email: {
+        eq: params[1]
+      }
+    }
+  })
+.catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
+
 //   const query = `
 //     query MyQuery {
 //       listTodos {

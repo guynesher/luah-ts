@@ -79,7 +79,7 @@ function CoursesScreen() {
     <Authenticator components={components}>
       {({user}) => (
         <main>
-          <AuthUtils email={user?.signInDetails?.loginId} user={user?.userId}></AuthUtils>
+          <AuthUtils email={user?.signInDetails?.loginId} user={user?.userId}/>
           <Header></Header>
           <h1>Hello {user?.signInDetails?.loginId}</h1>
           <button onClick={()=>dispatch(userLogout())}>Sign out </button>
