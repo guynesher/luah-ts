@@ -276,32 +276,25 @@ export type Todo = {
   updatedAt: string,
 };
 
-export type UserProgram = {
-  __typename: "UserProgram",
-  createdAt: string,
-  currentStatus?: string | null,
-  email?: string | null,
-  expiredAt?: number | null,
-  isOpen?: boolean | null,
-  nextQuestion?: string | null,
-  programName?: string | null,
-  updatedAt: string,
-  userProgramId: string,
-};
-
-export type ModelAdressFilterInput = {
-  and?: Array< ModelAdressFilterInput | null > | null,
-  appartment?: ModelStringInput | null,
-  city?: ModelStringInput | null,
+export type ModelUserFilterInput = {
+  and?: Array< ModelUserFilterInput | null > | null,
+  cards?: ModelStringInput | null,
+  cognitoUserName?: ModelStringInput | null,
+  computerIP?: ModelStringInput | null,
   createdAt?: ModelStringInput | null,
-  house?: ModelStringInput | null,
+  email?: ModelStringInput | null,
   id?: ModelIDInput | null,
-  not?: ModelAdressFilterInput | null,
-  or?: Array< ModelAdressFilterInput | null > | null,
-  street?: ModelStringInput | null,
+  isAdmin?: ModelBooleanInput | null,
+  name?: ModelStringInput | null,
+  not?: ModelUserFilterInput | null,
+  or?: Array< ModelUserFilterInput | null > | null,
+  phone?: ModelStringInput | null,
+  picture?: ModelStringInput | null,
+  sessionStart?: ModelIntInput | null,
+  surname?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   userId?: ModelIDInput | null,
-  zipcode?: ModelStringInput | null,
+  userPrograms?: ModelStringInput | null,
 };
 
 export type ModelStringInput = {
@@ -360,11 +353,65 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type ModelBooleanInput = {
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  eq?: boolean | null,
+  ne?: boolean | null,
+};
+
+export type ModelIntInput = {
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  between?: Array< number | null > | null,
+  eq?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ne?: number | null,
+};
+
 export enum ModelSortDirection {
   ASC = "ASC",
   DESC = "DESC",
 }
 
+
+export type ModelUserConnection = {
+  __typename: "ModelUserConnection",
+  items:  Array<User | null >,
+  nextToken?: string | null,
+};
+
+export type UserProgram = {
+  __typename: "UserProgram",
+  createdAt: string,
+  currentStatus?: string | null,
+  email?: string | null,
+  expiredAt?: number | null,
+  isOpen?: boolean | null,
+  nextQuestion?: string | null,
+  programName?: string | null,
+  treasure?: number | null,
+  updatedAt: string,
+  userProgramId: string,
+};
+
+export type ModelAdressFilterInput = {
+  and?: Array< ModelAdressFilterInput | null > | null,
+  appartment?: ModelStringInput | null,
+  city?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  house?: ModelStringInput | null,
+  id?: ModelIDInput | null,
+  not?: ModelAdressFilterInput | null,
+  or?: Array< ModelAdressFilterInput | null > | null,
+  street?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  userId?: ModelIDInput | null,
+  zipcode?: ModelStringInput | null,
+};
 
 export type ModelAdressConnection = {
   __typename: "ModelAdressConnection",
@@ -392,18 +439,6 @@ export type ModelChapterFilterInput = {
   updatedAt?: ModelStringInput | null,
 };
 
-export type ModelIntInput = {
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  between?: Array< number | null > | null,
-  eq?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ne?: number | null,
-};
-
 export type ModelContactFilterInput = {
   and?: Array< ModelContactFilterInput | null > | null,
   contactId?: ModelIDInput | null,
@@ -418,13 +453,6 @@ export type ModelContactFilterInput = {
   text?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   userId?: ModelIDInput | null,
-};
-
-export type ModelBooleanInput = {
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  eq?: boolean | null,
-  ne?: boolean | null,
 };
 
 export type ModelUserDataFilterInput = {
@@ -643,6 +671,7 @@ export type ModelUserProgramFilterInput = {
   not?: ModelUserProgramFilterInput | null,
   or?: Array< ModelUserProgramFilterInput | null > | null,
   programName?: ModelStringInput | null,
+  treasure?: ModelIntInput | null,
   updatedAt?: ModelStringInput | null,
   userProgramId?: ModelIDInput | null,
 };
@@ -650,33 +679,6 @@ export type ModelUserProgramFilterInput = {
 export type ModelUserProgramConnection = {
   __typename: "ModelUserProgramConnection",
   items:  Array<UserProgram | null >,
-  nextToken?: string | null,
-};
-
-export type ModelUserFilterInput = {
-  and?: Array< ModelUserFilterInput | null > | null,
-  cards?: ModelStringInput | null,
-  cognitoUserName?: ModelStringInput | null,
-  computerIP?: ModelStringInput | null,
-  createdAt?: ModelStringInput | null,
-  email?: ModelStringInput | null,
-  id?: ModelIDInput | null,
-  isAdmin?: ModelBooleanInput | null,
-  name?: ModelStringInput | null,
-  not?: ModelUserFilterInput | null,
-  or?: Array< ModelUserFilterInput | null > | null,
-  phone?: ModelStringInput | null,
-  picture?: ModelStringInput | null,
-  sessionStart?: ModelIntInput | null,
-  surname?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
-  userId?: ModelIDInput | null,
-  userPrograms?: ModelStringInput | null,
-};
-
-export type ModelUserConnection = {
-  __typename: "ModelUserConnection",
-  items:  Array<User | null >,
   nextToken?: string | null,
 };
 
@@ -1068,6 +1070,7 @@ export type ModelUserProgramConditionInput = {
   not?: ModelUserProgramConditionInput | null,
   or?: Array< ModelUserProgramConditionInput | null > | null,
   programName?: ModelStringInput | null,
+  treasure?: ModelIntInput | null,
   updatedAt?: ModelStringInput | null,
 };
 
@@ -1078,6 +1081,7 @@ export type CreateUserProgramInput = {
   isOpen?: boolean | null,
   nextQuestion?: string | null,
   programName?: string | null,
+  treasure?: number | null,
   userProgramId: string,
 };
 
@@ -1305,6 +1309,7 @@ export type UpdateUserProgramInput = {
   isOpen?: boolean | null,
   nextQuestion?: string | null,
   programName?: string | null,
+  treasure?: number | null,
   userProgramId: string,
 };
 
@@ -1600,6 +1605,7 @@ export type ModelSubscriptionUserProgramFilterInput = {
   nextQuestion?: ModelSubscriptionStringInput | null,
   or?: Array< ModelSubscriptionUserProgramFilterInput | null > | null,
   programName?: ModelSubscriptionStringInput | null,
+  treasure?: ModelSubscriptionIntInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   userProgramId?: ModelSubscriptionIDInput | null,
 };
@@ -2061,6 +2067,38 @@ export type GetUserQuery = {
   } | null,
 };
 
+export type GetUserByEmailQueryVariables = {
+  email: string,
+  filter?: ModelUserFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type GetUserByEmailQuery = {
+  getUserByEmail?:  {
+    __typename: "ModelUserConnection",
+    items:  Array< {
+      __typename: "User",
+      cards?: Array< string | null > | null,
+      cognitoUserName?: string | null,
+      computerIP?: string | null,
+      createdAt: string,
+      email?: string | null,
+      isAdmin?: boolean | null,
+      name?: string | null,
+      phone?: string | null,
+      picture?: string | null,
+      sessionStart?: number | null,
+      surname?: string | null,
+      updatedAt: string,
+      userId: string,
+      userPrograms?: Array< string | null > | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetUserDataQueryVariables = {
   userDataId: string,
 };
@@ -2134,6 +2172,7 @@ export type GetUserProgramQuery = {
     isOpen?: boolean | null,
     nextQuestion?: string | null,
     programName?: string | null,
+    treasure?: number | null,
     updatedAt: string,
     userProgramId: string,
   } | null,
@@ -3060,6 +3099,7 @@ export type ListUserProgramsQuery = {
       isOpen?: boolean | null,
       nextQuestion?: string | null,
       programName?: string | null,
+      treasure?: number | null,
       updatedAt: string,
       userProgramId: string,
     } | null >,
@@ -3119,6 +3159,7 @@ export type UserProgramByEmailQuery = {
       isOpen?: boolean | null,
       nextQuestion?: string | null,
       programName?: string | null,
+      treasure?: number | null,
       updatedAt: string,
       userProgramId: string,
     } | null >,
@@ -3147,6 +3188,7 @@ export type UserProgramByEmailAndProgramNameQuery = {
       isOpen?: boolean | null,
       nextQuestion?: string | null,
       programName?: string | null,
+      treasure?: number | null,
       updatedAt: string,
       userProgramId: string,
     } | null >,
@@ -3699,6 +3741,7 @@ export type CreateUserProgramMutation = {
     isOpen?: boolean | null,
     nextQuestion?: string | null,
     programName?: string | null,
+    treasure?: number | null,
     updatedAt: string,
     userProgramId: string,
   } | null,
@@ -4249,6 +4292,7 @@ export type DeleteUserProgramMutation = {
     isOpen?: boolean | null,
     nextQuestion?: string | null,
     programName?: string | null,
+    treasure?: number | null,
     updatedAt: string,
     userProgramId: string,
   } | null,
@@ -4799,6 +4843,7 @@ export type UpdateUserProgramMutation = {
     isOpen?: boolean | null,
     nextQuestion?: string | null,
     programName?: string | null,
+    treasure?: number | null,
     updatedAt: string,
     userProgramId: string,
   } | null,
@@ -5334,6 +5379,7 @@ export type OnCreateUserProgramSubscription = {
     isOpen?: boolean | null,
     nextQuestion?: string | null,
     programName?: string | null,
+    treasure?: number | null,
     updatedAt: string,
     userProgramId: string,
   } | null,
@@ -5869,6 +5915,7 @@ export type OnDeleteUserProgramSubscription = {
     isOpen?: boolean | null,
     nextQuestion?: string | null,
     programName?: string | null,
+    treasure?: number | null,
     updatedAt: string,
     userProgramId: string,
   } | null,
@@ -6404,6 +6451,7 @@ export type OnUpdateUserProgramSubscription = {
     isOpen?: boolean | null,
     nextQuestion?: string | null,
     programName?: string | null,
+    treasure?: number | null,
     updatedAt: string,
     userProgramId: string,
   } | null,

@@ -431,6 +431,45 @@ export const getUser = /* GraphQL */ `query GetUser($userId: ID!) {
   }
 }
 ` as GeneratedQuery<APITypes.GetUserQueryVariables, APITypes.GetUserQuery>;
+export const getUserByEmail = /* GraphQL */ `query GetUserByEmail(
+  $email: AWSEmail!
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $sortDirection: ModelSortDirection
+) {
+  getUserByEmail(
+    email: $email
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    sortDirection: $sortDirection
+  ) {
+    items {
+      cards
+      cognitoUserName
+      computerIP
+      createdAt
+      email
+      isAdmin
+      name
+      phone
+      picture
+      sessionStart
+      surname
+      updatedAt
+      userId
+      userPrograms
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetUserByEmailQueryVariables,
+  APITypes.GetUserByEmailQuery
+>;
 export const getUserData = /* GraphQL */ `query GetUserData($userDataId: ID!) {
   getUserData(userDataId: $userDataId) {
     answer
@@ -498,6 +537,7 @@ export const getUserProgram = /* GraphQL */ `query GetUserProgram($userProgramId
     isOpen
     nextQuestion
     programName
+    treasure
     updatedAt
     userProgramId
     __typename
@@ -1633,6 +1673,7 @@ export const listUserPrograms = /* GraphQL */ `query ListUserPrograms(
       isOpen
       nextQuestion
       programName
+      treasure
       updatedAt
       userProgramId
       __typename
@@ -1703,6 +1744,7 @@ export const userProgramByEmail = /* GraphQL */ `query UserProgramByEmail(
       isOpen
       nextQuestion
       programName
+      treasure
       updatedAt
       userProgramId
       __typename
@@ -1739,6 +1781,7 @@ export const userProgramByEmailAndProgramName = /* GraphQL */ `query UserProgram
       isOpen
       nextQuestion
       programName
+      treasure
       updatedAt
       userProgramId
       __typename

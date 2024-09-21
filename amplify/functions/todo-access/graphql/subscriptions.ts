@@ -525,6 +525,7 @@ export const onCreateUserProgram = /* GraphQL */ `subscription OnCreateUserProgr
     isOpen
     nextQuestion
     programName
+    treasure
     updatedAt
     userProgramId
     __typename
@@ -1051,6 +1052,7 @@ export const onDeleteUserProgram = /* GraphQL */ `subscription OnDeleteUserProgr
     isOpen
     nextQuestion
     programName
+    treasure
     updatedAt
     userProgramId
     __typename
@@ -1577,6 +1579,7 @@ export const onUpdateUserProgram = /* GraphQL */ `subscription OnUpdateUserProgr
     isOpen
     nextQuestion
     programName
+    treasure
     updatedAt
     userProgramId
     __typename

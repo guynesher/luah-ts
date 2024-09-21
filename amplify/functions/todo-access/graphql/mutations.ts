@@ -564,6 +564,7 @@ export const createUserProgram = /* GraphQL */ `mutation CreateUserProgram(
     isOpen
     nextQuestion
     programName
+    treasure
     updatedAt
     userProgramId
     __typename
@@ -1129,6 +1130,7 @@ export const deleteUserProgram = /* GraphQL */ `mutation DeleteUserProgram(
     isOpen
     nextQuestion
     programName
+    treasure
     updatedAt
     userProgramId
     __typename
@@ -1694,6 +1696,7 @@ export const updateUserProgram = /* GraphQL */ `mutation UpdateUserProgram(
     isOpen
     nextQuestion
     programName
+    treasure
     updatedAt
     userProgramId
     __typename
