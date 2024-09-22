@@ -1,57 +1,23 @@
 import { useEffect, useState } from "react";
-import { generateClient } from 'aws-amplify/data';
-import { type Schema } from '../../amplify/data/resource'
-//import getFromRestAPI from "../actions/usersActions";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setUser, selectUser } from "../reducers/userSlice";
-import getFromRestAPI, { createUserWithAdressAndPrograms } from "../actions/usersActions";
+import { useAppSelector } from "../store/hooks";
+import { selectUser } from "../reducers/userSlice";
+import getFromRestAPI from "../actions/usersActions";
 import { selectProfile } from "../reducers/misSlice";
 
-const client = generateClient<Schema>();
 
 export const AuthUtils = (user:any, email:any) => {
   const [usr, setUsr] = useState<string>();
   const [eml, setEmail] = useState<string>();
   const [getUsr, setGetUsr] = useState<boolean>(false);
   const [gotData, setGotData] = useState<boolean>(false);
-  const [usrCreate, setUserCreate] = useState<boolean>(true);
-  const [newUsrData, setNewUser] = useState<any>(false);
-  const [usrAddress, setNewAdress] = useState<any>(false);
   const [ip, setIp] = useState<string>()
-  const [profile, setProfile] = useState<string>();
-  const [changeProfile, setChangeProfile] = useState<boolean>(false);
   
   const [usrData, setData] = useState<any>(false);  
   const [distributed, setDistributed] = useState<boolean>(false);
   const lsUser = useAppSelector(selectUser)
   const lsProfile = useAppSelector(selectProfile)
 
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    if(getUsr && !newUsrData?.data && !usrCreate){
-    //const sub = 
-    client.models.UserProgram.onCreate({ //Lesten to create of userProgram at the end of create user 
-                                          //to know that it is time to get the new user
-      filter: {
-        email: {
-          eq: eml,
-        },
-      },
-    }).subscribe({
-      next: (data) => {
-        setGetUsr(false);
-        console.log(data)
-        setProfile(data.userProgramId.slice(0,1))
-        if(data.userProgramId.slice(0,1)!==lsUser.id.slice(0,1)){ //Check if profile changed -> setChangeProfile(true) 
-          setChangeProfile(true)
-        }
-      },
-      error: (error) => console.warn(error),
-    });
-    //return () => sub.unsubscribe();
-  }
-  }, [getUsr,newUsrData,usrCreate]);
+  //const dispatch = useAppDispatch()
 
   useEffect(() => {
     if(user && email) { //If there was signIn it creates user and email for the Auth checks
@@ -78,40 +44,40 @@ export const AuthUtils = (user:any, email:any) => {
           "252b1d21-8edb-471c-8d0f-600bcecfb2c5","b8eb0d56-8495-479e-ba07-ad4cd5e7b08c"]))
         })() 
     }
-  }, [gotData,newUsrData,usrCreate]);
+  }, [gotData,usrData]);
 
   useEffect(() => { //If there are user details put the details on the store 
   if(gotData && !distributed) {
       setDistributed(true)
       console.log(usrData)
-      dispatch(setUser({
-            id: newUsrData.data.userId,
-            cognitoUserName: newUsrData.data.cognitoUserName,
-            name: newUsrData.data.name,
-            surname: newUsrData.data.surname,
-            phone: newUsrData.data.phone,
-            email: newUsrData.data.email ,
-            picture: newUsrData.data.picture,
-            isAdmin: false,
-            sessionStart: newUsrData.data.userId,
-            computerIP: ip?ip:"NA",
-            address: {
-              id: usrAddress.data.userId,
-              street: usrAddress.data.street,
-              house: usrAddress.data.house,
-              appartment: usrAddress.data.appartment,
-              city: usrAddress.data.city,
-              zipcode: usrAddress.data.zipcode,
-            } ,
-            programs: newUsrData.data.userPrograms,
-            cards: newUsrData.data.cards,
-            orders: [],
-            recommendation: [],
-            contact: [],
-            userData: [],
-            }));
+      // dispatch(setUser({
+      //       id: newUsrData.data.userId,
+      //       cognitoUserName: newUsrData.data.cognitoUserName,
+      //       name: newUsrData.data.name,
+      //       surname: newUsrData.data.surname,
+      //       phone: newUsrData.data.phone,
+      //       email: newUsrData.data.email ,
+      //       picture: newUsrData.data.picture,
+      //       isAdmin: false,
+      //       sessionStart: newUsrData.data.userId,
+      //       computerIP: ip?ip:"NA",
+      //       address: {
+      //         id: usrAddress.data.userId,
+      //         street: usrAddress.data.street,
+      //         house: usrAddress.data.house,
+      //         appartment: usrAddress.data.appartment,
+      //         city: usrAddress.data.city,
+      //         zipcode: usrAddress.data.zipcode,
+      //       } ,
+      //       programs: newUsrData.data.userPrograms,
+      //       cards: newUsrData.data.cards,
+      //       orders: [],
+      //       recommendation: [],
+      //       contact: [],
+      //       userData: [],
+      //       }));
     }
-  }, [gotData,newUsrData,usrAddress,ip]);
+  }, [gotData,ip]);
 
   useEffect(() => {
     if(!ip) getIp()
