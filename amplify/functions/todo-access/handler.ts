@@ -56,7 +56,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
   }).catch((error)=>{return error})
 
-  if(res.data===null) res = await dataClient.graphql({
+  if(Object.keys(res.data.getUserByEmail.items).length===0) res = await dataClient.graphql({
     query: getUser,
     variables: {
       userId: params[2]?params[2]:"NA",
