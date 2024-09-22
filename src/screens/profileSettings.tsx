@@ -9,7 +9,7 @@ function ProfileSettings() {
 
   return (
     <main>
-      <h1>Home Screen</h1>
+      <h1>Profile Settings</h1>
       <button onClick={()=>navigate('/Courses')}>Courses Screen</button>
       <button onClick={()=>navigate('/LandingPage')}>Landing Page</button>
     </main>

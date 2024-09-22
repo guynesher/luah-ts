@@ -23,6 +23,8 @@ interface UserProgram {
   userProgramId: string
   programName: string
   email: string
+  sessionStart: string
+  computerIP: String
   isOpen: string
   expiredAt: string
   treasure: string
@@ -52,6 +54,7 @@ interface User {
 
 export interface UserSliceState {
   user: User 
+  programs: UserProgram []
   status: "idle" | "loading" | "failed"
 }
 
@@ -59,6 +62,7 @@ const current=new Date()
 current.setHours(current.getHours() +3);
 
 const ls: Record<string, any> | null = localStorage.getItem('luah-user') ? JSON.parse(localStorage.getItem('luah-user') as string) : null;
+const progls: Record<string, any> | null = localStorage.getItem('luah-programs') ? JSON.parse(localStorage.getItem('luah-programs') as string) : null;
 //console. log(ls)
 const initialState: UserSliceState = {
   user: {
@@ -87,6 +91,7 @@ const initialState: UserSliceState = {
     contact: ls?.id?ls.contact:"",
     userData: ls?.id?ls.userData:"",
   }, 
+  programs: progls?[progls[0],progls[1]]:[],
   status: "idle",
 }
 
@@ -112,6 +117,12 @@ export const userSlice = createAppSlice({
       (state, action: PayloadAction<User>) => {
         state.user=action.payload
         localStorage.setItem('luah-user',JSON.stringify(state.user))
+      },
+    ),
+    setPrograms: create.reducer(
+      (state, action: PayloadAction<UserProgram[]>) => {
+        state.programs=action.payload
+        localStorage.setItem('luah-programs',JSON.stringify(state.programs))
       },
     ),
     // The function below is called a thunk and allows us to perform async logic. It
@@ -146,13 +157,14 @@ export const userSlice = createAppSlice({
     selectSurname: user => user.user.surname,
     selectStatus: user => user.status,
     selectUser: user => user.user,
+    selectPrograms: user => user.programs,
   },
 })
 
 // Action creators are generated for each case reducer function.
-export const { setSurname, setName, setUser, setUserNameAsync} =
+export const { setSurname, setName, setUser, setUserNameAsync, setPrograms} =
   userSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectName, selectSurname, selectStatus, selectUser  } = userSlice.selectors
+export const { selectName, selectSurname, selectStatus, selectUser, selectPrograms  } = userSlice.selectors
 

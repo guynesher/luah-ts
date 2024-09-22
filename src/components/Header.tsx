@@ -4,23 +4,25 @@ import MenuBar from './menuBar';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { userLogout } from '../actions/userActions';
-import { generateClient } from 'aws-amplify/data';
-import { type Schema } from '../../amplify/data/resource'
+//import { generateClient } from 'aws-amplify/data';
+//import { type Schema } from '../../amplify/data/resource'
 import { selectUser } from '../reducers/userSlice';
 import getFromRestAPI from '../actions/usersActions';
+import { selectProfile, setCurrentProfile } from '../reducers/misSlice';
 
-const client = generateClient<Schema>();
+//const client = generateClient<Schema>();
 
 export const Header = () => {
   const { tokens } = useTheme();
   const [width, setWidth] = useState(window.innerWidth);
   const [value, setValue] = useState<string>();
-  const [profile, setProfile] = useState<string>();
-  const [profilesListData, setProfilesListData] = useState<any>([]);
-  const [profilesList, setProfilesList] = useState<any>([]);
+  const [profile, setProfile] = useState<string>("שלום");
+  const [profilesListData, setProfilesListData] = useState<any>(null);
+  const [profilesList, setProfilesList] = useState<string[]>([]);
   const navigate=useNavigate()
   const dispatch = useAppDispatch()
   const lsUser = useAppSelector(selectUser)
+  const lsProfile = useAppSelector(selectProfile)
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -29,29 +31,21 @@ export const Header = () => {
   }, []);
 
   useEffect(() => {
-    async function getProfilesList() {
-        return await client.models.User.list({
-            filter: {
-              email: {
-                eq: lsUser.email
-              }
-            }
-          })
-        .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
-     }
-     if(lsUser.email!=="") {(async () => { 
-        setProfilesListData(await getProfilesList())
-        console.log(await getFromRestAPI(["listUsersbyEmail",lsUser.email]))
-        //Put profiles in store to prevent more DB actions
-        })() }
-  }, [lsUser.email]);
+     if(lsUser.email!=="" && lsProfile.currentProfile==="1") {
+        (async () => { 
+        setProfilesListData(await getFromRestAPI(["listUsersbyEmail",lsUser.email]))
+        })()}
+     if(lsProfile){ setProfilesList(lsProfile.profileList)}
+  }, [lsUser.email,lsProfile]);
 
   useEffect(() => {
-    if(profilesListData?.data){
-        const profs=[]
-        for (let index = 0; index < profilesListData?.data.length; index++) {
-            profs.push(profilesListData?.data[index]?.name?profilesListData?.data[index]?.name:"שלום");
+    if(profilesListData?.res?.data?.getUserByEmail?.items){ 
+        const profs:string[]=[]
+        for (let index = 0; index < profilesListData?.res?.data?.getUserByEmail?.items.length; index++) {
+            profs.push(profilesListData?.res?.data?.getUserByEmail?.items[index]?.name?
+                profilesListData?.res?.data?.getUserByEmail?.items[index]?.name:"שלום");
         }
+        dispatch(setCurrentProfile({currentProfile: profile, currentProfileNumber: profile, profileList:  profs}))
         setProfilesList(profs)
     }
   }, [profilesListData]);
@@ -70,7 +64,7 @@ export const Header = () => {
     }
     if(value!=="הגדרות" && value!=="ניהול חשבון" && value!=="יציאה" && value!=="צור קשר" && value!=="הוספת פרופיל" &&
         value!=="המלצות" && value!=="שירים וסרטונים" && value!=="התוכנית" && value!=="קצת עלינו") {
-        setProfile(value)
+        setProfile(value?value:"שלום")
     }
   }, [value]);
 

@@ -4,7 +4,8 @@ import { type Schema } from '../../amplify/data/resource'
 //import getFromRestAPI from "../actions/usersActions";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setUser, selectUser } from "../reducers/userSlice";
-import { createUserWithAdressAndPrograms } from "../actions/usersActions";
+import getFromRestAPI, { createUserWithAdressAndPrograms } from "../actions/usersActions";
+import { selectProfile } from "../reducers/misSlice";
 
 const client = generateClient<Schema>();
 
@@ -20,6 +21,7 @@ export const AuthUtils = (user:any, email:any) => {
   const [profile, setProfile] = useState<string>();
   const [changeProfile, setChangeProfile] = useState<boolean>(false);
   const lsUser = useAppSelector(selectUser)
+  const lsProfile = useAppSelector(selectProfile)
 
   const dispatch = useAppDispatch()
 
@@ -56,10 +58,13 @@ export const AuthUtils = (user:any, email:any) => {
     if(!getUsr && usr && eml){ //If user signedIn get his details 
       setGetUsr(true); //Do only once
       //console.log("getUser",usr,lsUser)
-      if(lsUser.id.slice(1)!==usr) { //Get defualt user only if we don't have the same Cognito user in local storage 
+      //if(lsUser.id.slice(1)!==usr) { //Get defualt user only if we don't have the same Cognito user in local storage 
+      if(lsUser.id!==lsProfile.currentProfile+usr){
       (async () => { 
-        setNewUser(await getUser("1"+usr)) //get default profile - "1"
-        setNewAdress(await getAddress("1"+usr)) //get default profile - "1"
+        //setNewUser(await getUser("1"+usr)) //get default profile - "1"
+        //setNewAdress(await getAddress("1"+usr)) //get default profile - "1"
+        //
+        console.log(await getFromRestAPI(["listUsersbyEmail",usr+eml,usr,lsProfile.currentProfile]))
         })()   
       }
       if(changeProfile) { //Get user profile only if change profile is on 
