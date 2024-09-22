@@ -23,8 +23,6 @@ interface UserProgram {
   userProgramId: string
   programName: string
   email: string
-  sessionStart: string
-  computerIP: String
   isOpen: string
   expiredAt: string
   treasure: string

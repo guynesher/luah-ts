@@ -10,7 +10,7 @@ export default async function getFromRestAPI(params:any) {
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString()
       const Auth: string=  token!;
-        console.log(params)
+        //console.log(params)
       const restOperation = get({ 
           apiName: 'luah-ts-api',
           path: 'cognito-auth-path',
