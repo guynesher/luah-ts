@@ -22,7 +22,6 @@ export const AuthUtils = (user:any, email:any) => {
   const [changeProfile, setChangeProfile] = useState<boolean>(false);
   
   const [usrData, setData] = useState<any>(false);  
-  const [distributed, setDistributed] = useState<boolean>(false);
   const lsUser = useAppSelector(selectUser)
   const lsProfile = useAppSelector(selectProfile)
 
@@ -60,30 +59,64 @@ export const AuthUtils = (user:any, email:any) => {
     }
     if(!getUsr && usr && eml){ //If user signedIn get his details 
       setGetUsr(true); //Do only once
+      //console.log("getUser",usr,lsUser)
+      //if(lsUser.id.slice(1)!==usr) { //Get defualt user only if we don't have the same Cognito user in local storage 
       if(lsUser.id!==lsProfile.currentProfile+usr){
       (async () => { 
+        //setNewUser(await getUser("1"+usr)) //get default profile - "1"
+        //setNewAdress(await getAddress("1"+usr)) //get default profile - "1"
+        //
         setData(await getFromRestAPI(["listUsersbyEmail",eml,usr,lsProfile.currentProfileNumber,ip?ip:"?",
           "252b1d21-8edb-471c-8d0f-600bcecfb2c5","b8eb0d56-8495-479e-ba07-ad4cd5e7b08c"]))
         })()   
       }
+      // if(changeProfile) { //Get user profile only if change profile is on 
+      //   (async () => { 
+      //     setChangeProfile(false)
+      //     setNewUser(await getUser(profile+usr)) //get default profile - "1"
+      //     setNewAdress(await getAddress(profile+usr)) //get default profile - "1"
+      //     })()   
+      //   }
     }
   }, [usr,eml,lsUser,getUsr]);
   
-  useEffect(() => { //If there is no user in DB - first entrance case: create user 
-    if(usrData)
-    if(Object.keys(usrData?.res2).length>0) { setGotData(true) }
-    else {
-      (async () => { 
-        setData(await getFromRestAPI(["createUser",eml,usr,lsProfile.currentProfileNumber,ip?ip:"?",
-          "252b1d21-8edb-471c-8d0f-600bcecfb2c5","b8eb0d56-8495-479e-ba07-ad4cd5e7b08c"]))
-        })() 
-    }
-  }, [gotData,newUsrData,usrCreate]);
+    // async function getUser(userId:string) {
+    //      return await client.models.User.get({userId:userId})
+    //      .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
+    //   }
+    
+    // async function getAddress(userId:string) {
+    //   return await client.models.Adress.get({userId:userId})
+    //   .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
+    // }
+    useEffect(() => { //If there is no user in DB - first entrance case: create user 
+      if(usrData && Object.keys(usrData?.res2).length>0) { 
+        console.log(usrData)
+      }
+    }, [gotData,newUsrData,usrCreate]);
+
+  // useEffect(() => { //If there is no user in DB - first entrance case: create user 
+  //   if(getUsr && newUsrData && usrCreate) 
+  //   { setUserCreate(false) 
+  //     if(!newUsrData.data) {
+  //       const params:string[]=[
+  //         usr?usr:"NA",
+  //         eml?eml:"NA",
+  //         ip?ip:"?",
+  //         "1", //Profile Number
+  //         "252b1d21-8edb-471c-8d0f-600bcecfb2c5",
+  //         "b8eb0d56-8495-479e-ba07-ad4cd5e7b08c"
+  //       ]
+  //       console.log(params)
+  //       createUserWithAdressAndPrograms(params)
+  //     }
+  //   }
+  // }, [gotData,newUsrData,usrCreate]);
 
   useEffect(() => { //If there are user details put the details on the store 
-  if(gotData && !distributed) {
-      setDistributed(true)
-      console.log(usrData)
+  if(!gotData && newUsrData?.data && usrAddress?.data ) {
+      setGotData(true)
+      //console.log(newUsrData)
       dispatch(setUser({
             id: newUsrData.data.userId,
             cognitoUserName: newUsrData.data.cognitoUserName,
@@ -122,6 +155,12 @@ export const AuthUtils = (user:any, email:any) => {
     const data = await response.json()
     setIp(data.ip)
   }
+
+  
+      // async function getUser(userId:string) { //Get from REST API
+      //   const params:string[]=["getUser",userId]
+      //   setNewUser(await getFromRestAPI(params)) 
+      // }
 
   return (
     <>
