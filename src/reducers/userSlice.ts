@@ -123,6 +123,12 @@ export const userSlice = createAppSlice({
         localStorage.setItem('luah-programs',JSON.stringify(state.programs))
       },
     ),
+    setUserId: create.reducer(
+      (state, action: PayloadAction<string>) => {
+        state.user.id = action.payload
+        localStorage.setItem('luah-user',JSON.stringify(state.user))
+      },
+    ), 
     // The function below is called a thunk and allows us to perform async logic. It
     // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
     // will call the thunk with the `dispatch` function as the first argument. Async
@@ -156,13 +162,14 @@ export const userSlice = createAppSlice({
     selectStatus: user => user.status,
     selectUser: user => user.user,
     selectPrograms: user => user.programs,
+    SelectUserId: user => user.user.id
   },
 })
 
 // Action creators are generated for each case reducer function.
-export const { setSurname, setName, setUser, setUserNameAsync, setPrograms} =
+export const { setSurname, setName, setUser, setUserNameAsync, setPrograms, setUserId} =
   userSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectName, selectSurname, selectStatus, selectUser, selectPrograms  } = userSlice.selectors
+export const { selectName, selectSurname, selectStatus, selectUser, selectPrograms, SelectUserId } = userSlice.selectors
 

@@ -4,25 +4,28 @@ import MenuBar from './menuBar';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { userLogout } from '../actions/userActions';
-//import { generateClient } from 'aws-amplify/data';
-//import { type Schema } from '../../amplify/data/resource'
-import { selectUser } from '../reducers/userSlice';
-import getFromRestAPI from '../actions/usersActions';
-import { selectProfile, setCurrentProfile } from '../reducers/misSlice';
-
-//const client = generateClient<Schema>();
+import { selectProfile, setActiveStatus } from '../reducers/misSlice';
+import { getUrl } from 'aws-amplify/storage';
 
 export const Header = () => {
   const { tokens } = useTheme();
   const [width, setWidth] = useState(window.innerWidth);
   const [value, setValue] = useState<string>();
   const [profile, setProfile] = useState<string>("שלום");
-  const [profilesListData, setProfilesListData] = useState<any>(null);
-  const [profilesList, setProfilesList] = useState<string[]>([]);
   const navigate=useNavigate()
   const dispatch = useAppDispatch()
-  const lsUser = useAppSelector(selectUser)
   const lsProfile = useAppSelector(selectProfile)
+  const[fileURL,setFileURL]=useState("")
+
+  useEffect(() => {
+    async function setURLs(){
+    const linkToStorageFile = await getUrl({
+      path: "global/Logo.png",
+    });
+    setFileURL(linkToStorageFile.url.toString())
+  }
+  setURLs()
+}, [dispatch])
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -31,27 +34,14 @@ export const Header = () => {
   }, []);
 
   useEffect(() => {
-     if(lsUser.email!=="" && lsProfile.currentProfile==="1") {
-        (async () => { 
-        setProfilesListData(await getFromRestAPI(["listUsersbyEmail",lsUser.email]))
-        })()}
-     if(lsProfile){ setProfilesList(lsProfile.profileList)}
-  }, [lsUser.email,lsProfile]);
+     if(lsProfile.currentProfile!==value) {
+        setValue(lsProfile.currentProfile)
+      }
+  }, [lsProfile]);
 
   useEffect(() => {
-    if(profilesListData?.res?.data?.getUserByEmail?.items){ 
-        const profs:string[]=[]
-        for (let index = 0; index < profilesListData?.res?.data?.getUserByEmail?.items.length; index++) {
-            profs.push(profilesListData?.res?.data?.getUserByEmail?.items[index]?.name?
-                profilesListData?.res?.data?.getUserByEmail?.items[index]?.name:"שלום");
-        }
-        dispatch(setCurrentProfile({currentProfile: profile, currentProfileNumber: profile, profileList:  profs}))
-        setProfilesList(profs)
-    }
-  }, [profilesListData]);
-
-  useEffect(() => {
-    if(value==="הגדרות" || value==="הוספת פרופיל") { navigate ("/profileSettings") }
+    if(value==="הגדרות") { dispatch(setActiveStatus("Update"));navigate ("/profileSettings"); }
+    if(value==="הוספת פרופיל")  { dispatch(setActiveStatus("Create"));navigate ("/profileSettings"); }
     if(value==="ניהול חשבון") { navigate ("/accountSettings") }
     if(value==="צור קשר") { navigate ("/") }
     if(value==="המלצות") { navigate ("/") }
@@ -65,6 +55,7 @@ export const Header = () => {
     if(value!=="הגדרות" && value!=="ניהול חשבון" && value!=="יציאה" && value!=="צור קשר" && value!=="הוספת פרופיל" &&
         value!=="המלצות" && value!=="שירים וסרטונים" && value!=="התוכנית" && value!=="קצת עלינו") {
         setProfile(value?value:"שלום")
+        //console.log(value)
     }
   }, [value]);
 
@@ -84,13 +75,13 @@ export const Header = () => {
         <Flex direction="row" justifyContent="space-between" paddingTop="1rem">
             <Image
                 alt="logo"
-                src="/src/assets/Logo.png"
-                height="50px"
-                width="65px"
+                src={fileURL}
+                height="80px"
+                width="80px"
                 opacity="100%"
                 />
             <MenuBar setValue={setValue} 
-                    contents={[...profilesList,"הוספת פרופיל",null,"הגדרות","ניהול חשבון",null,"יציאה"]} 
+                    contents={[...lsProfile.profileList,"הוספת פרופיל",null,"הגדרות","ניהול חשבון",null,"יציאה"]} 
                     trig={true} current={profile?profile:"שלום"}/>
             {width>800 && 
                 <>

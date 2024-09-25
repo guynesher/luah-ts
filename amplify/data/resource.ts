@@ -14,7 +14,7 @@ const schema = a.schema({
         userId: a.id().required(),
         name: a.string(),
         surname: a.string(),
-        phone: a.phone(),
+        phone: a.string(),
         email: a.email(), //Same as Cognito entrance email
         cognitoUserName: a.string(), //Cognito ID ref
         picture: a.string(), //If we add picture to profile

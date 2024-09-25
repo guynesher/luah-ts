@@ -26,28 +26,36 @@ export default async function getFromRestAPI(params:any) {
       }
     }
 
-export async function createUserWithAdressAndPrograms(parmas:string[]) { //[cognitoUserName,email,computerIP,profileNumber,...programIds]
-    async function getItems() {
+export async function createUserWithAdressAndPrograms(params:string[]) { //[cognitoUserName,email,computerIP,profileNumber
+    async function getItems() {              //username,surname,phone,picture,street,house,appartment,city,zipcode,...PROGRAMS]
         const up:string[]=[]
-        for (let i = 4; i < parmas.length; i++) {
-          up.push(parmas[3]+parmas[0]+parmas[i]);
+        for (let i = 13; i < params.length; i++) {
+          up.push(params[3]+params[0]+params[i]);
         }
         const user = await client.models.User.create({
-            userId: parmas[3]+parmas[0], //Can have more than one profile
-            email: parmas[1],
-            cognitoUserName: parmas[0],
+            userId: params[3]+params[0], //Can have more than one profile
+            email: params[1],
+            cognitoUserName: params[0],
             isAdmin: false, 
             sessionStart: Date.now(), 
-            computerIP: parmas[2],
+            computerIP: params[2],
             userPrograms: up, 
+            name: params[4],surname: params[5],picture: params[7],//phone: params[6],
         }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
 
-        if (user?.data?.userId) await client.models.Adress.create({userId:user?.data?.userId,})
+        if (user?.data?.userId) await client.models.Adress.create({
+          userId:user?.data?.userId,
+          street: params[8],
+          house: params[9],
+          appartment: params[10],
+          city: params[11],
+          zipcode: params[12],
+        })
             .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
-        for (let index = 4; index < parmas.length; index++) {
+        for (let index = 13; index < params.length; index++) {
             if (user?.data?.email) await client.models.UserProgram.create({
-                userProgramId: parmas[3]+parmas[0]+parmas[index],
-                programName: parmas[index], 
+                userProgramId: params[3]+params[0]+params[index],
+                programName: params[index], 
                 isOpen: false,
                 expiredAt: Date.now(),
                 treasure: 0,
@@ -58,5 +66,35 @@ export async function createUserWithAdressAndPrograms(parmas:string[]) { //[cogn
 
     }
     getItems()
+}
+
+export async function updateUserWithAdress(params:string[]) { //[cognitoUserName,email,computerIP,profileNumber
+  async function getItems() {              //username,surname,phone,picture,street,house,appartment,city,zipcode,...PROGRAMS]
+      const up:string[]=[]
+      for (let i = 13; i < params.length; i++) {
+        up.push(params[3]+params[0]+params[i]);
+      }console.log(params)
+      const user = await client.models.User.update({
+          userId: params[3]+params[0], //Can have more than one profile
+          email: params[1],
+          cognitoUserName: params[0],
+          isAdmin: false, 
+          sessionStart: Date.now(), 
+          computerIP: params[2],
+          userPrograms: up, 
+          name: params[4],surname: params[5],picture: params[7],//phone: params[6],
+      }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
+
+      if (user?.data?.userId) await client.models.Adress.update({
+        userId:user?.data?.userId,
+        street: params[8],
+        house: params[9],
+        appartment: params[10],
+        city: params[11],
+        zipcode: params[12],
+      })
+          .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
+  }
+  getItems()
 }
 

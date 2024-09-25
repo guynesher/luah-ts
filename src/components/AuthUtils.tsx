@@ -1,53 +1,87 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { selectUser, setPrograms, setUser } from "../reducers/userSlice";
-import getFromRestAPI from "../actions/usersActions";
+import { selectUser, setPrograms, setUser, setUserId } from "../reducers/userSlice";
+import getFromRestAPI, { createUserWithAdressAndPrograms } from "../actions/usersActions";
 import { selectProfile, setCurrentProfile } from "../reducers/misSlice";
 import { PROGRAMS } from "../constants/userConstants";
+import { generateClient } from 'aws-amplify/data';
+import { type Schema } from '../../amplify/data/resource'
 
+const client = generateClient<Schema>();
 
 export const AuthUtils = (user:any, email:any) => {
   const [usr, setUsr] = useState<string>();
   const [eml, setEmail] = useState<string>();
-  const [getUsr, setGetUsr] = useState<boolean>(false);
-  const [gotData, setGotData] = useState<boolean>(false);
   const [ip, setIp] = useState<string>()
-  
-  const [usrData, setData] = useState<any>(false);  
-  const [distributed, setDistributed] = useState<boolean>(false);
+  const [usrData, setData] = useState<any>(null);  
   const lsUser = useAppSelector(selectUser)
   const lsProfile = useAppSelector(selectProfile)
 
   const dispatch = useAppDispatch()
 
   useEffect(() => {
+    if(lsProfile?.currentProfileNumber!=="") { //If there was signIn it creates user and email for the Auth checks
+      if(lsProfile.profileIndexList[lsProfile.profileList.indexOf(lsProfile?.currentProfile)] !== Number(lsUser.id.slice(0,1)))
+      dispatch(setUserId(""))
+    }
+  }, [lsProfile]);
+
+  useEffect(() => {
     if(user && email) { //If there was signIn it creates user and email for the Auth checks
       setEmail(user.email)
       setUsr(user.user)
     }
-    if(lsUser.id==="" && usr && eml){ //If user signedIn get his details 
-      setGetUsr(true); //Do only once
-      if(lsUser.id!==lsProfile.currentProfile+usr){
+    if(lsUser?.id==="" && usr && eml){ //If user signedIn get his details 
+      //if(lsUser?.id!==lsProfile?.currentProfile+usr){
       (async () => { 
         setData(await getFromRestAPI(["listUsersbyEmail",eml,usr,lsProfile.currentProfileNumber,ip?ip:"?",...PROGRAMS]))
         })()   
-      }
+      //}
     }
-  }, [usr,eml,lsUser,getUsr]);
+  }, [usr,eml,lsUser]);
   
-  useEffect(() => { //If there is no user in DB - first entrance case: create user 
-    if(usrData)
-    if(Object.keys(usrData?.res2).length>0) { setGotData(true) }
-    else {
-      (async () => { 
-        setData(await getFromRestAPI(["createUser",eml,usr,lsProfile.currentProfileNumber,ip?ip:"?", ...PROGRAMS]))
-        })() 
+  useEffect(() => {
+    if(!usrData) {
+      client.models.UserProgram.onCreate({ //Lesten to create of userProgram at the end of create user 
+                                            //to know that it is time to get the new user
+        filter: {
+          email: {
+            eq: lsUser.email,
+          },
+        },
+      }).subscribe({
+        next: (data) => {
+          (async () => {
+            setData(await getFromRestAPI(["listUsersbyEmail",lsUser.email,lsUser.id.slice(1),
+                                            data.userProgramId.slice(0,1),lsUser.computerIP,...PROGRAMS]))
+            })() 
+        },
+        error: (error) => console.warn(error),
+      });
+      //return () => sub.unsubscribe();
     }
-  }, [gotData,usrData]);
+      if(!usrData) {
+        client.models.User.onUpdate({ //Lesten to create of userProgram at the end of create user 
+                                              //to know that it is time to get the new user
+          filter: {
+            email: {
+              eq: lsUser.email,
+            },
+          },
+        }).subscribe({
+          next: (data) => {
+            (async () => {
+              setData(await getFromRestAPI(["listUsersbyEmail",lsUser.email,lsUser.id.slice(1),
+                                              data.userId.slice(0,1),lsUser.computerIP,...PROGRAMS]))
+              })() 
+          },
+          error: (error) => console.warn(error),
+        });
+    }
+    }, [usrData]);
 
   useEffect(() => { //If there are user details put the details on the store 
-  if(gotData && !distributed) {
-      setDistributed(true)
+  if(usrData && Object.keys(usrData.res.data.getUserByEmail.items).length>0) {
       console.log(usrData)
       dispatch(setUser({
             id: usrData.res2.data.getAdress.user.userId,
@@ -78,11 +112,15 @@ export const AuthUtils = (user:any, email:any) => {
             const profileNumber:string=usrData.res2.data.getAdress.userId.slice(0,1)
             const profile:string=usrData.res2.data.getAdress.user.name?usrData.res2.data.getAdress.user.name:"שלום"
             const profs:string[]=[]
+            const profsIndex:number[]=[]
       for (let index = 0; index < usrData?.res?.data?.getUserByEmail?.items.length; index++) {
           profs.push(usrData?.res?.data?.getUserByEmail?.items[index]?.name?
             usrData?.res?.data?.getUserByEmail?.items[index]?.name:"שלום");
+          profsIndex.push(usrData?.res?.data?.getUserByEmail?.items[index]?.userId?
+              Number(usrData?.res?.data?.getUserByEmail?.items[index]?.userId.slice(0,1)):1);
       }
-      dispatch(setCurrentProfile({currentProfile: profile, currentProfileNumber: profileNumber, profileList:  profs}))
+      dispatch(setCurrentProfile({currentProfile: profile, currentProfileNumber: profileNumber, 
+                                    profileList:  profs, profileIndexList: profsIndex}))
       const programs:any[]=[]
       for (let index = 0; index < usrData?.res3.length; index++) {
         programs.push(usrData?.res3[index]?.data?.getUserProgram? 
@@ -97,8 +135,39 @@ export const AuthUtils = (user:any, email:any) => {
           }:"NA");
       }
       dispatch(setPrograms(programs))
+      setData(null)
     }
-  }, [gotData,ip]);
+    if(usrData && Object.keys(usrData.res.data.getUserByEmail.items).length===0 && usr && eml) {
+      setData(null)
+      dispatch(setUser({
+        id: "1"+usr,
+        cognitoUserName: usr,
+        name: "",
+        surname: "",
+        phone: "",
+        email: eml,
+        picture: "",
+        isAdmin: false,
+        sessionStart: "",
+        computerIP: ip?ip:"?",
+        address: {
+          id: "1"+usr,
+          street: "",
+          house: "",
+          appartment: "",
+          city: "",
+          zipcode: "",
+        } ,
+        programs: [],
+        cards: [],
+        orders: [],
+        recommendation: [],
+        contact: [],
+        userData: [],
+        }));
+      createUserWithAdressAndPrograms([usr,eml,ip?ip:"?","1","","","","","","","","","", ...PROGRAMS])
+    }
+  }, [usrData]);
 
   useEffect(() => {
     if(!ip) getIp()
