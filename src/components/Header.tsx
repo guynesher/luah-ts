@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { userLogout } from '../actions/userActions';
 import { selectProfile, setActiveStatus } from '../reducers/misSlice';
 import { getUrl } from 'aws-amplify/storage';
+import { selectUser } from '../reducers/userSlice';
 
 export const Header = () => {
   const { tokens } = useTheme();
@@ -15,6 +16,7 @@ export const Header = () => {
   const navigate=useNavigate()
   const dispatch = useAppDispatch()
   const lsProfile = useAppSelector(selectProfile)
+  const lsUser = useAppSelector(selectUser)
   const[fileURL,setFileURL]=useState("")
 
   useEffect(() => {
@@ -79,6 +81,7 @@ export const Header = () => {
                 height="80px"
                 width="80px"
                 opacity="100%"
+                onClick={()=>lsUser.isAdmin? navigate('/Admin'):""}
                 />
             <MenuBar setValue={setValue} 
                     contents={[...lsProfile.profileList,"הוספת פרופיל",null,"הגדרות","ניהול חשבון",null,"יציאה"]} 

@@ -99,3 +99,15 @@ a {
 .btn:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+.lottieButton {
+  border: none !important;
+  border-width: none !important;
+}
+.lottieButton:focus {
+  outline: none !important;
+  outline-offset: none !important;
+}
+.hp-button { 
+  position: absolute;
+  z-index: 2;     
+}

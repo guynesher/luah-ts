@@ -8,9 +8,16 @@ interface Profile {
   profileIndexList: number []
 }
 
+interface ActionBtn {
+  btnname: string
+  condition: string 
+}
+
 export interface MisSliceState {
   profile: Profile 
   activeStatus: string
+  buttons: ActionBtn[]
+  audio: boolean
   misStatus: "idle" | "loading" | "failed"
 }
 
@@ -28,6 +35,8 @@ const initialState: MisSliceState = {
     profileIndexList: ls?.profileIndexList?ls.profileIndexList:[1]
   }, 
   activeStatus: "",
+  buttons: [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}],
+  audio: false,
   misStatus: "idle",
 }
 
@@ -62,6 +71,27 @@ export const misSlice = createAppSlice({
         state.activeStatus = action.payload
       },
     ),
+    setButtons: create.reducer(
+      (state, action: PayloadAction<ActionBtn>) => {
+        state.buttons = [...state.buttons, action.payload]
+      },
+    ),
+    setButton: create.reducer(
+      (state, action: PayloadAction<ActionBtn>) => { 
+        const pos = state.buttons.map(e => e.btnname).indexOf(action.payload.btnname)!==-1?
+                    state.buttons.map(e => e.btnname).indexOf(action.payload.btnname):state.buttons.length;
+        const focus = state.buttons.map(e => e.btnname).indexOf("focus")
+        const play = state.buttons.map(e => e.btnname).indexOf("play")
+        state.buttons[focus].condition=action.payload.btnname
+        state.buttons[pos]=action.payload
+        if(action.payload.condition==="play") state.buttons[play].condition=action.payload.btnname
+      },
+    ),
+    setAudio: create.reducer(
+      (state, action: PayloadAction<boolean>) => {
+        state.audio=action.payload
+      },
+    ),
   }),
 
   // You can define your selectors here. These selectors receive the slice
@@ -69,14 +99,16 @@ export const misSlice = createAppSlice({
   selectors: {
     selectProfile: mis => mis.profile,
     selectActiveStatus: mis => mis.activeStatus,
-    selectCurrentUserProfileNumber: mis => mis.profile.currentProfileNumber
+    selectCurrentUserProfileNumber: mis => mis.profile.currentProfileNumber,
+    selectButtons: mis => mis.buttons,
+    selectAudio: mis => mis.audio,
   },
 })
 
 // Action creators are generated for each case reducer function.
-export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName} =
+export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, setButtons} =
   misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber } = misSlice.selectors
+export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, selectAudio } = misSlice.selectors
 

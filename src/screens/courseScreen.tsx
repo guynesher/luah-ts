@@ -1,15 +1,17 @@
-import { Authenticator } from '@aws-amplify/ui-react';
-import { useAppDispatch } from "../store/hooks"
+import { Authenticator, Card, Flex, Grid, Text } from '@aws-amplify/ui-react';
+import { useAppDispatch, useAppSelector } from "../store/hooks"
 import {components} from '../services/components'
-import { userLogout } from '../actions/userActions';
-import { useEffect,  useState} from 'react';
+import { useEffect, useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
 import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
-import { createUserWithAdressAndPrograms } from '../actions/usersActions';
 import { Header } from '../components/Header';
 import { AuthUtils } from '../components/AuthUtils';
+import { selectAudio, setAudio } from '../reducers/misSlice';
+import LottieCard from '../components/lottieCard';
+import { selectPrograms } from '../reducers/userSlice';
+import { PROGRAMS } from '../constants/userConstants';
 I18n.putVocabularies(translations);
 I18n.setLanguage('he');
 I18n.putVocabularies({
@@ -35,7 +37,9 @@ function CoursesScreen() {
   const dispatch = useAppDispatch()
   const[show,setShow]=useState(false)
   const navigate=useNavigate()
-  const [ip, setIp] = useState<string>()
+  const audio = useAppSelector(selectAudio)
+  const [value, setValue] = useState<string>();
+  const lsPrograms = useAppSelector(selectPrograms)
 
   Hub.listen('auth', (data) => {
     if(!show && data.payload.event==="signedIn") {
@@ -45,49 +49,68 @@ function CoursesScreen() {
       setShow(false) 
     }
   });
-
-  useEffect(() => {
-    if(!ip) getIp()
-  }, [ip])
-
-  const getIp = async () => {
-    const response = await fetch("https://ipapi.co/json/")
-    const data = await response.json()
-    setIp(data.ip)
-  }
-
-  //DB connections: 
-  //Listen to current user changes + get user
-
-
-
-
-  // useEffect(() => {
-  //   if(show)  getFromRestAPI()
-  // }, [show])
+ 
+  window.onclick = function() {if(!audio){dispatch(setAudio(true))}}       
   
-  const params:string[]=[
-    "73542832-4021-70e3-063a-86b143392525",
-    "guynesher2000@gmail.com",
-    ip?ip:"?",
-    "1", //Profile Number
-    "252b1d21-8edb-471c-8d0f-600bcecfb2c5",
-    "b8eb0d56-8495-479e-ba07-ad4cd5e7b08c"
-  ]
-
+  useEffect(() => {
+    if(value==="Program0101" && !lsPrograms.find((prog) => prog.programName===PROGRAMS[0])?.isOpen) navigate('/CourseMap1')
+    if(value==="Program0102" && lsPrograms.find((prog) => prog.programName===PROGRAMS[1])?.isOpen) navigate('/CourseMap2')
+    //if(value==="Program0101" && !lsPrograms.find((prog) => prog.programName===PROGRAMS[0])?.isOpen) navigate('/Morning1')
+    //if(value==="Program0102" && !lsPrograms.find((prog) => prog.programName===PROGRAMS[1])?.isOpen) navigate('/Morning2')
+}, [value])
+  //DB connections: 
+  //Listen to current user changes + get user 
   return (
     <Authenticator components={components}>
       {({user}) => (
-        <main>
+        <Flex direction={"column"}>
           <AuthUtils email={user?.signInDetails?.loginId} user={user?.userId}/>
           <Header></Header>
-          <h1>Hello {user?.signInDetails?.loginId}</h1>
-          <button onClick={()=>dispatch(userLogout())}>Sign out </button>
-          <button onClick={()=>createUserWithAdressAndPrograms(params)}>createUserWithAdressAndPrograms </button>
-          <button onClick={()=>navigate('/CourseMap1')}>Map1 Screen</button>
-          <button onClick={()=>navigate('/CourseMap2')}>Map2 Screen</button>
-          <button onClick={()=>navigate('/Admin')}>Admin Screen</button>
-        </main> 
+          <Grid
+          columnGap="0.5rem"
+          rowGap="0.5rem"
+          templateColumns="1fr 1fr 1fr"
+          templateRows="1fr 3fr 1fr"
+        >
+          <Card 
+            columnStart="1"
+            columnEnd="-1"
+            backgroundColor="orange.20"
+          >
+            <Text     
+              variation="primary"
+              as="p"
+              lineHeight="1.5em"
+              fontWeight={400}
+              fontSize="2em"
+              fontStyle="normal"
+              textDecoration="none"
+              width="70vw"
+              color={"purple.100"}>
+                   תוכניות הלימוד
+            </Text>
+            <Flex direction={{ base: 'column', medium: 'row' }} gap="medium" margin="40px">
+          <LottieCard name="Program0101" data="Program0101" audioData="Program0101" segments={[0,120,10,80,0,120]} 
+                width="50%" height="50%" price='50 ש"ח' 
+              mainText='קורס קריאה הכנה לכיתה א לילדים שאוהבים ללמוד בכיף' setValue={setValue}/>
+          <LottieCard name="Program0102" data="Program0102" audioData="logo" segments={[0,52,64,139,0,52]} 
+                width="50%" height="50%" price='בקרוב !!!' 
+              mainText='קורס חשבון הכנה לכיתה א לילדים שקצת מפחדים מחשבון' setValue={setValue}/>
+          <LottieCard name="takyHP" data="takyHP" audioData="takyHP" segments={[10,80,80,120,0,120]} 
+                width="50%" height="50%" price='בקרוב !!!' 
+              mainText='קורס משולב גם חשבון וגם קריאה' setValue={setValue}/>
+          </Flex>
+          </Card>
+          </Grid>
+          {/* <div className='hp-button' style={{width: "30%", height: "30%", right: "50%", top: "10%"}}>
+            <div className='lottieButton'>
+              <ZipLottieSound loop={false} autoplay={true} data={"logo"} 
+                    isAudio={[true,true,true]} 
+                    segments={[0,40,0,40,0,40]} name={"logo"} 
+                    audioData={"logo"}/>
+            </div>
+          </div> */}
+        </Flex> 
       )}
     </Authenticator>
   );

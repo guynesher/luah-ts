@@ -78,7 +78,7 @@ function ProfileSettings() {
           templateColumns="1fr 1fr 1fr"
           templateRows="1fr 3fr 1fr"
         >
-          <Card
+          <Card 
             columnStart="1"
             columnEnd="-1"
             backgroundColor="purple.40"
