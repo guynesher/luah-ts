@@ -103,25 +103,11 @@ export async function updateUserWithAdress(params:string[]) { //[cognitoUserName
 
 export async function updateUserPrograms(params:string[]) { //[userProgramId,maxChpaterIndex,askedChapterIndex,data]
   async function getItems() {   
-    const dt=await client.models.UserProgram.update({
+    await client.models.UserProgram.update({
           userProgramId: params[0],
-          currentStatus: JSON.stringify(CHAPTERS[Number(params[1]>params[2]?params[1]:params[2])]),
-          nextQuestion: JSON.stringify(CHAPTERS[Number(params[1])]),
+          currentStatus: params[1],
+          nextQuestion: params[2],
       }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
-      return (dt?.data)
-      //if(dt?.data) 
-      // if(dt?.data?.userProgramId && dt?.data?.programName && dt?.data?.email && dt?.data?.isOpen &&
-      //   dt?.data.expiredAt && dt?.data.treasure
-      // ) setPrograms([{
-      //   userProgramId: dt?.data.userProgramId,
-      //   programName: dt?.data.programName,
-      //   email: dt?.data?.email,
-      //   isOpen: dt?.data?.isOpen?"true":"false",
-      //   expiredAt: dt?.data.expiredAt.toString(),
-      //   treasure: dt?.data.treasure?.toString(),
-      //   currentStatus: JSON.parse(JSON.stringify(dt?.data.currentStatus)),
-      //   nextQuestion: JSON.parse(JSON.stringify(dt?.data.nextQuestion))
-      // }])
   }
-  return await getItems()
+  getItems()
 }

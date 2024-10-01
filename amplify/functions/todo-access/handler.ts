@@ -4,7 +4,7 @@ import { env } from '$amplify/env/todo-access';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import { Schema } from '../../data/resource';
-import { getAdress, getUser, getUserByEmail, getUserProgram, listTodos } from "./graphql/queries";
+import { getAdress, getUser, getUserByEmail, getUserProgram, listItems, listItemsByQuestionNumber, listTodos } from "./graphql/queries";
 import { createAdress, createUser, createUserProgram, updateUserProgram } from "./graphql/mutations";
 
 
@@ -83,6 +83,14 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       )
     }
   }
+
+    //Update UserPrograms
+    // if(params[0]==="listItems") res = await dataClient.graphql({ 
+    //   query: listItemsByQuestionId,
+    //   variables: {
+    //     questionId: params[1]?params[1]:"NA",
+    //   },
+    // }).catch((error)=>{return error})
 
   //Update UserPrograms
   if(params[0]==="updateUserPrograms") res = await dataClient.graphql({ 

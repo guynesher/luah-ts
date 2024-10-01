@@ -10,7 +10,7 @@ import { selectPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
 //import LocalLottie from '../components/localLottie';
 import { CHAPTERS } from '../constants/program0101';
-import getFromRestAPI from '../actions/usersActions';
+import getFromRestAPI, { updateUserPrograms } from '../actions/usersActions';
 import ZipLottieBTN from '../components/zipLottieBtn';
 
 function Map1() {
@@ -102,17 +102,6 @@ function Map1() {
       }       
 }, [lsPrograms,pageItems])
 
-// useEffect(() => {
-//   if(upload && Object.keys(pageItems).length !== 0) {
-//       let count=0
-//       for (let index = 0; index < pageItems.length; index++) {
-//           if(buttons[index]?.condition && buttons[index]?.condition==="on") {count+=1}
-//       }
-//       if(count!==pageItems.filter((item)=>item[3]==="btn").map((item)=>item[2]).length) { setUpload(true) }
-//       console.log(count)
-//   }
-// }, [buttons,pageItems,upload])
-
 const clickHandler = (ans:string,data:string) => {
     if(data==="BtnHP" || data==="BtnChangeUser") {navigate('/Courses')}
     if(data==="BtnTreasure") {navigate('/ShopScreen')}
@@ -123,29 +112,21 @@ const clickHandler = (ans:string,data:string) => {
       const curStatus=prog?.currentStatus?.toString();
       let userIndex:number=1
       let userLevel:number=1
-      console.log(prog)
       if(curStatus) {
         userIndex=JSON.parse(curStatus).userIndex
         userLevel=JSON.parse(curStatus)?.chapterDetails?.level
       }
       const chpaterStartIndex=CHAPTERS.filter((chapter)=>Number(chapter.chapterIndex)===Number(ans)*1000000).map((chapter)=>chapter.userIndex)[0]
       const lvl=CHAPTERS.filter((chapter)=>Number(chapter.chapterIndex)===Number(ans)*1000000).map((chapter)=>chapter.chapterDetails?.level)[0]
-      console.log(userIndex,chpaterStartIndex,prog)
       if(userIndex>=chpaterStartIndex && prog) {
         (async () => { 
-          console.log(await getFromRestAPI(["updateUserPrograms",
-            prog.userProgramId, (userIndex-1).toString(), //[userProgramId,maxChpaterIndex,
-          (userLevel!==lvl)?(chpaterStartIndex-1).toString():(userIndex-1).toString(),""
-          ]))
+          const maxChapter=CHAPTERS[userIndex-1] 
+          const nextQuests=CHAPTERS[(userLevel!==lvl)?(chpaterStartIndex-1):(userIndex-1)] //if it is not the current level continue to the first chapter at the requested level
+        updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests)]) //[userProgramId,maxChpater,askedChapterIndex]
+          const quests=nextQuests.questions      //questions in the chapter object  
+          const nextQuestionId=quests[Math.floor(Math.random() * quests.length)] //choose randonly next one
+          console.log(await getFromRestAPI(["listItems",nextQuestionId]))
           })()
-        
-        // (async () => { 
-        // console.log(
-        //   updateUserPrograms([prog.userProgramId, (userIndex-1).toString(), //[userProgramId,maxChpaterIndex,
-        //   (userLevel!==lvl)?(chpaterStartIndex-1).toString():(userIndex-1).toString(),""]) //askedChapterIndex,data]
-        // ) 
-        //})() 
-                  //if it is not the current level continue to the first chapter at the requested level
         //navigate('/Question')
       }
     }

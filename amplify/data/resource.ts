@@ -276,8 +276,8 @@ const schema = a.schema({
       })
       .identifier(["itemId"])
       .secondaryIndexes((index) => [
-        index("questionNumber")
-          .queryField("listItemsByQuestionNumber"),
+        index("questionId")
+          .queryField("listItemsByQuestionId"),
       ])
       .authorization((allow) => [allow.publicApiKey().to(['create','read','update']),
         allow.groups(['Users','Admins']).to(['create','delete','read','update'])
