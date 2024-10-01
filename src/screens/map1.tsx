@@ -66,10 +66,10 @@ function Map1() {
     if(Object.keys(pageItems).length === 0 && lsPrograms) {   
     let maxLevel:number=1;
     if(lsPrograms[0].programName===PROGRAMS[0]) 
-      maxLevel=JSON.parse(lsPrograms[0].currentStatus.toString()).chapterDetails.level
+      maxLevel=JSON.parse(lsPrograms[0].currentStatus?.toString()).chapterDetails.level
     if(lsPrograms[1].programName===PROGRAMS[1]) 
-      maxLevel=JSON.parse(lsPrograms[1].currentStatus.toString()).chapterDetails.level    
-    if (JSON.parse(lsPrograms[0].currentStatus.toString())) {
+      maxLevel=JSON.parse(lsPrograms[1].currentStatus?.toString()).chapterDetails.level    
+    if (JSON.parse(lsPrograms[0].currentStatus?.toString())) {
                 let newPageItems:any=[]
                 let posX=""
                 let posY=""
@@ -106,7 +106,7 @@ const clickHandler = (ans:string,data:string) => {
     if(Number(ans)>=1) {
       //Update userProgram --> current question = Chapter[0]
       const prog=lsPrograms.find((program)=>program.programName===PROGRAMS[0])
-      const curStatus=prog?.currentStatus.toString();
+      const curStatus=prog?.currentStatus?.toString();
       let userIndex:number=1
       let userLevel:number=1
       if(curStatus) {
