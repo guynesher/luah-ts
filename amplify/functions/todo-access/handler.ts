@@ -94,7 +94,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         nextQuestion: params[3]?params[3]:"NA",
       }
     },
-    authMode: 'userPool'
+    authMode: 'userPool',
+    authToken: event.headers.Authorization,
   }).catch((error)=>{return error})
 
   //Create User

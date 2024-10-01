@@ -8,9 +8,10 @@ import { selectAudio, setAudio } from '../reducers/misSlice';
 import { AuthUtils } from '../components/AuthUtils';
 import { selectPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
-import LocalLottie from '../components/localLottie';
+//import LocalLottie from '../components/localLottie';
 import { CHAPTERS } from '../constants/program0101';
 import getFromRestAPI from '../actions/usersActions';
+import ZipLottieBTN from '../components/zipLottieBtn';
 
 function Map1() {
   const dispatch = useAppDispatch()
@@ -65,13 +66,10 @@ function Map1() {
   useEffect(() => {
     if(Object.keys(pageItems).length === 0 && lsPrograms) {   
     let maxLevel:number=1;
-    console.log(lsPrograms[0]?.currentStatus,PROGRAMS)
-    if(lsPrograms[0]?.programName===PROGRAMS[0]) 
-      {maxLevel=JSON.parse(lsPrograms[0]?.currentStatus?.toString()).chapterDetails.level
-      console.log(maxLevel)}
+    if(lsPrograms[0].programName===PROGRAMS[0]) 
+      maxLevel=JSON.parse(lsPrograms[0].currentStatus?.toString()).chapterDetails.level
     if(lsPrograms[1].programName===PROGRAMS[1]) 
-      {maxLevel=JSON.parse(lsPrograms[1]?.currentStatus?.toString()).chapterDetails.level
-    console.log(maxLevel)}    
+      maxLevel=JSON.parse(lsPrograms[1].currentStatus?.toString()).chapterDetails.level    
     if (JSON.parse(lsPrograms[0]?.currentStatus?.toString())) {
                 let newPageItems:any=[]
                 let posX=""
@@ -159,7 +157,7 @@ const clickHandler = (ans:string,data:string) => {
                 top: pageItem[4][0][3]}} >
                 <Button backgroundColor="transparent" className='lottieButton' key={pageItem[2]}
                         onClick={()=>clickHandler(pageItem[2],pageItem[6][2]) }>
-                    <LocalLottie loop={pageItem[6][0]} autoplay={pageItem[6][1]} data={pageItem[6][2]} 
+                    <ZipLottieBTN loop={pageItem[6][0]} autoplay={pageItem[6][1]} data={pageItem[6][2]} 
                     isAudio={pageItem[6][3]} segments={pageItem[6][4]} name={pageItem[6][2]} 
                     audioData={pageItem[6][5]!==""?pageItem[6][5]:pageItem[6][2]}/>
                 </Button>   

@@ -67,7 +67,7 @@ const LocalLottie: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name, 
                 renderer: "svg",
                 loop: loop,
                 autoplay: autoplay,
-                path: `${name}.json`,
+                path: `../src/assets/${name}.json`,
                 initialSegment: [segments[0],segments[1]],
             });  
             anim.addEventListener('DOMLoaded', function () { dispatch(setButton({btnname:name, condition:"on"})); });
