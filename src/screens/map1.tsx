@@ -65,11 +65,14 @@ function Map1() {
   useEffect(() => {
     if(Object.keys(pageItems).length === 0 && lsPrograms) {   
     let maxLevel:number=1;
-    if(lsPrograms[0].programName===PROGRAMS[0]) 
-      maxLevel=JSON.parse(lsPrograms[0].currentStatus?.toString()).chapterDetails.level
+    console.log(lsPrograms[0]?.currentStatus,PROGRAMS)
+    if(lsPrograms[0]?.programName===PROGRAMS[0]) 
+      {maxLevel=JSON.parse(lsPrograms[0]?.currentStatus?.toString()).chapterDetails.level
+      console.log(maxLevel)}
     if(lsPrograms[1].programName===PROGRAMS[1]) 
-      maxLevel=JSON.parse(lsPrograms[1].currentStatus?.toString()).chapterDetails.level    
-    if (JSON.parse(lsPrograms[0].currentStatus?.toString())) {
+      {maxLevel=JSON.parse(lsPrograms[1]?.currentStatus?.toString()).chapterDetails.level
+    console.log(maxLevel)}    
+    if (JSON.parse(lsPrograms[0]?.currentStatus?.toString())) {
                 let newPageItems:any=[]
                 let posX=""
                 let posY=""
@@ -109,6 +112,7 @@ const clickHandler = (ans:string,data:string) => {
       const curStatus=prog?.currentStatus?.toString();
       let userIndex:number=1
       let userLevel:number=1
+      console.log(prog)
       if(curStatus) {
         userIndex=JSON.parse(curStatus).userIndex
         userLevel=JSON.parse(curStatus)?.chapterDetails?.level
