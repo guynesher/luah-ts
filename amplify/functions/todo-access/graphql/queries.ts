@@ -263,6 +263,26 @@ export const getQuestion = /* GraphQL */ `query GetQuestion($questionId: ID!) {
     chapterNumber
     createdAt
     items {
+      animation
+      animationName
+      audioData
+      autoplay
+      createdAt
+      isAudioClick
+      isAudioHoover
+      isAudioPlay
+      itemCondition
+      itemId
+      itemNumber
+      itemPosition
+      itemSize
+      itemType
+      loop
+      questionId
+      questionNumber
+      segments
+      step
+      updatedAt
       nextToken
       __typename
     }

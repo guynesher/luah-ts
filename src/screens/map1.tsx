@@ -10,8 +10,12 @@ import { selectPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
 //import LocalLottie from '../components/localLottie';
 import { CHAPTERS } from '../constants/program0101';
-import getFromRestAPI, { updateUserPrograms } from '../actions/usersActions';
+import { updateUserPrograms } from '../actions/usersActions';
 import ZipLottieBTN from '../components/zipLottieBtn';
+import { generateClient } from 'aws-amplify/data';
+import { type Schema } from '../../amplify/data/resource'
+
+const client = generateClient<Schema>();
 
 function Map1() {
   const dispatch = useAppDispatch()
@@ -22,7 +26,7 @@ function Map1() {
   const [height, setHeight] = useState(800)
   const [pageItems,setPageItems]=useState<any[]>([])
   const lsPrograms = useAppSelector(selectPrograms)
-  //const [upload,setUpload]=useState(false)
+  const [nextQuestionId,setNextQuestionId]=useState<string>("")
   //const buttons = useAppSelector(selectButtons)
 
       const initWidth=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
@@ -102,6 +106,17 @@ function Map1() {
       }       
 }, [lsPrograms,pageItems])
 
+useEffect(() => {
+  if(nextQuestionId!=="")(async () => { 
+    const list= await client.models.Question.get({
+          questionId: nextQuestionId
+        }
+      ).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done")) 
+      console.log(list)
+  setNextQuestionId("")
+  })()
+}, [nextQuestionId])
+
 const clickHandler = (ans:string,data:string) => {
     if(data==="BtnHP" || data==="BtnChangeUser") {navigate('/Courses')}
     if(data==="BtnTreasure") {navigate('/ShopScreen')}
@@ -124,8 +139,7 @@ const clickHandler = (ans:string,data:string) => {
           const nextQuests=CHAPTERS[(userLevel!==lvl)?(chpaterStartIndex-1):(userIndex-1)] //if it is not the current level continue to the first chapter at the requested level
         updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests)]) //[userProgramId,maxChpater,askedChapterIndex]
           const quests=nextQuests.questions      //questions in the chapter object  
-          const nextQuestionId=quests[Math.floor(Math.random() * quests.length)] //choose randonly next one
-          console.log(await getFromRestAPI(["listItems",nextQuestionId]))
+          setNextQuestionId(quests[Math.floor(Math.random() * quests.length)]) //choose randonly next one
           })()
         //navigate('/Question')
       }
