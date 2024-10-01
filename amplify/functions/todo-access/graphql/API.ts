@@ -2668,16 +2668,16 @@ export type ListItemsQuery = {
   } | null,
 };
 
-export type ListItemsByQuestionNumberQueryVariables = {
+export type ListItemsByQuestionIdQueryVariables = {
   filter?: ModelItemFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
-  questionNumber: number,
+  questionId: string,
   sortDirection?: ModelSortDirection | null,
 };
 
-export type ListItemsByQuestionNumberQuery = {
-  listItemsByQuestionNumber?:  {
+export type ListItemsByQuestionIdQuery = {
+  listItemsByQuestionId?:  {
     __typename: "ModelItemConnection",
     items:  Array< {
       __typename: "Item",

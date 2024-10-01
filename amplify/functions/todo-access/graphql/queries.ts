@@ -1150,18 +1150,18 @@ export const listItems = /* GraphQL */ `query ListItems(
   }
 }
 ` as GeneratedQuery<APITypes.ListItemsQueryVariables, APITypes.ListItemsQuery>;
-export const listItemsByQuestionNumber = /* GraphQL */ `query ListItemsByQuestionNumber(
+export const listItemsByQuestionId = /* GraphQL */ `query ListItemsByQuestionId(
   $filter: ModelItemFilterInput
   $limit: Int
   $nextToken: String
-  $questionNumber: Int!
+  $questionId: ID!
   $sortDirection: ModelSortDirection
 ) {
-  listItemsByQuestionNumber(
+  listItemsByQuestionId(
     filter: $filter
     limit: $limit
     nextToken: $nextToken
-    questionNumber: $questionNumber
+    questionId: $questionId
     sortDirection: $sortDirection
   ) {
     items {
@@ -1192,8 +1192,8 @@ export const listItemsByQuestionNumber = /* GraphQL */ `query ListItemsByQuestio
   }
 }
 ` as GeneratedQuery<
-  APITypes.ListItemsByQuestionNumberQueryVariables,
-  APITypes.ListItemsByQuestionNumberQuery
+  APITypes.ListItemsByQuestionIdQueryVariables,
+  APITypes.ListItemsByQuestionIdQuery
 >;
 export const listLevels = /* GraphQL */ `query ListLevels(
   $filter: ModelLevelFilterInput
