@@ -123,6 +123,12 @@ export const userSlice = createAppSlice({
         localStorage.setItem('luah-programs',JSON.stringify(state.programs))
       },
     ),
+    updatePrograms: create.reducer(
+      (state, action: PayloadAction<UserProgram[]>) => {
+        state.programs=[...action.payload]
+        localStorage.setItem('luah-programs',JSON.stringify(state.programs))
+      },
+    ),
     setUserId: create.reducer(
       (state, action: PayloadAction<string>) => {
         state.user.id = action.payload
@@ -167,7 +173,7 @@ export const userSlice = createAppSlice({
 })
 
 // Action creators are generated for each case reducer function.
-export const { setSurname, setName, setUser, setUserNameAsync, setPrograms, setUserId} =
+export const { setSurname, setName, setUser, setUserNameAsync, setPrograms, setUserId, updatePrograms} =
   userSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.

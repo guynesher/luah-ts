@@ -2,6 +2,7 @@ import { get } from 'aws-amplify/api';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '../../amplify/data/resource'
+import { CHAPTERS } from '../constants/program0101';
 
 const client = generateClient<Schema>();
 
@@ -59,7 +60,9 @@ export async function createUserWithAdressAndPrograms(params:string[]) { //[cogn
                 isOpen: false,
                 expiredAt: Date.now(),
                 treasure: 0,
-                email:user?.data?.email
+                email:user?.data?.email,
+                currentStatus: JSON.stringify(CHAPTERS[0]),
+                nextQuestion: JSON.stringify(CHAPTERS[0]),
             })
             .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
         }
@@ -98,3 +101,27 @@ export async function updateUserWithAdress(params:string[]) { //[cognitoUserName
   getItems()
 }
 
+export async function updateUserPrograms(params:string[]) { //[userProgramId,maxChpaterIndex,askedChapterIndex,data]
+  async function getItems() {   
+    const dt=await client.models.UserProgram.update({
+          userProgramId: params[0],
+          currentStatus: JSON.stringify(CHAPTERS[Number(params[1]>params[2]?params[1]:params[2])]),
+          nextQuestion: JSON.stringify(CHAPTERS[Number(params[1])]),
+      }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
+      return (dt?.data)
+      //if(dt?.data) 
+      // if(dt?.data?.userProgramId && dt?.data?.programName && dt?.data?.email && dt?.data?.isOpen &&
+      //   dt?.data.expiredAt && dt?.data.treasure
+      // ) setPrograms([{
+      //   userProgramId: dt?.data.userProgramId,
+      //   programName: dt?.data.programName,
+      //   email: dt?.data?.email,
+      //   isOpen: dt?.data?.isOpen?"true":"false",
+      //   expiredAt: dt?.data.expiredAt.toString(),
+      //   treasure: dt?.data.treasure?.toString(),
+      //   currentStatus: JSON.parse(JSON.stringify(dt?.data.currentStatus)),
+      //   nextQuestion: JSON.parse(JSON.stringify(dt?.data.nextQuestion))
+      // }])
+  }
+  return await getItems()
+}

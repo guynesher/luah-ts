@@ -33,6 +33,8 @@ function AdminScreen() {
 
   const createManyLines = (e: ChangeEvent<HTMLInputElement>,type:string) => {
           if(e && e.target && e.target.files) ReadXlsxFile(e.target.files[0]).then((rows)=> {
+            let ind=0;
+            let chap:any[]=[]
             for (let index = 1; index < rows.length; index++) {
                 if(type!=="Item") console.log(rows[index]) 
 
@@ -126,7 +128,23 @@ function AdminScreen() {
                         createItem(segments)
                       }, 5000);
                     }
-            }
+                    if(type==="list"){
+                      if(ind>0) {
+                        if(chap[ind-1].chapterIndex===rows[index][0]) { chap[ind-1].questions.push(rows[index][1]) }
+                      else{
+                      chap[ind]={userIndex: ind+1,chapterIndex: rows[index][0],
+                        chapterDetails: {level: rows[index][2], chapter: rows[index][3], bundle: rows[index][4]},
+                        questions: [rows[index][1]]}
+                      ind+=1
+                      }}
+                      if(ind===0){
+                        chap[ind]={userIndex: ind+1,chapterIndex: rows[index][0],
+                          chapterDetails: {level: rows[index][2], chapter: rows[index][3], bundle: rows[index][4]},
+                          questions: [rows[index][1]]}
+                        ind+=1
+                      }
+                    }
+            }console.log(chap)
           })
   }
 
@@ -191,7 +209,9 @@ function AdminScreen() {
           <div>Create Items</div><input type="file" onChange={(e)=>createManyLines(e,"Item")}/>
           <button onClick={()=>getItemsByQuestionId()}>Check that Items are part of Question</button> 
           <Input onInput={(e) => setStart(e.currentTarget.value)}></Input>
-          <Input onInput={(e) => setEnd(e.currentTarget.value)}></Input>                  
+          <Input onInput={(e) => setEnd(e.currentTarget.value)}></Input>   
+          <div>List Chapters</div><input type="file" onChange={(e)=>createManyLines(e,"list")}/>
+               
         </main>
       )}
     </Authenticator>

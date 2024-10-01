@@ -1,30 +1,31 @@
 import { useTheme, View, Image, Text} from '@aws-amplify/ui-react';
 //import { useTheme, View, Image, Text, Heading, Button, useAuthenticator} from '@aws-amplify/ui-react';
-import { useEffect,  useState} from 'react';
-import { useAppDispatch } from "../store/hooks"
-import { getUrl } from 'aws-amplify/storage';
+//import { useEffect,  useState} from 'react';
+//import { useAppDispatch } from "../store/hooks"
+//import { getUrl } from 'aws-amplify/storage';
 
 export const components = {
     Header() {
       const { tokens } = useTheme();
-      const dispatch = useAppDispatch()
-      const[fileURL,setFileURL]=useState("")
+      //const dispatch = useAppDispatch()
+    //   const[fileURL,setFileURL]=useState("")
 
-      useEffect(() => {
-        async function setURLs(){
-        const linkToStorageFile = await getUrl({
-          path: "global/Logo.png",
-        });
-        setFileURL(linkToStorageFile.url.toString())
-      }
-      setURLs()
-    }, [dispatch])
+    //   useEffect(() => {
+    //     async function setURLs(){
+    //     const linkToStorageFile = await getUrl({
+    //       path: "global/Logo.png",
+    //     });
+    //     setFileURL(linkToStorageFile.url.toString())
+    //   }
+    //   setURLs()
+    // }, [dispatch])
 
       return (
         <View textAlign="center" padding={tokens.space.large}>
           <Image
             alt="Luah logo"
-            src={fileURL}
+            // src={fileURL}
+            src="/Logo.png"
             objectFit="initial"
             objectPosition="50% 50%"
             backgroundColor="initial"

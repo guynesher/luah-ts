@@ -5,7 +5,7 @@ import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import { Schema } from '../../data/resource';
 import { getAdress, getUser, getUserByEmail, getUserProgram, listTodos } from "./graphql/queries";
-import { createAdress, createUser, createUserProgram } from "./graphql/mutations";
+import { createAdress, createUser, createUserProgram, updateUserProgram } from "./graphql/mutations";
 
 
 Amplify.configure(
@@ -83,6 +83,18 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       )
     }
   }
+
+  //Update UserPrograms
+  if(params[0]==="updateUserPrograms") res = await dataClient.graphql({ 
+    query: updateUserProgram,
+    variables: {
+      input: {
+        userProgramId: params[1]?params[1]:"NA",
+        currentStatus: params[2]?params[2]:"NA",
+        nextQuestion: params[3]?params[3]:"NA",
+      }
+    }
+  }).catch((error)=>{return error})
 
   //Create User
   if(params[0]==="createUser") {

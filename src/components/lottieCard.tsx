@@ -1,6 +1,7 @@
 
 import { Flex, Text, Button } from '@aws-amplify/ui-react';
-import ZipLottieBTN from './zipLottieBtn';
+//import ZipLottieBTN from './zipLottieBtn';
+import LocalLottie from './localLottie';
 
 interface LottieCardProps {
     setValue: (value: string) => void;
@@ -27,10 +28,14 @@ const LottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments
   >
     <div  style={{width: width, height: height, alignSelf: "center"}}>
     <div >
-    <ZipLottieBTN loop={false} autoplay={true} data={data} 
+    {/* <ZipLottieBTN loop={false} autoplay={true} data={data} 
         isAudio={[false,true,false]} 
         segments={segments} name={name} 
-        audioData={audioData}/>
+        audioData={audioData}/> */}
+    <LocalLottie loop={false} autoplay={true} data={data} 
+        isAudio={[false,true,false]} 
+        segments={segments} name={name} 
+        audioData={audioData}></LocalLottie>
         </div>
     </div>
     <Flex
