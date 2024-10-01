@@ -22,6 +22,8 @@ function Map1() {
   const [height, setHeight] = useState(800)
   const [pageItems,setPageItems]=useState<any[]>([])
   const lsPrograms = useAppSelector(selectPrograms)
+  //const [upload,setUpload]=useState(false)
+  //const buttons = useAppSelector(selectButtons)
 
       const initWidth=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
       const initHeight=((window.innerHeight > 0) ? window.innerHeight : window.screen.height)
@@ -100,6 +102,17 @@ function Map1() {
       }       
 }, [lsPrograms,pageItems])
 
+// useEffect(() => {
+//   if(upload && Object.keys(pageItems).length !== 0) {
+//       let count=0
+//       for (let index = 0; index < pageItems.length; index++) {
+//           if(buttons[index]?.condition && buttons[index]?.condition==="on") {count+=1}
+//       }
+//       if(count!==pageItems.filter((item)=>item[3]==="btn").map((item)=>item[2]).length) { setUpload(true) }
+//       console.log(count)
+//   }
+// }, [buttons,pageItems,upload])
+
 const clickHandler = (ans:string,data:string) => {
     if(data==="BtnHP" || data==="BtnChangeUser") {navigate('/Courses')}
     if(data==="BtnTreasure") {navigate('/ShopScreen')}
@@ -156,7 +169,7 @@ const clickHandler = (ans:string,data:string) => {
                 height: pageItem[4][0][1], right: pageItem[4][0][2], 
                 top: pageItem[4][0][3]}} >
                 <Button backgroundColor="transparent" className='lottieButton' key={pageItem[2]}
-                        onClick={()=>clickHandler(pageItem[2],pageItem[6][2]) }>
+                        onClick={()=>clickHandler(pageItem[2],pageItem[6][2]) } hidden={false}>
                     <ZipLottieBTN loop={pageItem[6][0]} autoplay={pageItem[6][1]} data={pageItem[6][2]} 
                     isAudio={pageItem[6][3]} segments={pageItem[6][4]} name={pageItem[6][2]} 
                     audioData={pageItem[6][5]!==""?pageItem[6][5]:pageItem[6][2]}/>
