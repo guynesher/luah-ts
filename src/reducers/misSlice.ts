@@ -1,5 +1,32 @@
 import { type PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../store/createAppSlice"
+import { generateClient } from 'aws-amplify/data';
+import { type Schema } from '../../amplify/data/resource'
+
+const client = generateClient<Schema>();
+
+interface Item {
+    "itemId": string
+    "questionId": string
+    "questionNumber": number
+    "itemNumber": number
+    "itemType": string
+    "itemPosition": [string,string]
+    "itemSize": [string,string]
+    "itemCondition": [any,any]
+    "step": number
+    "loop": boolean
+    "autoplay": boolean
+    "animationName": string
+    "animation": any
+    "isAudioPlay": boolean
+    "isAudioHoover": boolean
+    "isAudioClick": boolean
+    "audioData": any
+    "segments": number[]
+    "createdAt": string
+    "updatedAt": string
+  }
 
 interface Profile {
   currentProfile: string
@@ -18,6 +45,7 @@ export interface MisSliceState {
   activeStatus: string
   buttons: ActionBtn[]
   audio: boolean
+  items: any[] | undefined
   misStatus: "idle" | "loading" | "failed"
 }
 
@@ -37,6 +65,7 @@ const initialState: MisSliceState = {
   activeStatus: "",
   buttons: [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}],
   audio: false,
+  items: undefined,
   misStatus: "idle",
 }
 
@@ -92,6 +121,32 @@ export const misSlice = createAppSlice({
         state.audio=action.payload
       },
     ),
+    setItems: create.reducer(
+      (state, action: PayloadAction<Item[]>) => {
+        state.items=action.payload
+      },
+    ),
+    setItemsAsync: create.asyncThunk(
+      async (nextQuestionId: string) => {
+        const response = await client.models.Question.get(
+          { questionId: nextQuestionId },
+          { selectionSet: ["questionId", "items.*"] },
+        ).catch((error: any)=>console.log('GET call failed: ',error))
+        return response?.data?.items
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.items=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
   }),
 
   // You can define your selectors here. These selectors receive the slice
@@ -102,13 +157,15 @@ export const misSlice = createAppSlice({
     selectCurrentUserProfileNumber: mis => mis.profile.currentProfileNumber,
     selectButtons: mis => mis.buttons,
     selectAudio: mis => mis.audio,
+    selectItems: mis => mis.items
   },
 })
 
 // Action creators are generated for each case reducer function.
-export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, setButtons} =
-  misSlice.actions
+export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, 
+        setButtons , setItems, setItemsAsync} = misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, selectAudio } = misSlice.selectors
+export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, 
+        selectAudio , selectItems} = misSlice.selectors
 

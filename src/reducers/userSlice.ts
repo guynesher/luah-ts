@@ -12,6 +12,7 @@ interface Address {
 }
 
 interface Question {
+  chapterDetails: any
   programId: string
   levelId: string
   chapterNumber: string []
@@ -129,6 +130,15 @@ export const userSlice = createAppSlice({
         localStorage.setItem('luah-programs',JSON.stringify(state.programs))
       },
     ),
+    updateQuestion: create.reducer(
+      (state, action: PayloadAction<string[]>) => {
+        const progIndex=state.programs.findIndex((program)=>program.programName===action.payload[2])
+        console.log(JSON.parse(action.payload[0]))
+        //state.programs[progIndex].nextQuestion=
+        console.log(JSON.stringify(JSON.parse(action.payload[1])),progIndex)
+        //localStorage.setItem('luah-programs',JSON.stringify(state.programs))
+      },
+    ),
     setUserId: create.reducer(
       (state, action: PayloadAction<string>) => {
         state.user.id = action.payload
@@ -173,7 +183,7 @@ export const userSlice = createAppSlice({
 })
 
 // Action creators are generated for each case reducer function.
-export const { setSurname, setName, setUser, setUserNameAsync, setPrograms, setUserId, updatePrograms} =
+export const { setSurname, setName, setUser, setUserNameAsync, setPrograms, setUserId, updatePrograms, updateQuestion} =
   userSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.

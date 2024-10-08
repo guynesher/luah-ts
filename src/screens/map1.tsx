@@ -4,18 +4,14 @@ import {components} from '../services/components'
 import { useEffect,  useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
-import { selectAudio, setAudio } from '../reducers/misSlice';
+import { selectAudio, setAudio, setItemsAsync } from '../reducers/misSlice';
 import { AuthUtils } from '../components/AuthUtils';
-import { selectPrograms } from '../reducers/userSlice';
+import { selectPrograms, setPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
 //import LocalLottie from '../components/localLottie';
 import { CHAPTERS } from '../constants/program0101';
 import { updateUserPrograms } from '../actions/usersActions';
 import ZipLottieBTN from '../components/zipLottieBtn';
-import { generateClient } from 'aws-amplify/data';
-import { type Schema } from '../../amplify/data/resource'
-
-const client = generateClient<Schema>();
 
 function Map1() {
   const dispatch = useAppDispatch()
@@ -26,7 +22,6 @@ function Map1() {
   const [height, setHeight] = useState(800)
   const [pageItems,setPageItems]=useState<any[]>([])
   const lsPrograms = useAppSelector(selectPrograms)
-  const [nextQuestionId,setNextQuestionId]=useState<string>("")
   //const buttons = useAppSelector(selectButtons)
 
       const initWidth=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
@@ -66,17 +61,13 @@ function Map1() {
 
   window.onclick = function() {if(!audio){dispatch(setAudio(true))}}  
   
-  //DB connections: 
-  //Listen to current user changes + get user
-
+  //Set the pageItems of all the levels and more: 
   useEffect(() => {
     if(Object.keys(pageItems).length === 0 && lsPrograms) {   
     let maxLevel:number=1;
-    if(lsPrograms[0].programName===PROGRAMS[0]) 
-      maxLevel=JSON.parse(lsPrograms[0].currentStatus?.toString()).chapterDetails.level
-    if(lsPrograms[1].programName===PROGRAMS[1]) 
-      maxLevel=JSON.parse(lsPrograms[1].currentStatus?.toString()).chapterDetails.level    
-    if (JSON.parse(lsPrograms[0]?.currentStatus?.toString())) {
+    const progInd=lsPrograms.findIndex((program)=>program.programName===PROGRAMS[0])
+      maxLevel=JSON.parse(lsPrograms[progInd].currentStatus?.toString()).chapterDetails.level
+    if (JSON.parse(lsPrograms[progInd]?.currentStatus?.toString())) {
                 let newPageItems:any=[]
                 let posX=""
                 let posY=""
@@ -106,23 +97,13 @@ function Map1() {
       }       
 }, [lsPrograms,pageItems])
 
-useEffect(() => {
-  if(nextQuestionId!=="")(async () => { 
-    const list= await client.models.Question.get({
-          questionId: nextQuestionId
-        }
-      ).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done")) 
-      console.log(list)
-  setNextQuestionId("")
-  })()
-}, [nextQuestionId])
-
+//Handles the clicks on the app and update the userProgram to the DB and locally 
 const clickHandler = (ans:string,data:string) => {
     if(data==="BtnHP" || data==="BtnChangeUser") {navigate('/Courses')}
     if(data==="BtnTreasure") {navigate('/ShopScreen')}
     if(data==="BtnShirTochnit") {navigate('/ShirScreen')}
     if(Number(ans)>=1) {
-      //Update userProgram --> current question = Chapter[0]
+      //Update userProgram 
       const prog=lsPrograms.find((program)=>program.programName===PROGRAMS[0])
       const curStatus=prog?.currentStatus?.toString();
       let userIndex:number=1
@@ -138,14 +119,31 @@ const clickHandler = (ans:string,data:string) => {
           const maxChapter=CHAPTERS[userIndex-1] 
           const nextQuests=CHAPTERS[(userLevel!==lvl)?(chpaterStartIndex-1):(userIndex-1)] //if it is not the current level continue to the first chapter at the requested level
         updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests)]) //[userProgramId,maxChpater,askedChapterIndex]
+          //SetPrograms localy!!!
+          const progIndex=lsPrograms.findIndex((program)=>program.programName===PROGRAMS[0])
+          const progs:any=[]
+          for (let i = 0; i < lsPrograms.length; i++) {
+            progs[i]=
+            {
+              userProgramId: lsPrograms[i].userProgramId,
+              programName: lsPrograms[i].programName,
+              email: lsPrograms[i].email,
+              isOpen: lsPrograms[i].isOpen,
+              expiredAt: lsPrograms[i].expiredAt,
+              treasure: lsPrograms[i].treasure,
+              currentStatus: i===progIndex?JSON.stringify(maxChapter):lsPrograms[i].currentStatus,
+              nextQuestion: i===progIndex?JSON.stringify(nextQuests):lsPrograms[i].currentStatus,
+            } 
+          }
+          dispatch(setPrograms(progs))
           const quests=nextQuests.questions      //questions in the chapter object  
-          setNextQuestionId(quests[Math.floor(Math.random() * quests.length)]) //choose randonly next one
+          dispatch(setItemsAsync(quests[Math.floor(Math.random() * quests.length)]))
           })()
-        //navigate('/Question')
+          navigate('/Question')
       }
     }
   }
-  
+
   return (
     <Authenticator components={components}>
       {({user }) => (

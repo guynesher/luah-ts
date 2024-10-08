@@ -24,10 +24,13 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
     const [zip, setZip] = useState<boolean>(false);
     const [dt, setData] = useState<string | null>(null);
     const [play,setPlay] = useState<string>('');
+    const [aud, setAud] = useState<boolean>(false);
+    //const [timeSta,setTimeSta] = useState<number>(0);
     const dispatch = useDispatch();
         const buttons = useAppSelector(selectButtons)
     const audio = useAppSelector(selectAudio)
     const pos = buttons.map((button: { btnname: any; }) => button.btnname).indexOf(name)
+    //const focus = buttons.map((button: { btnname: any; }) => button.btnname).indexOf(name)
     
     async function getURL(path: string) {
         const file = await getUrl({path:path})//, { download: true });
@@ -37,6 +40,7 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
             flushSync(() => {
                 setData(arrayBuffer);
                 setZip(true);
+                setAud(true)
             });
         }));
     }
@@ -50,6 +54,7 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
         if (!zip) {
             getURL(`public/media/json/${data}.zip`);
             setURLs(`public/media/audio/${audioData}`);
+            //setTimeSta(new Date().getMilliseconds())
         }
     }, [data, zip, mount, audioData]); 
       
@@ -104,7 +109,8 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
 
           useEffect(() => {
             //For imidiate play at enter
-            //console.log(buttons && buttons[pos] , isAudio[1] , audio, buttons[focus].condition===name)
+            //console.log(buttons && buttons[pos] , isAudio[1] , audio, buttons[focus], buttons[pos]===buttons[focus])
+            //console.log("Before",aud)
             if(buttons && buttons[pos] && isAudio[0] && audio && play!==''){
               var playSound = new Howl({
                   src: [play],
@@ -112,13 +118,22 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
                   preload: true,
                   format: ['mp3'],
               });
-              if(buttons[pos].condition!=="complete") {playSound.play()
+              
+              
+              if(buttons[pos].condition!=="complete" && buttons[pos].condition!=="run" && aud) {
+                //if(new Date().getMilliseconds()-timeSta>1000)
+                setAud(false)
+                //console.log("After",buttons[pos],aud)
+                  playSound.play()
+                playSound.on('play',function(){
+                  dispatch(setButton({btnname:name, condition:"run"}))
+                });
                 playSound.on('end', function(){
                   Howler.unload()
                   dispatch(setButton({btnname:name, condition:"complete"}))
                 });}
             }       
-    }, [dispatch,name,isAudio,Howl,Howler,buttons,audio,audioData,play]) 
+    }, [dispatch,name,isAudio,Howl,Howler,buttons,audio,audioData,play,aud]) 
 
     return (
         <div className={name} ref={container} />

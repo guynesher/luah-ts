@@ -26,6 +26,8 @@ const ZipLottieBTN: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name,
     const [dt, setData] = useState<string | null>(null);
     const [hoover, setHoover] = useState<string>('');
     const [click, setClick] = useState<string>('');
+    const [timeSta,setTimeSta] = useState<number>(0);
+
     const dispatch = useDispatch();
         const buttons = useAppSelector(selectButtons)
     const audio = useAppSelector(selectAudio)
@@ -55,6 +57,7 @@ const ZipLottieBTN: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name,
         if (!zip) {
             getURL(`public/media/json/${data}.zip`);
             setURLs(`public/media/audio/${audioData}`);
+            setTimeSta(new Date().getMilliseconds())
         }
     }, [data, zip, mount, audioData]); 
       
@@ -144,6 +147,7 @@ const ZipLottieBTN: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name,
                   preload: true,
                   format: ['mp3']
               });
+              //console.log(timeSta-new Date().getMilliseconds())
               clickSound.play()
               setAud(true)
               clickSound.on('end', function(){
@@ -153,7 +157,7 @@ const ZipLottieBTN: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name,
               });
             }            
 
-    }, [dispatch,name,isAudio,Howl,Howler,buttons,aud,audio,audioData,hoover,click]) 
+    }, [dispatch,name,isAudio,Howl,Howler,buttons,aud,audio,audioData,hoover,click,timeSta]) 
 
     return (
         <div className={name} ref={container} />
