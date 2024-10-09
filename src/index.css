@@ -115,3 +115,25 @@ a {
   transform: rotate(90deg); /* Equal to rotateZ(45deg) */
   background-color: pink;
 }
+
+.homePage { 
+  /* transform: rotate(90deg); */
+  position: relative; 
+  overflow:hidden;
+}
+@media only screen and (min-width: 200px) {
+.homePage {
+  background-color: #ffcccc;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100%;
+}
+}
+@media only screen and (max-width: 200px) {
+  .homePage {
+      background: #ffcccc;
+      background-size: contain; 
+  }
+  }

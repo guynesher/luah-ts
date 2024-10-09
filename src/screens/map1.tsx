@@ -18,14 +18,12 @@ function Map1() {
   const[show,setShow]=useState(false)
   const navigate=useNavigate()
   const audio = useAppSelector(selectAudio)
-  const [width, setWidth] = useState(1100)
-  const [height, setHeight] = useState(800)
+  const [width, setWidth] = useState<number>()
+  const [height, setHeight] = useState<number>()
   const [pageItems,setPageItems]=useState<any[]>([])
   const lsPrograms = useAppSelector(selectPrograms)
   //const buttons = useAppSelector(selectButtons)
 
-      const initWidth=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
-      const initHeight=((window.innerHeight > 0) ? window.innerHeight : window.screen.height)
       const resize = () => {
         var w=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
         var h=((window.innerHeight > 0) ? window.innerHeight : window.screen.height)
@@ -42,13 +40,19 @@ function Map1() {
           setHeight(h) 
           setWidth(h)     
         } 
+        //console.log(ratio,w,h)
     }    
     window.onresize = resize;
     
   useEffect(() => {
+    if(!width && !height){
+    const initWidth=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
+    const initHeight=((window.innerHeight > 0) ? window.innerHeight : window.screen.height)
       setWidth(initWidth)
       setHeight(initHeight)
-    }, [initWidth,initHeight])
+      resize()
+    }
+    }, [width,height])
       
   Hub.listen('auth', (data) => {
     if(!show && data.payload.event==="signedIn") {
@@ -148,7 +152,7 @@ const clickHandler = (ans:string,data:string) => {
   return (
     <Authenticator components={components}>
       {({user }) => (
-        <Flex direction={"column"} className="rotated"  width={width} height={height }>
+        <Flex direction={"column"} className="rotated homePage"  width={width} height={height }>
           <AuthUtils email={user?.signInDetails?.loginId} user={user?.userId}/>
             <Image
               alt="bg"
