@@ -102,6 +102,7 @@ const schema = a.schema({
         expiredAt: a.timestamp(),
         treasure: a.integer(),
         chapterAverage: a.integer(), 
+        chapterAverage2: a.float(),
         currentStatus: a.json(), //Maximal level the user reached - includes {level, chapter, bundle, question, premutation}
         nextQuestion: a.json(), //Next question the user was suggested based on his progress 
       })
