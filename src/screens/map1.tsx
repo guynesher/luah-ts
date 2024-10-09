@@ -131,6 +131,7 @@ const clickHandler = (ans:string,data:string) => {
               isOpen: lsPrograms[i].isOpen,
               expiredAt: lsPrograms[i].expiredAt,
               treasure: lsPrograms[i].treasure,
+              chapterAverage: lsPrograms[i].chapterAverage,
               currentStatus: i===progIndex?JSON.stringify(maxChapter):lsPrograms[i].currentStatus,
               nextQuestion: i===progIndex?JSON.stringify(nextQuests):lsPrograms[i].currentStatus,
             } 

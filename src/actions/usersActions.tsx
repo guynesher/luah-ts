@@ -107,18 +107,20 @@ export async function updateUserPrograms(params:string[]) { //[userProgramId,max
           userProgramId: params[0],
           currentStatus: params[1],
           nextQuestion: params[2],
+          treasure: Number(params[3]),
       }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
   }
   getItems()
 }
 
-export async function updateUserData(params:string[],data:any[]) { //[userId,questionId,userStatus,nextQuestion],data
+export async function updateUserData(params:string[],data:any[],precent:number) { //[userId,questionId,userStatus,nextQuestion],data
   async function getItems() {   
     await client.models.UserData.create({
       userDataId: params[0]+params[1]+(Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000).toString(),    
       userId: params[0],
       questionId: params[1], 
       answer: JSON.stringify(data),
+      precent: precent,
       userStatus: params[2],
       nextQuestion: params[3],
       }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))

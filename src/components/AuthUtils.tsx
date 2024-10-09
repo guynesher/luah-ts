@@ -130,6 +130,7 @@ export const AuthUtils = (user:any, email:any) => {
             isOpen: usrData?.res3[index]?.data?.getUserProgram.isOpen,
             expiredAt: usrData?.res3[index]?.data?.getUserProgram.expiredAt,
             treasure: usrData?.res3[index]?.data?.getUserProgram.treasure,
+            chapterAverage: usrData?.res3[index]?.data?.getUserProgram.chapterAverage,
             currentStatus: usrData?.res3[index]?.data?.getUserProgram.currentStatus,
             nextQuestion: usrData?.res3[index]?.data?.getUserProgram.nextQuestion,
           }:"NA");

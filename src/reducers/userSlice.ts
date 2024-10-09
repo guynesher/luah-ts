@@ -27,6 +27,7 @@ interface UserProgram {
   isOpen: string
   expiredAt: string
   treasure: string
+  chapterAverage: number
   currentStatus: Question
   nextQuestion: Question
 }

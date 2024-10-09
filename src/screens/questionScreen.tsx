@@ -161,13 +161,29 @@ function QuestionScreen() {
       }
    }, [dispatch, buttons, step])
 
+   function Calculate(){
+    let correctNum:number=0
+    let mistakeNum:number=0
+    let helpNum:number=0
+    const helpValue:number=0.5
+    for (let index = 0; index < userData.length; index++) {
+        const element = userData[index][0];
+        if(element==="correct"){correctNum+=1}
+        if(element==="mistake"){mistakeNum+=1}
+        if(element==="help"){helpNum+=1}
+    }
+    const precent = correctNum? 
+        correctNum/(correctNum+mistakeNum+helpNum*helpValue)*100: 100
+    setUserData([])
+    return precent
+}
+
 useEffect(() => {
   if (step===Number(maxStep)+1) {
       setStep(0)
+      setAppear([])
       Howler.unload()
       //Create userData, Update userProgram, get new Items
-      console.log("final step")
-      console.log(userData)
       const prog=lsPrograms.find((program)=>program.programName===PROGRAMS[0])
       const curStatus=prog?.currentStatus?.toString();
       const currentQuestion=prog?.nextQuestion?.toString();
@@ -179,15 +195,31 @@ useEffect(() => {
         currentIndex= JSON.parse(currentQuestion).userIndex
         nextIndex=currentIndex+1
       }
-      if(nextIndex>CHAPTERS.length) nextIndex=CHAPTERS.length
+      const chpatersStartIndexes=CHAPTERS.filter((chapter)=>Number(chapter.chapterIndex)%1000000===0).map((chapter)=>chapter.userIndex)
+      const precent:number=Calculate()
+      const progIndex=lsPrograms.findIndex((program)=>program.programName===PROGRAMS[0])
+      let treasure:number=Math.floor(Number(lsPrograms[progIndex].treasure))
+      const chapAve:number=Math.floor(Number(lsPrograms[progIndex].chapterAverage))
+      const chapterCount=Math.min(...chpatersStartIndexes.map((value)=> currentIndex - value).map((value)=>value<0? 100:value))
+      let newChapterAve:number=chapAve 
+      if(nextIndex>maxIndex) { 
+        //console.log(chapterCount,chapAve,precent,(chapAve*chapterCount+precent)/(chapterCount+1) )
+        newChapterAve=(chapAve*chapterCount+precent)/(chapterCount+1) 
+      }
+      if(nextIndex>CHAPTERS.length) nextIndex=chpatersStartIndexes[chpatersStartIndexes.length-1] //end  of program case
+      if(chpatersStartIndexes.includes(nextIndex)) { //end of chapter case
+        treasure+=Math.floor(newChapterAve/10)
+        newChapterAve=0
+      }
       if(prog) {
       (async () => { 
         const maxChapter=CHAPTERS[nextIndex>maxIndex?nextIndex-1:maxIndex-1] 
         const nextQuests=CHAPTERS[nextIndex-1]
-        updateUserData([lsUser.id, pageItems[0].questionId,JSON.stringify(maxChapter), JSON.stringify(nextQuests)],userData)
-      updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests)]) //[userProgramId,maxChpater,askedChapterIndex]
+        updateUserData([lsUser.id, pageItems[0].questionId,JSON.stringify(maxChapter), JSON.stringify(nextQuests)],userData, precent)
+      updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests),treasure.toString(),
+                  newChapterAve.toString()]) //[userProgramId,maxChpater,askedChapterIndex]
         //SetPrograms localy!!!
-        const progIndex=lsPrograms.findIndex((program)=>program.programName===PROGRAMS[0])
+        //console.log("precent",precent)
         const progs:any=[]
         for (let i = 0; i < lsPrograms.length; i++) {
           progs[i]=
@@ -197,7 +229,8 @@ useEffect(() => {
             email: lsPrograms[i].email,
             isOpen: lsPrograms[i].isOpen,
             expiredAt: lsPrograms[i].expiredAt,
-            treasure: lsPrograms[i].treasure,
+            treasure: treasure,
+            chapterAverage: newChapterAve,
             currentStatus: i===progIndex?JSON.stringify(maxChapter):lsPrograms[i].currentStatus,
             nextQuestion: i===progIndex?JSON.stringify(nextQuests):lsPrograms[i].currentStatus,
           } 
