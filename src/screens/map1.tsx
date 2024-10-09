@@ -122,7 +122,10 @@ const clickHandler = (ans:string,data:string) => {
         (async () => { 
           const maxChapter=CHAPTERS[userIndex-1] 
           const nextQuests=CHAPTERS[(userLevel!==lvl)?(chpaterStartIndex-1):(userIndex-1)] //if it is not the current level continue to the first chapter at the requested level
-        updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests)]) //[userProgramId,maxChpater,askedChapterIndex]
+          const tresure:string=prog.treasure?prog.treasure.toString():"0"
+          const chapterAverage:string=prog.chapterAverage?prog.chapterAverage.toString():"100"
+          updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests),
+            tresure,chapterAverage]) //[userProgramId,maxChpater,askedChapterIndex]
           //SetPrograms localy!!!
           const progIndex=lsPrograms.findIndex((program)=>program.programName===PROGRAMS[0])
           const progs:any=[]
