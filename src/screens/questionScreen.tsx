@@ -30,8 +30,8 @@ function QuestionScreen() {
   const[show,setShow]=useState(false)
   const navigate=useNavigate()
   const audio = useAppSelector(selectAudio)
-  const [width, setWidth] = useState(1100)
-  const [height, setHeight] = useState(800)
+  const [width, setWidth] = useState<number>()
+  const [height, setHeight] = useState<number>()
   const [pageItems,setPageItems]=useState<any[]>([])
   const lsPrograms = useAppSelector(selectPrograms)
   let itemsList = useAppSelector(selectItems)
@@ -54,9 +54,8 @@ function QuestionScreen() {
   const buttons = useAppSelector(selectButtons)
   const lsUser = useAppSelector(selectUser)
 
-      const initWidth=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
-      const initHeight=((window.innerHeight > 0) ? window.innerHeight : window.screen.height)
       const resize = () => {
+        
         var w=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
         var h=((window.innerHeight > 0) ? window.innerHeight : window.screen.height)
         const ratio=w/h
@@ -75,10 +74,16 @@ function QuestionScreen() {
     }    
     window.onresize = resize;
     
-  useEffect(() => {
-      setWidth(initWidth)
-      setHeight(initHeight)
-    }, [initWidth,initHeight])
+    useEffect(() => {
+      
+      if(!width && !height){
+        const initWidth=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
+        const initHeight=((window.innerHeight > 0) ? window.innerHeight : window.screen.height)
+          setWidth(initWidth)
+          setHeight(initHeight)
+          resize()
+      }
+      }, [width,height])
       
   Hub.listen('auth', (data) => {
     if(!show && data.payload.event==="signedIn") {
@@ -400,7 +405,7 @@ const playBackground = () => {
 
 
 const dragHandler = (e:any,name:string) => {
-  const d={e}
+  if(width && height) {const d={e}
   const dist=50 //distance to drag place
   const items=pageItems? pageItems.filter(item =>  item.lineType==="dragBusket"): ""
   const dragItem=pageItems? pageItems.find(item =>  item.animationName===name): ""
@@ -418,12 +423,12 @@ const dragHandler = (e:any,name:string) => {
       if(distance<dist && item.continueTo==="correct") {clickHandler(item.continueTo,item.animationName)}
       if(distance<dist && item.continueTo.split("_")[0]==="mistake") {clickHandler(item.continueTo,item.animationName)}
   }
-}
+}}
 
   return (
     <Authenticator components={components}>
       {({user }) => (
-        <Flex direction={"column"} className="rotated"  width={width} height={height }>
+        <Flex direction={"column"} className="rotated homePage"  width={width} height={height }>
           <AuthUtils email={user?.signInDetails?.loginId} user={user?.userId}/>
           {step===0 && 
             <div className='hp-button' style={{width: "30%", height: "30%", right: "40%", top: "5%"}}>
@@ -436,7 +441,7 @@ const dragHandler = (e:any,name:string) => {
             </div>
         }
 
-{pageItems?  Object.values(pageItems).map(pageItem => (
+{(pageItems && width && height)?  Object.values(pageItems).map(pageItem => (
             pageItem.step===step && 
             pageItem.lineType==="bg"? 
             <div key={pageItem.id} className='hp-button' style={{width: pageItem.picWidth+"%", 

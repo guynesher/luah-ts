@@ -99,6 +99,24 @@ a {
 .btn:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+.openbtn {
+  border-radius: 8px;
+  border: 2px solid transparent;
+  padding: 0.6em 1.2em;
+  background-color: hsl(130, 43%, 46%);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: white;
+}
+.openbtn:hover {
+  border-color: hsl(0, 0%, 100%);
+}
+.openbtn:focus,
+.openbtn:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
 .lottieButton {
   border: none !important;
   border-width: none !important;
@@ -136,4 +154,14 @@ a {
       background: #ffcccc;
       background-size: contain; 
   }
+  }
+
+  .counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .counter h1{
+    color: hsl(300, 95%, 30%);
   }

@@ -10,8 +10,9 @@ import { Header } from '../components/Header';
 import { AuthUtils } from '../components/AuthUtils';
 import { selectAudio, setAudio } from '../reducers/misSlice';
 import LottieCard from '../components/lottieCard';
-import { selectPrograms } from '../reducers/userSlice';
+import { getPrograms, selectPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
+import { userLogout } from '../actions/userActions';
 I18n.putVocabularies(translations);
 I18n.setLanguage('he');
 I18n.putVocabularies({
@@ -32,6 +33,10 @@ I18n.putVocabularies({
     'Reset Password': 'אפס סיסמא',
   },
 });
+//import { generateClient } from 'aws-amplify/data';
+//import { type Schema } from '../../amplify/data/resource'
+
+//const client = generateClient<Schema>();
 
 function CoursesScreen() {
   const dispatch = useAppDispatch()
@@ -39,6 +44,7 @@ function CoursesScreen() {
   const navigate=useNavigate()
   const audio = useAppSelector(selectAudio)
   const [value, setValue] = useState<string>();
+  const [curUP, seCurtUp] = useState<string>("");
   const lsPrograms = useAppSelector(selectPrograms)
 
   Hub.listen('auth', (data) => {
@@ -51,15 +57,35 @@ function CoursesScreen() {
   });
  
   window.onclick = function() {if(!audio){dispatch(setAudio(true))}}       
-  
+
   useEffect(() => {
-    if(value==="Program0101" && !lsPrograms.find((prog) => prog.programName===PROGRAMS[0])?.isOpen) navigate('/CourseMap1')
-    if(value==="Program0102" && lsPrograms.find((prog) => prog.programName===PROGRAMS[1])?.isOpen) navigate('/CourseMap2')
-    //if(value==="Program0101" && !lsPrograms.find((prog) => prog.programName===PROGRAMS[0])?.isOpen) navigate('/Morning1')
-    //if(value==="Program0102" && !lsPrograms.find((prog) => prog.programName===PROGRAMS[1])?.isOpen) navigate('/Morning2')
+    let currentUP=lsPrograms.find((prog) => prog.programName===PROGRAMS[0])
+    if(value==="Program0102") currentUP=lsPrograms.find((prog) => prog.programName===PROGRAMS[1])
+    if(value && currentUP) {
+      dispatch(getPrograms(currentUP?.userProgramId))
+      if(value==="Program0101" && currentUP?.isOpen) navigate('/CourseMap1')
+      if(value==="Program0102" && currentUP?.isOpen) navigate('/CourseMap2')
+      if(!currentUP?.isOpen) seCurtUp(currentUP?.userProgramId)
+    }
+    setValue("")
+}, [value])
+
+useEffect(() => {
+  if(curUP!=="") setTimeout(function() {
+    dispatch(userLogout())
+  }, 30000); 
 }, [value])
   //DB connections: 
-  //Listen to current user changes + get user 
+  //If current user open status was changed - Change the price to "OPEN" in GREEN
+  //when moving to billing update UserProgram expiredAt=100
+  //Listen to UserProgram update event - see change of color!!! 
+
+  //Lambda Function after billing:
+  //list UserProgramByEamil 
+  //match data last changed UserProgram ()
+  //update active UserProgram --> expiredAt=now+1 year , isOpen=true
+  //update Order by details (extract userId from userProgramID)
+  
   return (
     <Authenticator components={components}>
       {({user}) => (
@@ -91,10 +117,10 @@ function CoursesScreen() {
             </Text>
             <Flex direction={{ base: 'column', medium: 'row' }} gap="medium" margin="40px">
           <LottieCard name="Program0101" data="Program0101" audioData="Program0101" segments={[0,120,10,80,0,120]} 
-                width="50%" height="50%" price='50 ש"ח' 
+                width="50%" height="50%" price='50 ש"ח' isOpen={lsPrograms.find(prog=>prog.programName===PROGRAMS[0])?.isOpen}
               mainText='קורס קריאה הכנה לכיתה א לילדים שאוהבים ללמוד בכיף' setValue={setValue}/>
           <LottieCard name="Program0102" data="Program0102" audioData="logo" segments={[0,52,64,139,0,52]} 
-                width="50%" height="50%" price='בקרוב !!!' 
+                width="50%" height="50%" price='בקרוב !!!' isOpen={lsPrograms.find(prog=>prog.programName===PROGRAMS[1])?.isOpen}
               mainText='קורס חשבון הכנה לכיתה א לילדים שקצת מפחדים מחשבון' setValue={setValue}/>
           <LottieCard name="takyHP" data="takyHP" audioData="takyHP" segments={[10,80,80,120,0,120]} 
                 width="50%" height="50%" price='בקרוב !!!' 

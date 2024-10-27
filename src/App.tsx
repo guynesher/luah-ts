@@ -19,6 +19,7 @@ import QuestionScreen from './screens/questionScreen';
 import AdminScreen from './screens/adminScreen';
 import AccountSettings from './screens/accountSettings';
 import ProfileSettings from './screens/profileSettings';
+import ShopScreen from './screens/shopScreen';
 
 const router = createBrowserRouter([
   { path: "/", element: <HomeScreen/>, },
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
   { path: "/Admin/", element: <AdminScreen/>, },  
   { path: "/accountSettings/", element: <AccountSettings/>, }, 
   { path: "/profileSettings/", element: <ProfileSettings/>, }, 
+  { path: "/ShopScreen/", element: <ShopScreen/>, },
 
   { path: "/Login/", element: <Login/>, },
   { path: "/Data/", element: <Data/>, },

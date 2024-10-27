@@ -41,6 +41,7 @@ export async function createUserWithAdressAndPrograms(params:string[]) { //[cogn
             sessionStart: Date.now(), 
             computerIP: params[2],
             userPrograms: up, 
+            cards:[],
             name: params[4],surname: params[5],picture: params[7],//phone: params[6],
         }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
 

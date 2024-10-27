@@ -7,6 +7,7 @@ import ZipLottieBTN from './zipLottieBtn';
 interface LottieCardProps {
     setValue: (value: string) => void;
     price: string;
+    isOpen?: string;
     mainText?: string;
     data: string;
     name: string;
@@ -16,7 +17,7 @@ interface LottieCardProps {
     height?: string;
 }
 
-const LottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments, width, height, price, mainText, setValue}) => {
+const LottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments, width, height, price, isOpen, mainText, setValue}) => {
   return (
   <Flex
     gap="0"
@@ -87,16 +88,16 @@ const LottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments
         position="relative"
         whiteSpace="pre-wrap"
       >
-        {price}
+        {isOpen?"":price}
       </Text>
-      <Button className="btn"
+      <Button className={isOpen?"openbtn":"btn"}
         shrink="0"
         alignSelf="stretch"
         size="large"
         isDisabled={false}
         onClick={()=>setValue(name)}
       >
-        לרכישה עכשיו
+        {isOpen?"פתוח":"לרכישה עכשיו"}
       </Button>
     </Flex>
   </Flex>
