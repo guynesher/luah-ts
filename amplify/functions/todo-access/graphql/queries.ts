@@ -263,26 +263,6 @@ export const getQuestion = /* GraphQL */ `query GetQuestion($questionId: ID!) {
     chapterNumber
     createdAt
     items {
-      animation
-      animationName
-      audioData
-      autoplay
-      createdAt
-      isAudioClick
-      isAudioHoover
-      isAudioPlay
-      itemCondition
-      itemId
-      itemNumber
-      itemPosition
-      itemSize
-      itemType
-      loop
-      questionId
-      questionNumber
-      segments
-      step
-      updatedAt
       nextToken
       __typename
     }
@@ -550,6 +530,7 @@ export const getUserData = /* GraphQL */ `query GetUserData($userDataId: ID!) {
 >;
 export const getUserProgram = /* GraphQL */ `query GetUserProgram($userProgramId: ID!) {
   getUserProgram(userProgramId: $userProgramId) {
+    chapterAverage
     createdAt
     currentStatus
     email
@@ -1686,6 +1667,7 @@ export const listUserPrograms = /* GraphQL */ `query ListUserPrograms(
     userProgramId: $userProgramId
   ) {
     items {
+      chapterAverage
       createdAt
       currentStatus
       email
@@ -1757,6 +1739,7 @@ export const userProgramByEmail = /* GraphQL */ `query UserProgramByEmail(
     sortDirection: $sortDirection
   ) {
     items {
+      chapterAverage
       createdAt
       currentStatus
       email
@@ -1794,6 +1777,7 @@ export const userProgramByEmailAndProgramName = /* GraphQL */ `query UserProgram
     sortDirection: $sortDirection
   ) {
     items {
+      chapterAverage
       createdAt
       currentStatus
       email

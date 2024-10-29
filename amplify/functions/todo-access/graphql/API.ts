@@ -386,6 +386,7 @@ export type ModelUserConnection = {
 
 export type UserProgram = {
   __typename: "UserProgram",
+  chapterAverage?: number | null,
   createdAt: string,
   currentStatus?: string | null,
   email?: string | null,
@@ -661,6 +662,7 @@ export type ModelTodoConnection = {
 
 export type ModelUserProgramFilterInput = {
   and?: Array< ModelUserProgramFilterInput | null > | null,
+  chapterAverage?: ModelFloatInput | null,
   createdAt?: ModelStringInput | null,
   currentStatus?: ModelStringInput | null,
   email?: ModelStringInput | null,
@@ -1061,6 +1063,7 @@ export type CreateUserDataInput = {
 
 export type ModelUserProgramConditionInput = {
   and?: Array< ModelUserProgramConditionInput | null > | null,
+  chapterAverage?: ModelFloatInput | null,
   createdAt?: ModelStringInput | null,
   currentStatus?: ModelStringInput | null,
   email?: ModelStringInput | null,
@@ -1075,6 +1078,7 @@ export type ModelUserProgramConditionInput = {
 };
 
 export type CreateUserProgramInput = {
+  chapterAverage?: number | null,
   currentStatus?: string | null,
   email?: string | null,
   expiredAt?: number | null,
@@ -1303,6 +1307,7 @@ export type UpdateUserDataInput = {
 };
 
 export type UpdateUserProgramInput = {
+  chapterAverage?: number | null,
   currentStatus?: string | null,
   email?: string | null,
   expiredAt?: number | null,
@@ -1596,6 +1601,7 @@ export type ModelSubscriptionUserDataFilterInput = {
 
 export type ModelSubscriptionUserProgramFilterInput = {
   and?: Array< ModelSubscriptionUserProgramFilterInput | null > | null,
+  chapterAverage?: ModelSubscriptionFloatInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   currentStatus?: ModelSubscriptionStringInput | null,
   email?: ModelSubscriptionStringInput | null,
@@ -2165,6 +2171,7 @@ export type GetUserProgramQueryVariables = {
 export type GetUserProgramQuery = {
   getUserProgram?:  {
     __typename: "UserProgram",
+    chapterAverage?: number | null,
     createdAt: string,
     currentStatus?: string | null,
     email?: string | null,
@@ -3092,6 +3099,7 @@ export type ListUserProgramsQuery = {
     __typename: "ModelUserProgramConnection",
     items:  Array< {
       __typename: "UserProgram",
+      chapterAverage?: number | null,
       createdAt: string,
       currentStatus?: string | null,
       email?: string | null,
@@ -3152,6 +3160,7 @@ export type UserProgramByEmailQuery = {
     __typename: "ModelUserProgramConnection",
     items:  Array< {
       __typename: "UserProgram",
+      chapterAverage?: number | null,
       createdAt: string,
       currentStatus?: string | null,
       email?: string | null,
@@ -3181,6 +3190,7 @@ export type UserProgramByEmailAndProgramNameQuery = {
     __typename: "ModelUserProgramConnection",
     items:  Array< {
       __typename: "UserProgram",
+      chapterAverage?: number | null,
       createdAt: string,
       currentStatus?: string | null,
       email?: string | null,
@@ -3734,6 +3744,7 @@ export type CreateUserProgramMutationVariables = {
 export type CreateUserProgramMutation = {
   createUserProgram?:  {
     __typename: "UserProgram",
+    chapterAverage?: number | null,
     createdAt: string,
     currentStatus?: string | null,
     email?: string | null,
@@ -4285,6 +4296,7 @@ export type DeleteUserProgramMutationVariables = {
 export type DeleteUserProgramMutation = {
   deleteUserProgram?:  {
     __typename: "UserProgram",
+    chapterAverage?: number | null,
     createdAt: string,
     currentStatus?: string | null,
     email?: string | null,
@@ -4836,6 +4848,7 @@ export type UpdateUserProgramMutationVariables = {
 export type UpdateUserProgramMutation = {
   updateUserProgram?:  {
     __typename: "UserProgram",
+    chapterAverage?: number | null,
     createdAt: string,
     currentStatus?: string | null,
     email?: string | null,
@@ -5372,6 +5385,7 @@ export type OnCreateUserProgramSubscriptionVariables = {
 export type OnCreateUserProgramSubscription = {
   onCreateUserProgram?:  {
     __typename: "UserProgram",
+    chapterAverage?: number | null,
     createdAt: string,
     currentStatus?: string | null,
     email?: string | null,
@@ -5908,6 +5922,7 @@ export type OnDeleteUserProgramSubscriptionVariables = {
 export type OnDeleteUserProgramSubscription = {
   onDeleteUserProgram?:  {
     __typename: "UserProgram",
+    chapterAverage?: number | null,
     createdAt: string,
     currentStatus?: string | null,
     email?: string | null,
@@ -6444,6 +6459,7 @@ export type OnUpdateUserProgramSubscriptionVariables = {
 export type OnUpdateUserProgramSubscription = {
   onUpdateUserProgram?:  {
     __typename: "UserProgram",
+    chapterAverage?: number | null,
     createdAt: string,
     currentStatus?: string | null,
     email?: string | null,

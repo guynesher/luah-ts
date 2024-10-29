@@ -143,6 +143,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
             isOpen: false,
             expiredAt: Date.now(),
             treasure: 0,
+            chapterAverage: 100,
             email:params[1]
         }}
       }).catch((error)=>{return error})

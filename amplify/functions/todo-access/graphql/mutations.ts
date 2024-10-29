@@ -557,6 +557,7 @@ export const createUserProgram = /* GraphQL */ `mutation CreateUserProgram(
   $input: CreateUserProgramInput!
 ) {
   createUserProgram(condition: $condition, input: $input) {
+    chapterAverage
     createdAt
     currentStatus
     email
@@ -1123,6 +1124,7 @@ export const deleteUserProgram = /* GraphQL */ `mutation DeleteUserProgram(
   $input: DeleteUserProgramInput!
 ) {
   deleteUserProgram(condition: $condition, input: $input) {
+    chapterAverage
     createdAt
     currentStatus
     email
@@ -1689,6 +1691,7 @@ export const updateUserProgram = /* GraphQL */ `mutation UpdateUserProgram(
   $input: UpdateUserProgramInput!
 ) {
   updateUserProgram(condition: $condition, input: $input) {
+    chapterAverage
     createdAt
     currentStatus
     email

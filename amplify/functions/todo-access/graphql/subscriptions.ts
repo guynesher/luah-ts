@@ -518,6 +518,7 @@ export const onCreateUserProgram = /* GraphQL */ `subscription OnCreateUserProgr
   $filter: ModelSubscriptionUserProgramFilterInput
 ) {
   onCreateUserProgram(filter: $filter) {
+    chapterAverage
     createdAt
     currentStatus
     email
@@ -1045,6 +1046,7 @@ export const onDeleteUserProgram = /* GraphQL */ `subscription OnDeleteUserProgr
   $filter: ModelSubscriptionUserProgramFilterInput
 ) {
   onDeleteUserProgram(filter: $filter) {
+    chapterAverage
     createdAt
     currentStatus
     email
@@ -1572,6 +1574,7 @@ export const onUpdateUserProgram = /* GraphQL */ `subscription OnUpdateUserProgr
   $filter: ModelSubscriptionUserProgramFilterInput
 ) {
   onUpdateUserProgram(filter: $filter) {
+    chapterAverage
     createdAt
     currentStatus
     email
