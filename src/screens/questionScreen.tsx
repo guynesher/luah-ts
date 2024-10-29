@@ -214,7 +214,7 @@ useEffect(() => {
       if(nextIndex>CHAPTERS.length) nextIndex=chpatersStartIndexes[chpatersStartIndexes.length-1] //end  of program case
       if(chpatersStartIndexes.includes(nextIndex)) { //end of chapter case
         treasure+=Math.floor(newChapterAve/10)
-        newChapterAve=0
+        newChapterAve=100
       }
       if(prog) {
       (async () => { 

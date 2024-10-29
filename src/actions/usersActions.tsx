@@ -61,6 +61,7 @@ export async function createUserWithAdressAndPrograms(params:string[]) { //[cogn
                 isOpen: false,
                 expiredAt: Date.now(),
                 treasure: 0,
+                chapterAverage: 100,
                 email:user?.data?.email,
                 currentStatus: JSON.stringify(CHAPTERS[0]),
                 nextQuestion: JSON.stringify(CHAPTERS[0]),
