@@ -252,7 +252,9 @@ export const userSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.status = "idle"
           const params:any=action.payload?.data
-          const ind=progls?.findIndex((prog:any)=>prog.userProgramId===params.userProgramId)
+          const currprogls: Record<string, any> | null = localStorage.getItem('luah-programs') ? JSON.parse(localStorage.getItem('luah-programs') as string) : null;
+          const ind=currprogls?.findIndex((prog:any)=>prog.userProgramId===params.userProgramId)
+          //console.log(ind)
           state.programs[ind].chapterAverage=params.chapterAverage
           state.programs[ind].currentStatus=params.currentStatus
           state.programs[ind].email=params.email

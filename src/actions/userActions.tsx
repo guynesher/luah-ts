@@ -1,7 +1,9 @@
 // import {
 //     USER_LOGOUT,
 // } from '../constants/userConstants'
+import { setCurrentProfile } from "../reducers/misSlice";
 import {
+    setPrograms,
     setUser,
   } from "../reducers/userSlice"
 import { signOut } from 'aws-amplify/auth';
@@ -40,16 +42,13 @@ export const userLogout = () => async (dispatch: (action: { type: string }) => v
         recommendation: [],
         contact: [],
         userData: [],
-        }));
-    //dispatch({ type: USER_LOGOUT })
-    // dispatch({ type: MIS_LOGOUT })
-    // dispatch({ type: ORDER_LOGOUT })
-    // dispatch({ type: PRODUCT_LOGOUT })
-    // dispatch({ type: PROGRAM_LOGOUT })
-    // dispatch({ type: ADMIN_LOGOUT })   
+        })); 
     localStorage.setItem('luah-user', JSON.stringify({}));
-    // localStorage.setItem('lu-ah2', JSON.stringify({}));
-    // localStorage.setItem('lu-ah3', JSON.stringify({}));
+     dispatch(setCurrentProfile({currentProfile: "", currentProfileNumber: "", 
+          profileList:  [], profileIndexList: []}))
+     dispatch(setPrograms([]))
+    //localStorage.setItem('luah-mis', JSON.stringify(null));
+    //localStorage.setItem('luah-programs', JSON.stringify(null));
     // localStorage.setItem('lu-ah4', JSON.stringify({}));
     // localStorage.setItem('lu-ah5', JSON.stringify({}));
     // localStorage.setItem('lu-ah6', JSON.stringify({}));

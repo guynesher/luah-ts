@@ -17,17 +17,6 @@ export const Header = () => {
   const dispatch = useAppDispatch()
   const lsProfile = useAppSelector(selectProfile)
   const lsUser = useAppSelector(selectUser)
-//  const[fileURL,setFileURL]=useState("")
-
-//   useEffect(() => {
-//     async function setURLs(){
-//     const linkToStorageFile = await getUrl({
-//       path: "global/Logo.png",
-//     });
-//     setFileURL(linkToStorageFile.url.toString())
-//   }
-//   setURLs()
-// }, [dispatch])
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -37,9 +26,10 @@ export const Header = () => {
 
   useEffect(() => {
      if(lsProfile.currentProfile!==value) {
+        //console.log(lsProfile.currentProfile,value)
         setValue(lsProfile.currentProfile)
       }
-  }, [lsProfile]);
+  }, [lsProfile,value]);
 
   useEffect(() => {
     if(value==="הגדרות") { dispatch(setActiveStatus("Update"));navigate ("/profileSettings"); }

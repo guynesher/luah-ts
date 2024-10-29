@@ -109,6 +109,7 @@ export async function updateUserPrograms(params:string[]) { //[userProgramId,max
           currentStatus: params[1],
           nextQuestion: params[2],
           treasure: Number(params[3]),
+          chapterAverage: params[4],
       }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
   }
   getItems()

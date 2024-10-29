@@ -60,12 +60,15 @@ function ProfileSettings() {
         (lsProfile.currentProfileNumber!=="" && lsUser?.id!=="Create")?lsProfile.currentProfileNumber:newProfileNumber,
         username,surname,phone,picture,street,house,appartment,city,zipcode,
         ...PROGRAMS]
-        //console.log(params)
+        console.log(params)
         if(lsUser?.id==="Create")createUserWithAdressAndPrograms(params)
         else updateUserWithAdress(params)
-      navigate('/Courses')
+      setTimeout(function () {
+        navigate('/Courses')
+      }, 4000);
     }
   }
+
   return (
     <Authenticator components={components}>
     {({user}) => (

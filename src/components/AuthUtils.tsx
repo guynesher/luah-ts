@@ -19,12 +19,14 @@ export const AuthUtils = (user:any, email:any) => {
 
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    if(lsProfile?.currentProfileNumber!=="") { //If there was signIn it creates user and email for the Auth checks
-      if(lsProfile.profileIndexList[lsProfile.profileList.indexOf(lsProfile?.currentProfile)] !== Number(lsUser.id.slice(0,1)))
-      dispatch(setUserId(""))
-    }
-  }, [lsProfile]);
+   useEffect(() => {
+     if(lsProfile?.currentProfileNumber!=="") { //If there was signIn it creates user and email for the Auth checks
+       if(lsProfile.profileIndexList[lsProfile.profileList.indexOf(lsProfile?.currentProfile)] !== Number(lsUser.id.slice(0,1)))
+         {
+         dispatch(setUserId(""))
+        }
+     }
+   }, [lsProfile]);
 
   useEffect(() => {
     if(user && email) { //If there was signIn it creates user and email for the Auth checks
@@ -32,11 +34,10 @@ export const AuthUtils = (user:any, email:any) => {
       setUsr(user.user)
     }
     if(lsUser?.id==="" && usr && eml){ //If user signedIn get his details 
-      //if(lsUser?.id!==lsProfile?.currentProfile+usr){
       (async () => { 
-        setData(await getFromRestAPI(["listUsersbyEmail",eml,usr,lsProfile.currentProfileNumber,ip?ip:"?",...PROGRAMS]))
+        setData(await getFromRestAPI(["listUsersbyEmail",eml,usr,
+          Number(lsProfile.currentProfileNumber)?lsProfile.currentProfileNumber:"1",ip?ip:"?",...PROGRAMS]))
         })()   
-      //}
     }
   }, [usr,eml,lsUser]);
   
@@ -81,14 +82,15 @@ export const AuthUtils = (user:any, email:any) => {
     }, [usrData]);
 
   useEffect(() => { //If there are user details put the details on the store 
-  if(usrData && Object.keys(usrData.res.data.getUserByEmail.items).length>0) {
-      console.log(usrData)
+    console.log(usrData)
+  if(usrData && Object.keys(usrData.res.data.getUserByEmail.items).length>0 && usrData.res2.data.getAdress) {
+      
       dispatch(setUser({
             id: usrData.res2.data.getAdress.user.userId,
             cognitoUserName: usrData.res2.data.getAdress.user.cognitoUserName,
             name: usrData.res2.data.getAdress.user.name,
             surname: usrData.res2.data.getAdress.user.surname,
-            phone: usrData.res2.data.getAdress.user.phone,
+            phone: usrData.res2.data.getAdress.user.phone?usrData.res2.data.getAdress.user.phone:"",
             email: usrData.res2.data.getAdress.user.email ,
             picture: usrData.res2.data.getAdress.user.picture,
             isAdmin: usrData.res2.data.getAdress.user.isAdmin?usrData.res2.data.getAdress.user.isAdmin:false,
@@ -121,6 +123,8 @@ export const AuthUtils = (user:any, email:any) => {
       }
       dispatch(setCurrentProfile({currentProfile: profile, currentProfileNumber: profileNumber, 
                                     profileList:  profs, profileIndexList: profsIndex}))
+      // console.log("currentProfile:", profile, "currentProfileNumber:", profileNumber, 
+      //   "profileList:",  profs, "profileIndexList:", profsIndex)
       const programs:any[]=[]
       for (let index = 0; index < usrData?.res3.length; index++) {
         programs.push(usrData?.res3[index]?.data?.getUserProgram? 

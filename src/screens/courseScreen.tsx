@@ -59,7 +59,7 @@ function CoursesScreen() {
   window.onclick = function() {if(!audio){dispatch(setAudio(true))}}       
 
   useEffect(() => {
-    let currentUP=lsPrograms.find((prog) => prog.programName===PROGRAMS[0])
+    let currentUP=lsPrograms.find((prog) => prog?.programName===PROGRAMS[0])
     if(value==="Program0102") currentUP=lsPrograms.find((prog) => prog.programName===PROGRAMS[1])
     if(value && currentUP) {
       dispatch(getPrograms(currentUP?.userProgramId))
@@ -117,10 +117,10 @@ useEffect(() => {
             </Text>
             <Flex direction={{ base: 'column', medium: 'row' }} gap="medium" margin="40px">
           <LottieCard name="Program0101" data="Program0101" audioData="Program0101" segments={[0,120,10,80,0,120]} 
-                width="50%" height="50%" price='50 ש"ח' isOpen={lsPrograms.find(prog=>prog.programName===PROGRAMS[0])?.isOpen}
+                width="50%" height="50%" price='50 ש"ח' isOpen={lsPrograms.find(prog=>prog?.programName===PROGRAMS[0])?.isOpen}
               mainText='קורס קריאה הכנה לכיתה א לילדים שאוהבים ללמוד בכיף' setValue={setValue}/>
           <LottieCard name="Program0102" data="Program0102" audioData="logo" segments={[0,52,64,139,0,52]} 
-                width="50%" height="50%" price='בקרוב !!!' isOpen={lsPrograms.find(prog=>prog.programName===PROGRAMS[1])?.isOpen}
+                width="50%" height="50%" price='בקרוב !!!' isOpen={lsPrograms.find(prog=>prog?.programName===PROGRAMS[1])?.isOpen}
               mainText='קורס חשבון הכנה לכיתה א לילדים שקצת מפחדים מחשבון' setValue={setValue}/>
           <LottieCard name="takyHP" data="takyHP" audioData="takyHP" segments={[10,80,80,120,0,120]} 
                 width="50%" height="50%" price='בקרוב !!!' 

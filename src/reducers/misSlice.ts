@@ -85,7 +85,9 @@ export const misSlice = createAppSlice({
     ),
     setCurrentProfileNum: create.reducer(
       (state, action: PayloadAction<string>) => {
-        state.profile.currentProfileNumber = action.payload
+        const currls= localStorage.getItem('luah-mis') ? JSON.parse(localStorage.getItem('luah-mis') as string) : null;
+        //console.log(Number(action.payload),currls,currls?.profileIndexList[Number(action.payload)-1] )
+        state.profile.currentProfileNumber = (currls?.profileIndexList[Number(action.payload)-1]).toString()
         localStorage.setItem('luah-mis',JSON.stringify(state.profile))
       },
     ),
