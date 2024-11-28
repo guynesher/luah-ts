@@ -165,3 +165,19 @@ a {
   .counter h1{
     color: hsl(300, 95%, 30%);
   }
+
+  .tableRow {
+    background-color: hsl(300, 38%, 77%);
+  }
+
+  .tableRow:hover{
+    background-color: hsl(300, 38%, 56%);
+  }
+
+  .iconBg {
+    background-color: hsl(57, 54%, 60%);
+  }
+
+  .iconBg:hover{
+    background-color: hsl(59, 38%, 56%);
+  }

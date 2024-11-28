@@ -4,7 +4,7 @@ import {components} from '../services/components'
 import { useEffect,  useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
-import { selectAudio, selectButtons, selectItems, setAudio, setButton, setItemsAsync } from '../reducers/misSlice';
+import { selectAudio, selectButtons, selectItems, selectTest, setAudio, setButton, setItemsAsync } from '../reducers/misSlice';
 import { selectPrograms, selectUser, setPrograms } from '../reducers/userSlice';
 import { AuthUtils } from '../components/AuthUtils';
 //import { Howl, Howler } from 'howler';
@@ -53,6 +53,7 @@ function QuestionScreen() {
   const [correctStep, setCorrectStep] = useState<number>(0);
   const buttons = useAppSelector(selectButtons)
   const lsUser = useAppSelector(selectUser)
+  const test = useAppSelector(selectTest)
 
       const resize = () => {
         
@@ -85,14 +86,15 @@ function QuestionScreen() {
       }
       }, [width,height])
       
-  Hub.listen('auth', (data) => {
-    if(!show && data.payload.event==="signedIn") {
-      setShow(true) 
-    }
-    if(!show && data.payload.event==="signedOut") {
-      setShow(false) 
-    }
-  });
+      Hub.listen('auth', (data) => {
+        if(!show && data.payload.event==="signedIn") {
+          setShow(true) 
+          navigate("/Courses") 
+        }
+        if(!show && data.payload.event==="signedOut") {
+          setShow(false) 
+        }
+      });
 
   const maxStep=pageItems? Math.max.apply(Math, pageItems.map(function (i) {return i.step;})):""
   window.onclick = function() {if(!audio){dispatch(setAudio(true))}}  
@@ -184,7 +186,7 @@ function QuestionScreen() {
 }
 
 useEffect(() => {
-  if (step===Number(maxStep)+1) {
+  if (step===Number(maxStep)+1 && !test) {
       setStep(0)
       setAppear([])
       Howler.unload()
@@ -373,7 +375,8 @@ const clickHandler = (ans:string,data:string) => {
   }
   if(answer==="BtnBack") {
       Howler.unload(); 
-      navigate("/CourseMap1");
+      if(test) navigate("/AdminPrograms");
+      else navigate("/CourseMap1");
   }
   if(answer==="Background") {
       setAud(!aud)

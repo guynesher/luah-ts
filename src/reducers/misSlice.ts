@@ -45,6 +45,11 @@ export interface MisSliceState {
   activeStatus: string
   buttons: ActionBtn[]
   audio: boolean
+  test: boolean
+  programs: any[] | undefined
+  levels: any[] | undefined
+  chapters: any[] | undefined
+  questions: any[] | undefined
   items: any[] | undefined
   misStatus: "idle" | "loading" | "failed"
 }
@@ -64,7 +69,12 @@ const initialState: MisSliceState = {
   }, 
   activeStatus: "",
   buttons: [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}],
-  audio: false,
+  audio:false,
+  test:false,
+  programs: undefined,
+  levels: undefined,
+  chapters: undefined,
+  questions: undefined,
   items: undefined,
   misStatus: "idle",
 }
@@ -123,6 +133,11 @@ export const misSlice = createAppSlice({
         state.audio=action.payload
       },
     ),
+    setTest: create.reducer(
+      (state, action: PayloadAction<boolean>) => {
+        state.test=action.payload
+      },
+    ),
     setItems: create.reducer(
       (state, action: PayloadAction<Item[]>) => {
         state.items=action.payload
@@ -134,7 +149,9 @@ export const misSlice = createAppSlice({
           { questionId: nextQuestionId },
           { selectionSet: ["questionId", "items.*"] },
         ).catch((error: any)=>console.log('GET call failed: ',error))
-        return response?.data?.items
+        return response?.data?.items.sort(function(a,b) {
+          return Number(a.itemNumber) - Number(b.itemNumber)
+       });
       },
       {
         pending: state => {
@@ -143,6 +160,290 @@ export const misSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.misStatus = "idle"
           state.items=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllPrograms: create.asyncThunk(
+      async (params: string[]) => {
+        let response:any =[] 
+        if(Object.keys(params).length===0) response = await client.models.Program.list(
+          {
+            selectionSet: ["createdAt","programAnimation","programAnimationName","programDescription",
+              "programId","programName","programNumber","programSubject","updatedAt"],
+          }
+        ,)
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return response?.data
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.programs=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllLevels: create.asyncThunk(
+      async (param: string) => {
+        const response = await client.models.Level.listLevelsByProgramName({programName: param})
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        const byNum = response?.data.slice(0); 
+        if(byNum) byNum.sort(function(a,b) {
+            if(a.levelNumber && b.levelNumber) return a.levelNumber - b.levelNumber
+            else{return -1}
+        });  
+        let arr=[]    
+        if(byNum) for (let index = 0; index < byNum.length; index++) { //Remove non-serializable
+          arr[index]={createdAt: byNum[index].createdAt,
+            levelAnimation: byNum[index].levelAnimation,
+            levelAnimationName: byNum[index].levelAnimationName,
+            levelDescription: byNum[index].levelDescription,
+            levelId: byNum[index].levelId,
+            levelName: byNum[index].levelName,
+            levelNumber: byNum[index].levelNumber,
+            levelSubject: byNum[index].levelSubject,
+            programName: byNum[index].programName,
+            updatedAt: byNum[index].updatedAt}
+        }
+        return arr
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.levels=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllChapters: create.asyncThunk(
+      async (param: string) => {
+        const response = await client.models.Chapter.listChaptersByLevelNumber({levelNumber: Number(param)},{limit:300})
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        const byNum = response?.data;
+        let arr=[]    
+        if(byNum) for (let index = 0; index < byNum.length; index++) { //Remove non-serializable
+          arr[index]={createdAt: byNum[index].createdAt,
+            chapterAnimation: byNum[index].chapterAnimation,
+            chapterAnimationName: byNum[index].chapterAnimationName,
+            chapterDescription: byNum[index].chapterDescription,
+            chapterId: byNum[index].chapterId,
+            levelId: byNum[index].levelId,
+            chapterName: byNum[index].chapterName,
+            levelNumber: byNum[index].levelNumber,
+            chapterNumber: byNum[index].chapterNumber,
+            chapterSubject: byNum[index].chapterSubject,
+            bundleNumber: byNum[index].bundleNumber,
+            conditionsList: byNum[index].conditionsList,
+            updatedAt: byNum[index].updatedAt}
+        }
+
+        const strToNum= (s:string) => {
+          if(s) { let num=0
+            for (let index = 0; index < s.length; index++) {num += s[index].charCodeAt(0) - 97;}
+            return num}
+          return 100
+        }
+
+        if(arr) arr.sort(function(a,b) {
+          if(a.chapterName && b.chapterName) return Number(a.chapterNumber) - Number(b.chapterNumber) || Number(a.bundleNumber) - Number(b.bundleNumber)
+                  || strToNum(a.chapterName)-strToNum(b.chapterName);
+          else return Number(a.chapterNumber) - Number(b.chapterNumber) || Number(a.bundleNumber) - Number(b.bundleNumber)
+        });
+        return arr
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.chapters=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllQuestions: create.asyncThunk(
+      async (params: any[]) => { 
+        const response = await client.models.Question.list({filter: {questionName: {eq: params[0].chapterName}},limit:30000})
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        const byNum = response?.data;
+        let arr=[]    
+        if(byNum) for (let index = 0; index < byNum.length; index++) { //Remove non-serializable
+          arr[index]={createdAt: byNum[index].createdAt,
+            questionAnimation: byNum[index].questionAnimation,
+            questionAnimationName: byNum[index].questionAnimationName,
+            questionDescription: byNum[index].questionDescription,
+            chapterId: byNum[index].chapterId,
+            questionId: byNum[index].questionId,
+            questionName: byNum[index].questionName,
+            chapterNumber: byNum[index].chapterNumber,
+            questionNumber: byNum[index].questionNumber,
+            questionSubject: byNum[index].questionSubject,
+            permutationList: byNum[index].permutationList,
+            updatedAt: byNum[index].updatedAt}
+        }
+        if(arr) arr.sort(function(a,b) {
+           return Number(a.questionNumber) - Number(b.questionNumber)
+        });
+        return arr
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.questions=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    updateProgram: create.asyncThunk(
+      async (params: string[]) => {
+        await client.models.Program.update(
+          { programId: params[0],  
+            programName: params[1],
+            programNumber: Number(params[2]),
+            programSubject: params[3],
+            programDescription: params[4],
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    updateLevel: create.asyncThunk(
+      async (params: string[]) => {
+        await client.models.Level.update(
+          { levelId: params[0],  
+            levelName: params[1],
+            levelNumber: Number(params[2]),
+            levelSubject: params[3],
+            levelDescription: params[4],
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    updateChapter: create.asyncThunk(
+      async (params: string[]) => {
+        await client.models.Chapter.update(
+          { chapterId: params[0],  
+            chapterName: params[1],
+            chapterNumber: Number(params[2]),
+            chapterSubject: params[3],
+            chapterDescription: params[4],
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    updateQuestion: create.asyncThunk(
+      async (params: string[]) => {
+        await client.models.Question.update(
+          { questionId: params[0],  
+            questionName: params[1],
+            questionNumber: Number(params[2]),
+            questionSubject: params[3],
+            questionDescription: params[4],
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    updateItem: create.asyncThunk(
+      async (params: string[]) => {
+        await client.models.Item.update(
+          { itemId: params[0],  
+            itemNumber: Number(params[1]),
+            itemType: params[2],
+            step: Number(params[3]),
+            animationName: params[4],
+            itemCondition: [params[5],params[6]],
+            itemPosition: [params[7],params[8]],
+            itemSize: [params[9],params[10]],
+            segments: [Number(params[11]),Number(params[12]),Number(params[13]),Number(params[14]),Number(params[15]),Number(params[16]),],
+            audioData: params[17],
+            loop: params[18]==="true"?true:false,
+            autoplay: params[19]==="true"?true:false,
+            isAudioClick: params[20]==="true"?true:false,
+            isAudioHoover: params[21]==="true"?true:false,
+            isAudioPlay: params[22]==="true"?true:false,
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
         },
         rejected: state => {
           state.misStatus = "failed"
@@ -159,15 +460,22 @@ export const misSlice = createAppSlice({
     selectCurrentUserProfileNumber: mis => mis.profile.currentProfileNumber,
     selectButtons: mis => mis.buttons,
     selectAudio: mis => mis.audio,
-    selectItems: mis => mis.items
+    selectTest: mis => mis.test,
+    selectItems: mis => mis.items,
+    selectPrograms: mis => mis.programs,
+    selectLevels: mis => mis.levels,
+    selectChapters: mis => mis.chapters,
+    selectQuestions: mis => mis.questions,
   },
 })
 
 // Action creators are generated for each case reducer function.
 export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, 
-        setButtons , setItems, setItemsAsync} = misSlice.actions
+        setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, 
+        getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest} = misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
 export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, 
-        selectAudio , selectItems} = misSlice.selectors
+        selectAudio , selectItems, selectPrograms, selectLevels, selectChapters,selectQuestions, 
+        selectTest} = misSlice.selectors
 

@@ -28,7 +28,7 @@ interface MovingBtnProps {
 const MovingBtn: React.FC<MovingBtnProps> = ({ pageItem, w, onClick }) => {
     const [section, setSection] = useState<number>(0);
     const dur = 15000;
-
+    //console.log(JSON.parse(pageItem.segments.toString()))
     useEffect(() => {
         const intervalId = setInterval(myTimer, dur);
         return () => clearInterval(intervalId);
@@ -81,7 +81,7 @@ const MovingBtn: React.FC<MovingBtnProps> = ({ pageItem, w, onClick }) => {
                     autoplay={pageItem.autoplay}
                     data={pageItem.animationName}
                     isAudio={[pageItem.isAudioPlay, pageItem.isAudioHoover, pageItem.isAudioClick]}
-                    segments={pageItem.segments.map((value:any)=>(value.map((value:any)=>Number(value))))} 
+                    segments={JSON.parse(pageItem.segments.toString())}//pageItem.segments.map((value:any)=>(value.map((value:any)=>Number(value))))} 
                     name={pageItem.animationName}
                     audioData={pageItem.audioData !== "" ? pageItem.audioData : pageItem.animationName}
                 />

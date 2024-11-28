@@ -1,15 +1,15 @@
 import { Authenticator, Input } from '@aws-amplify/ui-react';
-import { useAppDispatch } from "../store/hooks"
-import {components} from '../services/components'
-import { userLogout } from '../actions/userActions';
-import { ChangeEvent, useEffect,  useState} from 'react';
+import { useAppDispatch } from "../../store/hooks"
+import {components} from '../../services/components'
+import { userLogout } from '../../actions/userActions';
+import { ChangeEvent,  useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
 import ReadXlsxFile from 'read-excel-file'
 import { generateClient } from 'aws-amplify/data';
-import { type Schema } from '../../amplify/data/resource'
+import { type Schema } from '../../../amplify/data/resource'
 
-function AdminScreen() {
+function AdminUtilsScreen() {
   const dispatch = useAppDispatch()
   const[show,setShow]=useState(false)
   const[start,setStart]=useState<String>()
@@ -24,10 +24,6 @@ function AdminScreen() {
   //Listen to current user changes + get user
   //check user.isAdmin? CRUD all DB : navigate(/Courses) 
   //Recheck in lambda if user belongs to "Admin" group !!!
-  
-  useEffect(() => {
-    if(show) console.log("D")
-  }, [show])
 
   const client = generateClient<Schema>();
 
@@ -218,4 +214,4 @@ function AdminScreen() {
   );
 }
 
-export default AdminScreen
+export default AdminUtilsScreen

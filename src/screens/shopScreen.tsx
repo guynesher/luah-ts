@@ -58,6 +58,7 @@ function ShopScreen() {
   Hub.listen('auth', (data) => {
     if(!show && data.payload.event==="signedIn") {
       setShow(true) 
+      navigate("/Courses") 
     }
     if(!show && data.payload.event==="signedOut") {
       setShow(false) 

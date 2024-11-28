@@ -14,7 +14,13 @@ function Map2() {
   const navigate=useNavigate()
 
   Hub.listen('auth', (data) => {
-    if(!show && data) setShow(true)
+    if(!show && data.payload.event==="signedIn") {
+      setShow(true) 
+      navigate("/Courses") 
+    }
+    if(!show && data.payload.event==="signedOut") {
+      setShow(false) 
+    }
   });
 
   //DB connections: 

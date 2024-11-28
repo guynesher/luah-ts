@@ -76,7 +76,7 @@ function Cursor({ pageItem, onClick }: CursorProps) {
                     autoplay={pageItem.autoplay}
                     data={pageItem.animationName}
                     isAudio={[pageItem.isAudioPlay, pageItem.isAudioHoover, pageItem.isAudioClick]}
-                    segments={pageItem.segments.map((value:any)=>(value.map((value:any)=>Number(value))))} 
+                    segments={JSON.parse(pageItem.segments.toString())}//pageItem.segments.map((value:any)=>(value.map((value:any)=>Number(value))))} 
                     name={pageItem.animationName}
                     audioData={pageItem.audioData !== "" ? pageItem.audioData : pageItem.animationName}
                 />
