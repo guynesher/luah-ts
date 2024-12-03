@@ -61,7 +61,7 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
       useEffect(() => { 
         if(!mount && dt) { 
               let iconMenu = document.querySelector(`.${name}`);
-
+              //console.log(name,loop,autoplay)
               const anim = lottie.loadAnimation({
                 container: container.current as Element,
                 renderer: "svg",

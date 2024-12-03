@@ -4,7 +4,7 @@ import {components} from '../services/components'
 import { useEffect,  useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
-import { selectAudio, setAudio, setItemsAsync } from '../reducers/misSlice';
+import { clearButtons, selectAudio, setAudio, setItemsAsync } from '../reducers/misSlice';
 import { AuthUtils } from '../components/AuthUtils';
 import { selectPrograms, setPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
@@ -21,8 +21,8 @@ function Map1() {
   const [width, setWidth] = useState<number>()
   const [height, setHeight] = useState<number>()
   const [pageItems,setPageItems]=useState<any[]>([])
+  const [updateBtns, setUpdateBtns] = useState<boolean>(false)
   const lsPrograms = useAppSelector(selectPrograms)
-  //const buttons = useAppSelector(selectButtons)
 
       const resize = () => {
         var w=((window.innerWidth > 0) ? window.innerWidth : window.screen.width)
@@ -65,7 +65,14 @@ function Map1() {
   });
 
   window.onclick = function() {if(!audio){dispatch(setAudio(true))}}  
-  
+
+  useEffect(() => {
+    if(!updateBtns){
+      dispatch(clearButtons())
+      setUpdateBtns(true)
+    }
+  }, [updateBtns])
+
   //Set the pageItems of all the levels and more: 
   useEffect(() => {
     if(Object.keys(pageItems).length === 0 && lsPrograms) {   

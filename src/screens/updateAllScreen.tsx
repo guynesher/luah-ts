@@ -16,6 +16,7 @@ const UpdateAllScreen: React.FC<UpdateProps>=({itm, mode, setMode}) =>{
   const [id, setId] = useState<string>(); 
   const [name, setName] = useState<string>();  
   const [number, setNumber] = useState<string>();
+  const [bundle, setBundle] = useState<string>();
   const [subject, setSubject] = useState<string>();  
   const [description, setDescription] = useState<string>();
   const [nav, setNav] = useState<boolean>(false);
@@ -40,7 +41,7 @@ const UpdateAllScreen: React.FC<UpdateProps>=({itm, mode, setMode}) =>{
             setNumber(data.programNumber); setSubject(data.programSubject); setDescription(data.programDescription);}
     if(data && mode==="level") { setText("שלב"); setId(data.levelId); setName(data.levelName);
             setNumber(data.levelNumber); setSubject(data.levelSubject); setDescription(data.levelDescription);}
-    if(data && mode==="chapter") { setText("פרק"); setId(data.chapterId); setName(data.chapterName);
+    if(data && mode==="chapter") { setText("פרק"); setId(data.chapterId); setName(data.chapterName); setBundle(data.bundleNumber.toString())
             setNumber(data.chapterNumber); setSubject(data.chapterSubject); setDescription(data.chapterDescription);}
     if(data && mode==="question") { setText("שאלה"); setId(data.questionId); setName(data.questionName);
             setNumber(data.questionNumber); setSubject(data.questionSubject); setDescription(data.questionDescription);}
@@ -50,7 +51,7 @@ const UpdateAllScreen: React.FC<UpdateProps>=({itm, mode, setMode}) =>{
             setLoop(data.loop); setAutoplay(data.autoplay); setAudioData(data.audioData);
             setIsAudioClick(data.isAudioClick); setIsAudioHoover(data.isAudioHoover); setIsAudioPlay(data.isAudioPlay); 
           }    
-    console.log(data)
+    //console.log(data)
   }, [mode,data]);
 
   useEffect(() => {
@@ -59,8 +60,8 @@ const UpdateAllScreen: React.FC<UpdateProps>=({itm, mode, setMode}) =>{
         setNav(false)
         if(mode==="program") {dispatch(getAllPrograms([])); setMode("programs");}
         if(mode==="level") {dispatch(getAllLevels(data.programName)); setMode("levels");}
-        if(mode==="chapter") {dispatch(getAllChapters(data.levelNumber)); setMode("chapters");}
-        if(mode==="question") {dispatch(getAllQuestions([{chapterName: data.questionName}])); setMode("questions");}
+        if(mode==="chapter") {dispatch(getAllChapters([data.levelId,data.levelNumber])); setMode("chapters");}
+        if(mode==="question") {dispatch(getAllQuestions([data.questionSubject,data.questionDescription])); setMode("questions");}
         if(mode==="item") {dispatch(setItemsAsync(data.questionId)); setMode("items");}
       }, 1000);
     }
@@ -71,16 +72,19 @@ const UpdateAllScreen: React.FC<UpdateProps>=({itm, mode, setMode}) =>{
                                                 subject?subject:"",description?description:""]));setNav(true);}
     if(mode==="level") {dispatch(updateLevel([id?id:"",name?name:"",number?number:"",
                                                 subject?subject:"",description?description:""]));setNav(true);}
-    if(mode==="chapter") {dispatch(updateChapter([id?id:"",name?name:"",number?number:"",
+    if(mode==="chapter") {dispatch(updateChapter([id?id:"",name?name:"",number?number:"", bundle?bundle:"",
                                                 subject?subject:"",description?description:""]));setNav(true);}
     if(mode==="question") {dispatch(updateQuestion([id?id:"",name?name:"",number?number:"",
                                                 subject?subject:"",description?description:""]));setNav(true);}
-    if(mode==="item") {dispatch(updateItem([id?id:"",number?number:"",itemType?itemType:"",step?step.toString():"", 
-      animationName?animationName:"",itemCondition?itemCondition[0]:"",itemCondition?itemCondition[1]:"",
-      itemPosition?itemPosition[0].toString():"",itemPosition?itemPosition[1].toString():"",
-      itemSize?itemSize[0].toString():"",itemSize?itemSize[1].toString():"", segments?segments[0].toString():"",
-      segments?segments[1].toString():"", segments?segments[2].toString():"", segments?segments[3].toString():"",
-      segments?segments[4].toString():"", segments?segments[5].toString():"",  audioData?audioData:"", loop===true?"true":"false",
+    if(mode==="item") {dispatch(updateItem([id?id:"",number?number:"1",itemType?itemType:"",step?step.toString():"1", 
+      animationName?animationName:"",itemCondition?itemCondition[0]?itemCondition[0]:"":"",
+      itemCondition?itemCondition[1]?itemCondition[1]:"":"",
+      itemPosition?itemPosition[0]?itemPosition[0].toString():"50":"50",itemPosition?itemPosition[1]?itemPosition[1].toString():"50":"50",
+      itemSize?itemSize[0]?itemSize[0].toString():"10":"10",itemSize?itemSize[1]?itemSize[1].toString():"10":"10", 
+      segments?segments[0]?segments[0].toString():"0":"0",segments?segments[1]?segments[1].toString():"0":"0",
+      segments?segments[2]?segments[2].toString():"0":"0",segments?segments[3]?segments[3].toString():"0":"0",
+      segments?segments[4]?segments[4].toString():"0":"0",segments?segments[5]?segments[5].toString():"0":"0",
+      audioData?audioData:"", loop===true?"true":"false",
       autoplay===true?"true":"false", isAudioClick===true?"true":"false", isAudioHoover===true?"true":"false",
       isAudioPlay===true?"true":"false",
     ]));setNav(true);}
@@ -132,6 +136,15 @@ const UpdateAllScreen: React.FC<UpdateProps>=({itm, mode, setMode}) =>{
                     onChange={(e)=>setNumber(e.target.value)}
                     width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
               </Flex>
+              {mode==="chapter" && 
+                <Flex direction="row">
+                <Label htmlFor="bundle" color="purple.100" width={"50%"}>  חלק {text}</Label>
+                <Input id="bundle" name="bundle" size="large" 
+                      value={bundle?bundle:""} 
+                      onChange={(e)=>setBundle(e.target.value)}
+                      width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
+                </Flex> 
+              }
               <Flex direction="row">
               <Label htmlFor="subject" color="purple.100" width={"50%"}>  נושא {text}</Label>
               <Input id="subject" name="subject" size="large" 

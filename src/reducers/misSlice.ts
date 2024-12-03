@@ -128,6 +128,11 @@ export const misSlice = createAppSlice({
         if(action.payload.condition==="play") state.buttons[play].condition=action.payload.btnname
       },
     ),
+    clearButtons: create.reducer(
+      (state) => {
+        state.buttons = [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}]
+      },
+    ),
     setAudio: create.reducer(
       (state, action: PayloadAction<boolean>) => {
         state.audio=action.payload
@@ -229,9 +234,14 @@ export const misSlice = createAppSlice({
       },
     ),
     getAllChapters: create.asyncThunk(
-      async (param: string) => {
-        const response = await client.models.Chapter.listChaptersByLevelNumber({levelNumber: Number(param)},{limit:300})
+      async (params: string[]) => {
+        const response = await client.models.Chapter.list({filter: {
+          levelNumber: {eq: Number(params[1])},
+          levelId: {eq: params[0]}
+        },limit:30000})
         .catch((error: any)=>console.log('GET call failed: ',error))
+        // const response = await client.models.Chapter.listChaptersByLevelNumber({levelNumber: Number(param)},{limit:3000})
+        // .catch((error: any)=>console.log('GET call failed: ',error))
         const byNum = response?.data;
         let arr=[]    
         if(byNum) for (let index = 0; index < byNum.length; index++) { //Remove non-serializable
@@ -279,7 +289,11 @@ export const misSlice = createAppSlice({
     ),
     getAllQuestions: create.asyncThunk(
       async (params: any[]) => { 
-        const response = await client.models.Question.list({filter: {questionName: {eq: params[0].chapterName}},limit:30000})
+        const response=await client.models.Question.list(
+          {filter: {
+          questionSubject: {eq: params[0]},
+          questionDescription: {eq: params[1]}
+        },limit:30000})
         .catch((error: any)=>console.log('GET call failed: ',error))
         const byNum = response?.data;
         let arr=[]    
@@ -371,8 +385,9 @@ export const misSlice = createAppSlice({
           { chapterId: params[0],  
             chapterName: params[1],
             chapterNumber: Number(params[2]),
-            chapterSubject: params[3],
-            chapterDescription: params[4],
+            bundleNumber:[Number(params[3])],
+            chapterSubject: params[4],
+            chapterDescription: params[5],
           }
         )
         .catch((error: any)=>console.log('GET call failed: ',error))
@@ -450,6 +465,183 @@ export const misSlice = createAppSlice({
         },
       },
     ),
+    createLevel: create.asyncThunk(
+      async (params: string[]) => {
+        const timestamp = Math.abs(Date.now()).toString(16)+params[0]
+        await client.models.Level.create(
+          { levelId: "LVL"+timestamp,
+            programName: params[0],
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    createChapter: create.asyncThunk(
+      async (params: string[]) => {
+        const timestamp = Date.now().toString()+Math.abs(Date.now()).toString(16)
+        await client.models.Chapter.create(
+          { chapterId: "CPTR"+timestamp,  
+            levelId: params[0],
+            levelNumber: Number(params[1]),
+            chapterNumber: 1,
+            bundleNumber: [1],
+            chapterName: "שם",
+            chapterSubject: "0"+params[2],
+            chapterDescription: params[1]+"010100", 
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    createQuestion: create.asyncThunk(
+      async (params: string[]) => {
+        const timestamp = Date.now().toString()+Math.abs(Date.now()).toString(16)
+        await client.models.Question.create(
+          { questionId: "QST"+timestamp,  
+            chapterId: params[0],
+            questionNumber: 1,
+            chapterNumber: 1,
+            questionName: params[1],
+            questionSubject: params[2],
+            questionDescription: params[3]
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    createItem: create.asyncThunk(
+      async (params: string[]) => {
+        const timestamp = Date.now().toString()+Math.abs(Date.now()).toString(16)
+        await client.models.Item.create(
+          { itemId: "ITM"+timestamp,
+            questionId: params[0],
+            questionNumber: Number(params[1]),  
+            itemNumber: Number(params[2]),
+            itemType: params[3],
+            step: Number(params[4]),
+            animationName: params[5],
+            itemCondition: [params[6],params[7]],
+            itemPosition: [params[8],params[9]],
+            itemSize: [params[10],params[11]],
+            segments: [Number(params[12]),Number(params[13]),Number(params[14]),Number(params[15]),Number(params[16]),Number(params[17]),],
+            audioData: params[18],
+            loop: params[19]==="true"?true:false,
+            autoplay: params[20]==="true"?true:false,
+            isAudioClick: params[21]==="true"?true:false,
+            isAudioHoover: params[22]==="true"?true:false,
+            isAudioPlay: params[23]==="true"?true:false,
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    createItems: create.asyncThunk(
+      async (arr: string[][]) => {
+        for (let index = 0; index < arr.length; index++) {
+          const params = arr[index];
+        const timestamp = Date.now().toString()+Math.abs(Date.now()).toString(16)
+        await client.models.Item.create(
+          { itemId: "ITM"+timestamp,
+            questionId: params[0],
+            questionNumber: Number(params[1]),  
+            itemNumber: Number(params[2]),
+            itemType: params[3],
+            step: Number(params[4]),
+            animationName: params[5],
+            itemCondition: [params[6],params[7]],
+            itemPosition: [params[8],params[9]],
+            itemSize: [params[10],params[11]],
+            segments: [Number(params[12]),Number(params[13]),Number(params[14]),Number(params[15]),Number(params[16]),Number(params[17]),],
+            audioData: params[18],
+            loop: params[19]==="true"?true:false,
+            autoplay: params[20]==="true"?true:false,
+            isAudioClick: params[21]==="true"?true:false,
+            isAudioHoover: params[22]==="true"?true:false,
+            isAudioPlay: params[23]==="true"?true:false,
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+      }
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    deleteItem: create.asyncThunk(
+      async (param: string) => {
+        await client.models.Item.delete({itemId: param})
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
   }),
 
   // You can define your selectors here. These selectors receive the slice
@@ -472,7 +664,8 @@ export const misSlice = createAppSlice({
 // Action creators are generated for each case reducer function.
 export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, 
         setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, 
-        getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest} = misSlice.actions
+        getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest,
+        clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems} = misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
 export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, 

@@ -2,7 +2,7 @@ import { Authenticator, Table, TableBody, TableCell, TableHead, TableRow, Text }
 import {components} from '../../services/components'
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getAllChapters, getAllLevels, getAllPrograms, getAllQuestions, selectChapters, selectItems, selectLevels, selectPrograms, selectQuestions, selectTest, setItemsAsync, setTest } from '../../reducers/misSlice';
+import { createChapter, createQuestion, createLevel, getAllChapters, getAllLevels, getAllPrograms, getAllQuestions, selectChapters, selectItems, selectLevels, selectPrograms, selectQuestions, selectTest, setItemsAsync, setTest, createItem, deleteItem, createItems } from '../../reducers/misSlice';
 import UpdateAllScreen from '../updateAllScreen';
 import { VscAdd, VscEdit, VscRemove } from 'react-icons/vsc';
 import { FaTrashCan } from 'react-icons/fa6';
@@ -13,8 +13,19 @@ function ProgramsScreen() {
   const [items, setItems]=useState<any[]>([])
   const [itm, setItm]=useState<any>()
   const [mode, setMode]=useState<string>("programs")
+  const [chapId, setChapId]=useState<string>("")
+  const [chapName, setChapName]=useState<string>("")  
+  const [chapSubject, setChapSubject]=useState<string>("")
+  const [chapDesc, setChapDesc]=useState<string>("")
   const [chap, setChap]=useState<string>("")
   const [bund, setBund]=useState<string>("")
+  const [questionId, setQuestionId]=useState<string>("")
+  const [questionNum, setQuestionNum]=useState<string>("")
+  const [prg, setPrg]=useState<string>("")
+  const [prgNum, setPrgNum]=useState<string>("")
+  const [lvlNum, setLvlNum]=useState<string>("")
+  const [lvlId, setLvlId]=useState<string>("")
+  const [nav, setNav] = useState<boolean>(false);
   const test = useAppSelector(selectTest)
   const dispatch = useAppDispatch()
   const navigate=useNavigate()
@@ -36,6 +47,18 @@ function ProgramsScreen() {
     }
   }, [items])
 
+  useEffect(() => {
+    if(nav) {
+      setTimeout(function () {
+        setNav(false)
+        if(mode==="levels") {dispatch(getAllLevels(prg))}
+        if(mode==="chapters") {dispatch(getAllChapters([lvlId,lvlNum]))}
+        if(mode==="questions") {dispatch(getAllQuestions([chapSubject,chapDesc]))}
+        if(mode==="items") {dispatch(setItemsAsync(questionId))}
+      }, 1000);
+    }
+  }, [nav,mode]);
+
   const changeMode= () => {
     if(mode==="levels") setMode("programs")
     if(mode==="chapters") setMode("levels")
@@ -48,49 +71,63 @@ function ProgramsScreen() {
     if(mode==="item") setMode("items")
   }
 
-  const listChapterQuestions= (chapNum:number,bundNum:number,chapName:string) => {
-    const list=chaptersList?.filter(item=> item.chapterNumber===chapNum && item.bundleNumber[0]===bundNum &&
-              item.chapterName===chapName && item)
-    setChap(chapNum.toString())
-    setBund(bundNum.toString())
-    dispatch(getAllQuestions(list?list:[]))
+  const listChapterQuestions= (itm:any) => {
+    setChapId(itm.chapterId)
+    setChapName(itm.chapterName)
+    setChapSubject(itm.chapterSubject)
+    setChapDesc(itm.chapterDescription)
+    setChap(itm.chapterNumber.toString())
+    setBund(itm.bundleNumber[0].toString())
+    dispatch(getAllQuestions([itm.chapterSubject,itm.chapterDescription]))
   }
 
   const add= () => {
-    if(mode==="chapters") console.log(chaptersList)
-    if(mode==="questions") {
-      console.log(chap,bund)
-      const name=questionsList?questionsList[0].questionName:""
-      console.log(name)
-      const list=chaptersList?.filter(item=> item.chapterNumber===Number(chap) && item.bundleNumber[0]===Number(bund) &&
-        item.chapterName===name && item)
-        //add identical chapter with a differetn chapterId
-        //add question with the same: chapterId ,and questionId as the chapterId ,and questionName, 
-        //                            and chapterNuber must be questionsList[questionsList.length].chapterNuber+1
-        //                            and questionNumber must be questionsList[questionsList.length].questionNumber+1
-        console.log(list)}
-    if(mode==="items") { 
-      //add item with a new itemId and the same questionId and questionNumber
-      console.log(itemsList)
-    }
+    if(mode==="levels") {dispatch(createLevel([prg])); setNav(true);}
+    if(mode==="chapters") {dispatch(createChapter([lvlId,lvlNum,prgNum])); setNav(true);}
+    if(mode==="questions") {dispatch(createQuestion([chapId, chapName,chapSubject,chapDesc]));setNav(true);}
+    if(mode==="items") {dispatch(createItem([questionId,questionNum]));setNav(true);} 
+  }
+
+  const delItm= (id:string) => {
+    //if(mode==="levels") {dispatch(createLevel([prg])); setNav(true);}
+    //if(mode==="chapters") {dispatch(createChapter([lvlId,lvlNum,prgNum])); setNav(true);}
+    //if(mode==="questions") {dispatch(createQuestion([chapId, chapName,chapSubject,chapDesc]));setNav(true);}
+    if(mode==="items" && id!=="all") {dispatch(deleteItem(id));setNav(true);} 
+    if(mode==="items" && id==="all") { 
+      if(itemsList) 
+        for (let index = 0; index < itemsList.length; index++) {
+          setTimeout(function () {
+            dispatch(deleteItem(itemsList[index].itemId))
+          }, 200);
+        }
+        setTimeout(function () {
+          setNav(true)
+        }, 3000);
+    } 
   }
 
   const createManyLines = (e: ChangeEvent<HTMLInputElement>) => {
     if(e && e.target && e.target.files) ReadXlsxFile(e.target.files[0]).then((rows)=> {
+      const arr:string[][]=[]
       for (let index = 1; index < rows.length; index++) {
-          console.log(rows[index]) 
-          //Create new Item with the data from the row
+          const it=rows[index]
+          arr.push([questionId,questionNum,it[0]?it[0].toString():"",it[1]?it[1].toString():"",it[8]?it[8].toString():"",
+          it[11]?it[11].toString():"",it[7]?it[7].toString():"",it[6]?it[6].toString():"", it[2]?it[2].toString():"0", it[3]?it[3].toString():"0",
+          it[4]?it[4].toString():"0", it[5]?it[5].toString():"0", it[17]?it[17].toString():"0", it[18]?it[18].toString():"0", 
+          it[19]?it[19].toString():"0", it[20]?it[20].toString():"0", it[21]?it[21].toString():"0",
+          it[22]?it[22].toString():"0",it[16]?it[16].toString():"",it[9]?"true":"false",it[10]?"true":"false"
+          ,it[13]?"true":"false",it[14]?"true":"false",it[15]?"true":"false"] )
       }
+      dispatch(createItems(arr))
+      setTimeout(function () {
+        setNav(true)
+      }, 5000);
     })}
 
   const goToGraphics = () => {
           dispatch(setTest(true))
           navigate("/Question") 
     }
-
-  //DB connections: 
-  //selectionSet: ["createdAt","programAnimation","programAnimationName","programDescription",
-  //"programId","programName","programNumber","programSubject","updatedAt"],
 
   return (
     <Authenticator components={components}>
@@ -120,19 +157,21 @@ function ProgramsScreen() {
                     <VscAdd className={"iconBg"}/>
                     <VscRemove className={"iconBg"}/>  
                 </TableCell>
-                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");}}>{itm.programId}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");}}>{itm.programNumber}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");}}>{itm.programName}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");}}>{itm.programSubject}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");}}>{itm.programDescription}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");}}>{itm.createdAt}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");}}>{itm.updatedAt}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");setPrg(itm.programId);setPrgNum(itm.programNumber);}}>{itm.programId}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");setPrg(itm.programId);setPrgNum(itm.programNumber);}}>{itm.programNumber}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");setPrg(itm.programId);setPrgNum(itm.programNumber);}}>{itm.programName}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");setPrg(itm.programId);setPrgNum(itm.programNumber);}}>{itm.programSubject}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");setPrg(itm.programId);setPrgNum(itm.programNumber);}}>{itm.programDescription}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");setPrg(itm.programId);setPrgNum(itm.programNumber);}}>{itm.createdAt}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllLevels(itm.programId));setMode("levels");setPrg(itm.programId);setPrgNum(itm.programNumber);}}>{itm.updatedAt}</TableCell>
               </TableRow>
                 ))}
             </TableBody>
           </Table>
           }
-
+          {mode==="programs" &&    
+            <button onClick={()=>navigate("/Courses")}>חזרה</button>
+          }
           {mode!=="programs" &&    
             <button onClick={()=>changeMode()}>חזרה</button>
           }
@@ -175,9 +214,10 @@ function ProgramsScreen() {
           <>  
             <button onClick={()=>goToGraphics()}>מסך גרפי</button>
             <div>הוספת {mode}</div><input type="file" onChange={(e)=>createManyLines(e)}/>
+            <button onClick={()=>delItm("all")}>מחיקת כל הפריטים יחד </button><br></br>
           </> 
           }  
-          {mode!=="programs" &&    
+          {(mode==="levels" || mode==="chapters" || mode==="questions" || mode==="items")&&    
             <button onClick={()=>add()}>הוספת {mode.slice(0,mode.length-1)}</button>
           }        
           {mode==="levels" && levelsList &&   //This is the LEVELS screen 
@@ -204,13 +244,13 @@ function ProgramsScreen() {
                     <VscAdd className={"iconBg"}/>
                     <VscRemove className={"iconBg"}/>  
                 </TableCell>
-                <TableCell onClick={() => {dispatch(getAllChapters(itm.levelNumber));setMode("chapters");}}>{itm.levelId}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllChapters(itm.levelNumber));setMode("chapters");}}>{itm.levelNumber}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllChapters(itm.levelNumber));setMode("chapters");}}>{itm.levelName}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllChapters(itm.levelNumber));setMode("chapters");}}>{itm.levelSubject}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllChapters(itm.levelNumber));setMode("chapters");}}>{itm.levelDescription}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllChapters(itm.levelNumber));setMode("chapters");}}>{itm.createdAt}</TableCell>
-                <TableCell onClick={() => {dispatch(getAllChapters(itm.levelNumber));setMode("chapters");}}>{itm.updatedAt}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllChapters([itm.levelId,itm.levelNumber]));setMode("chapters");setLvlId(itm.levelId);setLvlNum(itm.levelNumber.toString());}}>{itm.levelId}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllChapters([itm.levelId,itm.levelNumber]));setMode("chapters");setLvlId(itm.levelId);setLvlNum(itm.levelNumber.toString());}}>{itm.levelNumber}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllChapters([itm.levelId,itm.levelNumber]));setMode("chapters");setLvlId(itm.levelId);setLvlNum(itm.levelNumber.toString());}}>{itm.levelName}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllChapters([itm.levelId,itm.levelNumber]));setMode("chapters");setLvlId(itm.levelId);setLvlNum(itm.levelNumber.toString());}}>{itm.levelSubject}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllChapters([itm.levelId,itm.levelNumber]));setMode("chapters");setLvlId(itm.levelId);setLvlNum(itm.levelNumber.toString());}}>{itm.levelDescription}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllChapters([itm.levelId,itm.levelNumber]));setMode("chapters");setLvlId(itm.levelId);setLvlNum(itm.levelNumber.toString());}}>{itm.createdAt}</TableCell>
+                <TableCell onClick={() => {dispatch(getAllChapters([itm.levelId,itm.levelNumber]));setMode("chapters");setLvlId(itm.levelId);setLvlNum(itm.levelNumber.toString());}}>{itm.updatedAt}</TableCell>
               </TableRow>
                 ))}
             </TableBody>
@@ -242,15 +282,15 @@ function ProgramsScreen() {
                     <VscAdd className={"iconBg"}/>
                     <VscRemove className={"iconBg"}/>  
                 </TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.chapterId}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.levelNumber}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.chapterNumber}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.bundleNumber}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.chapterName}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.chapterSubject}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.chapterDescription}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.createdAt}</TableCell>
-                <TableCell onClick={() => {listChapterQuestions(itm.chapterNumber,Number(itm.bundleNumber[0]),itm.chapterName);setMode("questions");}}>{itm.updatedAt}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.chapterId}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.levelNumber}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.chapterNumber}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.bundleNumber}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.chapterName}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.chapterSubject}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.chapterDescription}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.createdAt}</TableCell>
+                <TableCell onClick={() => {listChapterQuestions(itm);setMode("questions");}}>{itm.updatedAt}</TableCell>
               </TableRow>
                 ))}
             </TableBody>
@@ -280,13 +320,13 @@ function ProgramsScreen() {
                     <VscAdd className={"iconBg"}/>
                     <VscRemove className={"iconBg"}/>  
                 </TableCell>
-                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");}}>{itm.questionId}</TableCell>
-                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");}}>{itm.questionNumber}</TableCell>
-                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");}}>{itm.questionName}</TableCell>
-                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");}}>{itm.questionSubject}</TableCell>
-                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");}}>{itm.questionDescription}</TableCell>
-                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");}}>{itm.createdAt}</TableCell>
-                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");}}>{itm.updatedAt}</TableCell>
+                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");setQuestionId(itm.questionId);setQuestionNum(itm.questionNumber)}}>{itm.questionId}</TableCell>
+                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");setQuestionId(itm.questionId);setQuestionNum(itm.questionNumber)}}>{itm.questionNumber}</TableCell>
+                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");setQuestionId(itm.questionId);setQuestionNum(itm.questionNumber)}}>{itm.questionName}</TableCell>
+                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");setQuestionId(itm.questionId);setQuestionNum(itm.questionNumber)}}>{itm.questionSubject}</TableCell>
+                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");setQuestionId(itm.questionId);setQuestionNum(itm.questionNumber)}}>{itm.questionDescription}</TableCell>
+                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");setQuestionId(itm.questionId);setQuestionNum(itm.questionNumber)}}>{itm.createdAt}</TableCell>
+                <TableCell onClick={() => {dispatch(setItemsAsync(itm.questionId));setMode("items");setQuestionId(itm.questionId);setQuestionNum(itm.questionNumber)}}>{itm.updatedAt}</TableCell>
               </TableRow>
                 ))}
             </TableBody>
@@ -317,7 +357,7 @@ function ProgramsScreen() {
                    >
                 <TableCell>
                     <VscEdit className={"iconBg"} onClick={() =>  {setItm(itm); setMode("item");}}/>
-                    <FaTrashCan className={"iconBg"}/> 
+                    <FaTrashCan className={"iconBg"} onClick={() =>  delItm(itm.itemId) }/> 
                     <VscAdd className={"iconBg"}/>
                     <VscRemove className={"iconBg"}/>  
                 </TableCell>

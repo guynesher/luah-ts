@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import ReadXlsxFile from 'read-excel-file'
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '../../../amplify/data/resource'
+import { CHAPTERS } from '../../constants/program0101';
+import { HVlist } from '../../constants/hv';
 
 function AdminUtilsScreen() {
   const dispatch = useAppDispatch()
@@ -189,6 +191,64 @@ function AdminUtilsScreen() {
           }
       }
 
+      async function matchQuestionIdToChapterIndex() {
+        try {
+              for (let index = 0; index < CHAPTERS.length; index++) {
+                for (let i = 0; i < CHAPTERS[index].questions.length; i++) {
+                  await client.models.Question.update({
+                    questionId:CHAPTERS[index].questions[i],
+                    questionSubject: "0101",
+                    questionDescription: CHAPTERS[index].chapterIndex.toString(),
+                  })
+                  console.log(CHAPTERS[index].questions[i],CHAPTERS[index].chapterIndex);
+                }                
+              }
+          } catch (error) {
+            console.log('GET call failed: ',error);
+          }
+      }
+
+      async function matchChapterIdToChapterIndex() {
+        try {
+              for (let index = 0; index < CHAPTERS.length; index++) {
+                for (let i = 0; i < CHAPTERS[index].questions.length; i++) {
+                  await client.models.Chapter.update({
+                    chapterId:CHAPTERS[index].questions[i],
+                    chapterSubject: "0101",
+                    chapterDescription: CHAPTERS[index].chapterIndex.toString(),
+                  })
+                  console.log(CHAPTERS[index].questions[i],CHAPTERS[index].chapterIndex);
+                }                
+              }
+          } catch (error) {
+            console.log('GET call failed: ',error);
+          }
+      }
+
+        const correctHoover = (e: ChangeEvent<HTMLInputElement>) => {
+          if(e && e.target && e.target.files) ReadXlsxFile(e.target.files[0]).then((rows)=> {
+            const arr:string[]=[]
+            for (let index = 1; index < rows.length; index++) {
+                const it=rows[index]
+                arr.push(it[1].toString())
+            }
+            console.log(arr)
+          })}
+
+          async function correctHooverList() {
+            try {
+                    for (let i = 0; i < HVlist.length; i++) {
+                      console.log(HVlist[i])
+                      await client.models.Item.update({
+                        itemId: HVlist[i],
+                        isAudioHoover: true
+                      })
+                    }                
+              } catch (error) {
+                console.log('GET call failed: ',error);
+              }
+          }
+
   return (
     <Authenticator components={components}>
       {({user }) => (
@@ -207,7 +267,10 @@ function AdminUtilsScreen() {
           <Input onInput={(e) => setStart(e.currentTarget.value)}></Input>
           <Input onInput={(e) => setEnd(e.currentTarget.value)}></Input>   
           <div>List Chapters</div><input type="file" onChange={(e)=>createManyLines(e,"list")}/>
-               
+          <button onClick={()=>matchQuestionIdToChapterIndex()}>Match QuestionId to Chapter Index</button>
+          <button onClick={()=>matchChapterIdToChapterIndex()}>Match ChapterId to Chapter Index</button>
+          <div>Correct hoover</div><input type="file" onChange={(e)=>correctHoover(e)}/>
+          <button onClick={()=>correctHooverList()}>Correct hoover list</button>
         </main>
       )}
     </Authenticator>

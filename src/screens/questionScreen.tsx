@@ -4,7 +4,7 @@ import {components} from '../services/components'
 import { useEffect,  useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
-import { selectAudio, selectButtons, selectItems, selectTest, setAudio, setButton, setItemsAsync } from '../reducers/misSlice';
+import { clearButtons, selectAudio, selectButtons, selectItems, selectTest, setAudio, setButton, setItemsAsync } from '../reducers/misSlice';
 import { selectPrograms, selectUser, setPrograms } from '../reducers/userSlice';
 import { AuthUtils } from '../components/AuthUtils';
 //import { Howl, Howler } from 'howler';
@@ -54,6 +54,7 @@ function QuestionScreen() {
   const buttons = useAppSelector(selectButtons)
   const lsUser = useAppSelector(selectUser)
   const test = useAppSelector(selectTest)
+  const [updateBtns, setUpdateBtns] = useState<boolean>(false)
 
       const resize = () => {
         
@@ -75,6 +76,17 @@ function QuestionScreen() {
     }    
     window.onresize = resize;
     
+    // if(step===0 && buttons && buttons[pos]?.condition!=="complete"&& !updateBtns){
+    //   setUpdateBtns(true)
+    //   dispatch(clearButtons())
+    // } 
+    useEffect(() => {
+      if(step===0 && updateBtns===false){
+        dispatch(clearButtons())
+        setUpdateBtns(true)
+      }
+    }, [updateBtns])
+
     useEffect(() => {
       
       if(!width && !height){
@@ -188,6 +200,8 @@ function QuestionScreen() {
 useEffect(() => {
   if (step===Number(maxStep)+1 && !test) {
       setStep(0)
+      setVoice(true)
+      dispatch(clearButtons())
       setAppear([])
       Howler.unload()
       //Create userData, Update userProgram, get new Items
@@ -385,6 +399,7 @@ const clickHandler = (ans:string,data:string) => {
   }
   if(ans==="Repeat") {
       setStep(0)
+      setVoice(true)
   }
   if(ans==="moveToEnd") {
     setStep(Number(maxStep)+1)
