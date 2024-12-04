@@ -126,6 +126,7 @@ export const misSlice = createAppSlice({
         state.buttons[focus].condition=action.payload.btnname
         state.buttons[pos]=action.payload
         if(action.payload.condition==="play") state.buttons[play].condition=action.payload.btnname
+        if(action.payload.condition==="complete") state.buttons[play].condition=""
       },
     ),
     clearButtons: create.reducer(

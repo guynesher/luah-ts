@@ -157,10 +157,10 @@ function QuestionScreen() {
     }, [itemsList])
 
     const checkForPointer: Array<any> | string = pageItems?pageItems
-      .filter(item => item.itemType === "pointer")
+      .filter(item => item.lineType === "pointer")
       .map(item => item):"";
     const checkForStopPointer: Array<any> | string = pageItems?pageItems
-      .filter(item => item.itemType === "stopPointer")
+      .filter(item => item.lineType === "stopPointer")
       .map(item => item.step):"";
     //console.log(checkForPointer, checkForStopPointer,maxStep)
   
@@ -326,8 +326,12 @@ useEffect(() => {
 }, [dispatch,timeStamp,buttons,step,correct,correctStep,help,mistake,userData,pageItems, maxStep])
 
 useEffect(() => {
+  const noPointerStep:number[]=[]
+  for (let index = 0; index < checkForStopPointer.length; index++) {
+    noPointerStep.push(Number(checkForStopPointer[index]));
+  }
   if(Object.keys(checkForPointer).length > 0 && !help && !mistake && !correct 
-      && !checkForStopPointer.includes(step.toString())) 
+      && !noPointerStep.includes(step)) 
       {setPointer(true) }
   else { setPointer(false)       }
 }, [checkForPointer,checkForStopPointer,step,pointer,help ,mistake ,correct]) 

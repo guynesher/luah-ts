@@ -125,6 +125,18 @@ a {
   outline: none !important;
   outline-offset: none !important;
 }
+
+.lottieButton2:hover{
+  cursor: none;
+}
+.lottieButton2 {
+  border: none !important;
+  border-width: none !important;
+}
+.lottieButton2:focus {
+  outline: none !important;
+  outline-offset: none !important;
+}
 .hp-button { 
   position: absolute;
   z-index: 2;     
