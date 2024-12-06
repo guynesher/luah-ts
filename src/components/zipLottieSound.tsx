@@ -108,35 +108,32 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
             if(buttons && buttons[pos] && isAudio[0] && audio && play!==''){
               dispatch(setButton({btnname:name, condition:"play"}))
             }             
-              if(buttons[ply].condition===name && aud) {
-                setAud(false)
-                var playSound = new Howl({
-                  src: [play],
-                  html5: true,
-                  preload: true,
-                  format: ['mp3'],
+            if(buttons[ply].condition===name && aud) {
+              setAud(false)
+              var playSound = new Howl({
+                src: [play],
+                html5: true,
+                preload: true,
+                format: ['mp3'],
               });
 
-             setTimeout(function() {
+              setTimeout(function() {
+                if(dur===0) {
+                  playSound.play()
+                  playSound.on('play',function(){
+                    setDur(playSound.duration())
+                    dispatch(setButton({btnname:name, condition:"run"}))
+                  });
+                  playSound.on('end', function(){
+                    Howler.unload()
+                    setDur(0)
+                    dispatch(setButton({btnname:name, condition:"complete"}))
+                  });
+                }
+              }, 10);
 
-              if(dur===0) playSound.play()
-                playSound.on('play',function(){
-                  setDur(playSound.duration())
-                  dispatch(setButton({btnname:name, condition:"run"}))
-                });
-                playSound.on('end', function(){
-                  Howler.unload()
-                  setDur(0)
-                  dispatch(setButton({btnname:name, condition:"complete"}))
-                });
-
-              }, 100);
-              
-              }
-
-
-                  
-    }, [dispatch,name,isAudio,Howl,Howler,buttons,audio,audioData,play,aud,ply,dur]) 
+            }         
+    }, [isAudio,audio,aud,ply,dur]) 
 
     return (
         <div className={name} ref={container} />
