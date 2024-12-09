@@ -35,11 +35,11 @@ export const Header = () => {
     if(value==="הגדרות") { dispatch(setActiveStatus("Update"));navigate ("/profileSettings"); }
     if(value==="הוספת פרופיל")  { dispatch(setActiveStatus("Create"));navigate ("/profileSettings"); }
     if(value==="ניהול חשבון") { navigate ("/accountSettings") }
-    if(value==="צור קשר") { navigate ("/") }
-    if(value==="המלצות") { navigate ("/") }
-    if(value==="שירים וסרטונים") { navigate ("/") }
-    if(value==="התוכנית") { navigate ("/") }
-    if(value==="קצת עלינו") { navigate ("/") }
+    if(value==="צור קשר") { dispatch(setActiveStatus("contact"));navigate ("/") }
+    if(value==="המלצות") { dispatch(setActiveStatus("recom"));navigate ("/") }
+    if(value==="שירים וסרטונים") { dispatch(setActiveStatus("songs"));navigate ("/") }
+    if(value==="התוכנית") { dispatch(setActiveStatus("theProgram"));navigate ("/") }
+    if(value==="קצת עלינו") { dispatch(setActiveStatus("about"));navigate ("/") }
     if(value==="יציאה") { 
         dispatch(userLogout());
         navigate ("/");

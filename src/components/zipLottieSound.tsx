@@ -110,30 +110,42 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
             }             
             if(buttons[ply].condition===name && aud) {
               setAud(false)
-              var playSound = new Howl({
-                src: [play],
-                html5: true,
-                preload: true,
-                format: ['mp3'],
-              });
-
+              console.log(name+" "+Date.now()+aud)
               setTimeout(function() {
-                if(dur===0) {
-                  playSound.play()
-                  playSound.on('play',function(){
-                    setDur(playSound.duration())
-                    dispatch(setButton({btnname:name, condition:"run"}))
-                  });
-                  playSound.on('end', function(){
-                    Howler.unload()
-                    setDur(0)
-                    dispatch(setButton({btnname:name, condition:"complete"}))
-                  });
-                }
+                plySound()
               }, 10);
-
             }         
     }, [isAudio,audio,aud,ply,dur]) 
+
+    const plySound = () => {
+      var playSound = new Howl({
+        src: [play],
+        html5: true,
+        preload: true,
+        format: ['mp3'],
+      });
+
+      setTimeout(function() {
+        if(dur===0 && aud) {
+          playSound.play()
+          playSound.on('loaderror',function(){
+            dispatch(setButton({btnname:name, condition:"complete"}))
+          });
+          playSound.on('playerror',function(){
+            dispatch(setButton({btnname:name, condition:"complete"}))
+          });
+          playSound.on('play',function(){
+            setDur(playSound.duration())
+            dispatch(setButton({btnname:name, condition:"run"}))
+          });
+          playSound.on('end', function(){
+            Howler.unload()
+            setDur(0)
+            dispatch(setButton({btnname:name, condition:"complete"}))
+          });
+        }
+      }, 10);
+    }
 
     return (
         <div className={name} ref={container} />

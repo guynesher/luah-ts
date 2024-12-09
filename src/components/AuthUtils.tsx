@@ -179,8 +179,9 @@ export const AuthUtils = (user:any, email:any) => {
   }, [ip])
 
   const getIp = async () => {
-    const response = await fetch("https://ipapi.co/json/")
-    const data = await response.json()
+    //const response = await fetch("https://ipapi.co/json/")
+    //const data = await response.json()
+    const data:any={ip:"?"}
     setIp(data.ip)
   }
 

@@ -44,7 +44,7 @@ function CoursesScreen() {
   const navigate=useNavigate()
   const audio = useAppSelector(selectAudio)
   const [value, setValue] = useState<string>();
-  const [curUP, seCurtUp] = useState<string>("");
+  const [curUP, setCurUp] = useState<string>("");
   const lsPrograms = useAppSelector(selectPrograms)
 
   Hub.listen('auth', (data) => {
@@ -65,7 +65,7 @@ function CoursesScreen() {
       dispatch(getPrograms(currentUP?.userProgramId))
       if(value==="Program0101" && currentUP?.isOpen) navigate('/CourseMap1')
       if(value==="Program0102" && currentUP?.isOpen) navigate('/CourseMap2')
-      if(!currentUP?.isOpen) seCurtUp(currentUP?.userProgramId)
+      if(!currentUP?.isOpen) setCurUp(currentUP?.userProgramId)
     }
     setValue("")
 }, [value])
