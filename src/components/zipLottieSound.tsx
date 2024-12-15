@@ -26,6 +26,7 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
     const [play,setPlay] = useState<string>('');
     const [aud, setAud] = useState<boolean>(false);
     const [dur, setDur] = useState<number>(0);
+    const [tm, setTime] = useState<number>(0);
     const dispatch = useDispatch();
         const buttons = useAppSelector(selectButtons)
     const audio = useAppSelector(selectAudio)
@@ -71,12 +72,12 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
             anim.addEventListener('DOMLoaded', function () { dispatch(setButton({btnname:name, condition:"on"})); });
 
             if(iconMenu){iconMenu.addEventListener('mouseenter', () => {
-              dispatch(setButton({btnname:name, condition:"mouseenter"}))
+              //dispatch(setButton({btnname:name, condition:"mouseenter"}))
               anim.playSegments([segments[2],segments[3]],true);
             })}
       
             if(iconMenu){iconMenu.addEventListener('mouseleave', () => {
-              dispatch(setButton({btnname:name, condition:"mouseleave"}))
+              //dispatch(setButton({btnname:name, condition:"mouseleave"}))
               anim.playSegments([segments[0],segments[1]] ,true);
             })}
             //For iOS system
@@ -103,6 +104,8 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
             }
           }, [dispatch,mount,name,loop,autoplay,data,buttons,segments,dt]) 
 
+
+          
           useEffect(() => {
             //For imidiate play at enter
             if(buttons && buttons[pos] && isAudio[0] && audio && play!==''){
@@ -110,12 +113,18 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
             }             
             if(buttons[ply].condition===name && aud) {
               setAud(false)
-              console.log(name+" "+Date.now()+aud)
+              setTime(Date.now())
+              //console.log(name+" "+Date.now()+aud)
               setTimeout(function() {
                 plySound()
-              }, 10);
-            }         
-    }, [isAudio,audio,aud,ply,dur]) 
+              }, 20);
+            }  
+            if(buttons && buttons[pos] && buttons[pos].condition==="run") {
+              //console.log(dur*1000,Date.now()-tm)
+              if(dur!==0 && dur*1000<Date.now()-tm) 
+                dispatch(setButton({btnname:name, condition:"complete"}))
+            }       
+          }, [isAudio,audio,aud,ply,dur]) 
 
     const plySound = () => {
       var playSound = new Howl({
@@ -124,10 +133,12 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
         preload: true,
         format: ['mp3'],
       });
-
+      
       setTimeout(function() {
-        if(dur===0 && aud) {
-          playSound.play()
+        const s:string[]=[]
+        if(dur===0 && aud && Object.keys(s).length===0) {
+          s.push(playSound.play().toString())
+          //console.log(s)
           playSound.on('loaderror',function(){
             dispatch(setButton({btnname:name, condition:"complete"}))
           });
@@ -136,6 +147,7 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
           });
           playSound.on('play',function(){
             setDur(playSound.duration())
+            setTime(Date.now())
             dispatch(setButton({btnname:name, condition:"run"}))
           });
           playSound.on('end', function(){
@@ -144,7 +156,7 @@ const ZipLottieSound: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, nam
             dispatch(setButton({btnname:name, condition:"complete"}))
           });
         }
-      }, 10);
+      }, 20);
     }
 
     return (

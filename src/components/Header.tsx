@@ -7,11 +7,14 @@ import { userLogout } from '../actions/userActions';
 import { selectProfile, setActiveStatus } from '../reducers/misSlice';
 //import { getUrl } from 'aws-amplify/storage';
 import { selectUser } from '../reducers/userSlice';
+import SpecialMenuBar from './specialMenuBar';
+import { VscAccount } from 'react-icons/vsc';
 
 export const Header = () => {
   const { tokens } = useTheme();
   const [width, setWidth] = useState(window.innerWidth);
   const [value, setValue] = useState<string>();
+  const [reg, setReg] = useState<boolean>();
   const [profile, setProfile] = useState<string>("שלום");
   const navigate=useNavigate()
   const dispatch = useAppDispatch()
@@ -26,10 +29,18 @@ export const Header = () => {
 
   useEffect(() => {
      if(lsProfile.currentProfile!==value) {
-        //console.log(lsProfile.currentProfile,value)
         setValue(lsProfile.currentProfile)
       }
   }, [lsProfile,value]);
+
+  useEffect(() => {
+    if(lsUser && lsUser.id==="") {
+       setReg(false)
+     }
+     else {
+        setReg(true)
+     }
+ }, [lsUser,reg]);
 
   useEffect(() => {
     if(value==="הגדרות") { dispatch(setActiveStatus("Update"));navigate ("/profileSettings"); }
@@ -43,6 +54,9 @@ export const Header = () => {
     if(value==="יציאה") { 
         dispatch(userLogout());
         navigate ("/");
+    }
+    if(value==="כניסה") { 
+      navigate ("/Courses");
     }
     if(value!=="הגדרות" && value!=="ניהול חשבון" && value!=="יציאה" && value!=="צור קשר" && value!=="הוספת פרופיל" &&
         value!=="המלצות" && value!=="שירים וסרטונים" && value!=="התוכנית" && value!=="קצת עלינו") {
@@ -67,6 +81,7 @@ export const Header = () => {
         <Flex direction="row" justifyContent="space-between" paddingTop="1rem">
             <Image
                 alt="logo"
+                id="logo"
                 // src={fileURL}
                 src="/Logo.png"
                 height="80px"
@@ -74,9 +89,15 @@ export const Header = () => {
                 opacity="100%"
                 onClick={()=>lsUser.isAdmin? navigate('/Admin'):""}
                 />
+                {reg && 
             <MenuBar setValue={setValue} 
                     contents={[...lsProfile.profileList,"הוספת פרופיל",null,"הגדרות","ניהול חשבון",null,"יציאה"]} 
                     trig={true} current={profile?profile:"שלום"}/>
+                  }
+                  {!reg && 
+          <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>setValue("כניסה")}> 
+              <VscAccount size={'40px'} color={'#fc0303'}/> כניסה</Button>
+                  }  
             {width>800 && 
                 <>
                 <Button className="btn" onClick={()=>setValue("קצת עלינו")}>קצת עלינו</Button>
@@ -86,9 +107,13 @@ export const Header = () => {
                 <Button className="btn" onClick={()=>setValue("שירים וסרטונים")}>שירים וסרטונים </Button>
                 </>
             }
-            <MenuBar setValue={setValue} 
-                    contents={["קצת עלינו","התוכנית","שירים וסרטונים",null,"המלצות","צור קשר"]} 
-                    trig={false} current="גיא"/>
+        <SpecialMenuBar setValue={setValue}
+                alig='flex-start' 
+                contents={["BtnAlynu","BtnProgram","BtnRec","BtnContact","BtnShirim"]}
+                audioContents={["BtnAlynu","BtnProgram","BtnRec","BtnContact","BtnShirimNew"]}
+                names={["קצת עלינו","התוכנית","המלצות","צור קשר","שירים וסרטונים"]}  
+                segments={[[0,90,10,80,0,90],[0,149,15,90,0,149],[37,135,37,135,37,135],[0,80,28,82,0,80],[0,120,0,120,0,120]]}/>
+
         </Flex>
     </View>
     </Grid>

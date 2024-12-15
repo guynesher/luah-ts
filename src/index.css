@@ -193,3 +193,12 @@ a {
   .iconBg:hover{
     background-color: hsl(59, 38%, 56%);
   }
+
+  .sidebar {
+
+    position: sticky;
+    top: 0;
+    right: 5px;
+    background-color: transparent;
+    padding-top: 20px;
+  }

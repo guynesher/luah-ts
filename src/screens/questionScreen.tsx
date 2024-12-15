@@ -301,7 +301,7 @@ useEffect(() => {
                       if(step<correctStep) setStep(step+1)
                       setUpload(true)  
                       setMistakeNum("0")         
-                      dispatch(setButton({btnname:item.animationName, condition:"on"}))
+                      dispatch(setButton({btnname:item.animationName, condition:"off"}))
                     })
               );
           }
@@ -309,7 +309,7 @@ useEffect(() => {
               Promise.resolve().then(() => 
                   flushSync(() => {
                       setMistake(false)         
-                      dispatch(setButton({btnname:item.animationName, condition:"on"}))
+                      dispatch(setButton({btnname:item.animationName, condition:"off"}))
                     })
               );
           }  
@@ -317,7 +317,7 @@ useEffect(() => {
               Promise.resolve().then(() => 
                   flushSync(() => {
                       setHelp(false)  
-                      dispatch(setButton({btnname:item.animationName, condition:"on"}))
+                      dispatch(setButton({btnname:item.animationName, condition:"off"}))
                  })
               );   
           } 
@@ -512,7 +512,7 @@ const dragHandler = (e:any,name:string) => {
                     w={width*Number(pageItem.picWidth)/100} 
                     h={height*Number(pageItem.picLength)/100}/> 
                 </div> 
-            </div> : pageItem.step===step && showNumber===pageItem.continueTo &&
+            </div> : pageItem.step===step && showNumber.toString()===pageItem.continueTo && 
             pageItem.lineType==="show" ?
             <div key={pageItem.id} className='hp-button' style={{width: pageItem.picWidth+"%", 
             height: pageItem.picLength+"%", right: pageItem.picPositionX+"%", 
@@ -523,14 +523,14 @@ const dragHandler = (e:any,name:string) => {
                     w={width*Number(pageItem.picWidth)/100} 
                     h={height*Number(pageItem.picLength)/100}/> 
                 </div> 
-            </div> : pageItem.step===step &&
+            </div> : pageItem.step===step && //!help && 
             pageItem.lineType==="btn" ?
             <div key={pageItem.id} className='hp-button' style={{width: pageItem.picWidth+"%", 
             height: pageItem.picLength+"%", right: pageItem.picPositionX+"%", 
             top: pageItem.picPositionY+"%"}} 
                 hidden={help && pageItem.continueTo==="help"}> 
                 <Button backgroundColor="transparent" className={pointer?'lottieButton2':'lottieButton'} hidden={upload}
-                        onClick={()=>clickHandler(pageItem.continueTo,pageItem.animationName) }>
+                        onClick={()=>clickHandler(pageItem.continueTo,pageItem.animationName) } disabled={help}>
                     <ZipLottieBTN loop={pageItem.loop} autoplay={pageItem.autoplay} data={pageItem.animationName} 
                     isAudio={[pageItem.isAudioPlay,pageItem.isAudioHoover,pageItem.isAudioClick]} 
                     segments={JSON.parse(pageItem.segments)} 
@@ -602,7 +602,7 @@ const dragHandler = (e:any,name:string) => {
             height: pageItem.picLength+"%", right: pageItem.picPositionX+"%", 
             top: pageItem.picPositionY+"%"}}>
                 <div style={{backgroundColor:'transparent'}}  className={pointer?'lottieButton2':'lottieButton'}>
-                    <ZipLottieSound loop={pageItem.loop} autoplay={pageItem.autoplay} data={pageItem.animationName} 
+                    <ZipLottieSound loop={pageItem.loop} autoplay={true} data={pageItem.animationName} 
                     isAudio={[buttons.find(btn=>btn.btnname===pageItem.animationName)?.condition==="on",pageItem.isAudioHoover,pageItem.isAudioClick]} 
                     segments={JSON.parse(pageItem.segments)} 
                     name={pageItem.animationName} 
@@ -614,7 +614,7 @@ const dragHandler = (e:any,name:string) => {
             height: pageItem.picLength+"%", right: pageItem.picPositionX+"%", 
             top: pageItem.picPositionY+"%"}}>
                 <div style={{backgroundColor:'transparent'}}  className={pointer?'lottieButton2':'lottieButton'}>
-                    <ZipLottieSound loop={pageItem.loop} autoplay={pageItem.autoplay} data={pageItem.animationName} 
+                    <ZipLottieSound loop={pageItem.loop} autoplay={true} data={pageItem.animationName} 
                     isAudio={[buttons.find(btn=>btn.btnname===pageItem.animationName)?.condition==="on",pageItem.isAudioHoover,pageItem.isAudioClick]} 
                     segments={JSON.parse(pageItem.segments)} 
                     name={pageItem.animationName} 
@@ -626,7 +626,7 @@ const dragHandler = (e:any,name:string) => {
             height: pageItem.picLength+"%", right: pageItem.picPositionX+"%", 
             top: pageItem.picPositionY+"%"}}>
                 <div style={{backgroundColor:'transparent'}}  className={pointer?'lottieButton2':'lottieButton'}>
-                    <ZipLottieSound loop={pageItem.loop} autoplay={pageItem.autoplay} data={pageItem.animationName} 
+                    <ZipLottieSound loop={pageItem.loop} autoplay={true} data={pageItem.animationName} 
                     isAudio={[buttons.find(btn=>btn.btnname===pageItem.animationName)?.condition==="on",pageItem.isAudioHoover,pageItem.isAudioClick]} 
                     segments={JSON.parse(pageItem.segments)} 
                     name={pageItem.animationName} 
@@ -638,7 +638,7 @@ const dragHandler = (e:any,name:string) => {
             height: pageItem.picLength+"%", right: pageItem.picPositionX+"%", 
             top: pageItem.picPositionY+"%"}}>
                 <div style={{backgroundColor:'transparent'}} className={pointer?'lottieButton2':'lottieButton'}> 
-                    <ZipLottieSound loop={pageItem.loop} autoplay={pageItem.autoplay} data={pageItem.animationName} 
+                    <ZipLottieSound loop={pageItem.loop} autoplay={true} data={pageItem.animationName} 
                     isAudio={[buttons.find(btn=>btn.btnname===pageItem.animationName)?.condition==="on",pageItem.isAudioHoover,pageItem.isAudioClick]} 
                     segments={JSON.parse(pageItem.segments)} 
                     name={pageItem.animationName} 
@@ -651,7 +651,7 @@ const dragHandler = (e:any,name:string) => {
             top: pageItem.picPositionY+"%"}}
             hidden={!voice}> 
                 <div style={{backgroundColor:'transparent'}} className={pointer?'lottieButton2':'lottieButton'}> 
-                    <ZipLottieSound loop={pageItem.loop} autoplay={pageItem.autoplay} data={pageItem.animationName} 
+                    <ZipLottieSound loop={pageItem.loop} autoplay={true} data={pageItem.animationName} 
                     isAudio={[buttons.find(btn=>btn.btnname===pageItem.animationName)?.condition==="on",pageItem.isAudioHoover,pageItem.isAudioClick]} 
                     segments={JSON.parse(pageItem.segments)} 
                     name={pageItem.animationName} 

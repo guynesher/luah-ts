@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import {unzipRaw} from 'unzipit';
 import {flushSync} from 'react-dom';
 import { getUrl } from 'aws-amplify/storage';
-import { selectAudio, selectButtons, setButton } from '../reducers/misSlice';
+import { clearPlay, selectAudio, selectButtons, setButton } from '../reducers/misSlice';
 import { useAppSelector } from '../store/hooks';
 import { Howl, Howler } from 'howler';
 
@@ -128,6 +128,7 @@ const ZipLottieBTN: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name,
                 } 
                 hoverSound.on('end', function(){
                   Howler.unload()
+                  dispatch(clearPlay())
                   setAud(false)
                 });
               }     
@@ -135,12 +136,14 @@ const ZipLottieBTN: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name,
               Howler.unload()
               setAud(false)
               dispatch(setButton({btnname:name, condition:"off"}))
+              //dispatch(clearPlay())
             }   
             } 
 
             //For play at click
             if(buttons && buttons[pos]?.condition==="click" && isAudio[2] && audio && buttons[focus].condition===name){
               Howler.unload()
+              dispatch(clearPlay())
               var clickSound = new Howl({
                   src: [click],
                   html5: true,
@@ -154,6 +157,7 @@ const ZipLottieBTN: React.FC<ZipLottieBTNProps> = ({ loop, autoplay, data, name,
                 Howler.unload()
                 setAud(false)
                 dispatch(setButton({btnname:name, condition:"complete"}))
+                dispatch(clearPlay())
               });
             }            
 

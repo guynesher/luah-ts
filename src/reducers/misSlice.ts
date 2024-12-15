@@ -134,6 +134,16 @@ export const misSlice = createAppSlice({
         state.buttons = [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}]
       },
     ),
+    clearPlay: create.reducer(
+      (state) => {
+        const play = state.buttons.map(e => e.btnname).indexOf("play")
+        if(state.buttons[play].condition==="play" && state.buttons[play].btnname!=="") {
+          const nm=state.buttons[play].btnname
+          const btn = state.buttons.map(e => e.btnname).indexOf(nm)
+          state.buttons[btn].condition="complete"
+        } 
+      },
+    ),
     setAudio: create.reducer(
       (state, action: PayloadAction<boolean>) => {
         state.audio=action.payload
@@ -664,7 +674,7 @@ export const misSlice = createAppSlice({
 
 // Action creators are generated for each case reducer function.
 export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, 
-        setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, 
+        setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, clearPlay, 
         getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest,
         clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems} = misSlice.actions
 
