@@ -27,6 +27,7 @@ const LottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments
     alignItems="flex-start"
     position="relative"
     backgroundColor="purple.10"
+    style={{boxShadow:"10px 5px 5px gray",   borderRadius: "25px"}}
   >
     <div  style={{width: width, height: height, alignSelf: "center"}}>
     <div >

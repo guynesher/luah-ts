@@ -476,6 +476,34 @@ export const misSlice = createAppSlice({
         },
       },
     ),
+    createNewContact: create.asyncThunk(
+      async (params: string[]) => {
+        const timestamp = Date.now().toString()+Math.abs(Date.now()).toString(16)
+        const f=await client.models.Contact.create(
+          { contactId: "CNT"+timestamp,  
+            userId: params[0]==="X"?"273542832-4021-70e3-063a-86b143392525":params[0],
+            name: params[1],
+            email: params[2],
+            phone: params[3],
+            text: params[4], 
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        console.log(f,params)
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
     createLevel: create.asyncThunk(
       async (params: string[]) => {
         const timestamp = Math.abs(Date.now()).toString(16)+params[0]
@@ -674,7 +702,7 @@ export const misSlice = createAppSlice({
 
 // Action creators are generated for each case reducer function.
 export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, 
-        setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, clearPlay, 
+        setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, clearPlay, createNewContact, 
         getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest,
         clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems} = misSlice.actions
 

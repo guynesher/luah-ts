@@ -107,13 +107,13 @@ export const Header = () => {
                 <Button className="btn" onClick={()=>setValue("שירים וסרטונים")}>שירים וסרטונים </Button>
                 </>
             }
-        <SpecialMenuBar setValue={setValue}
-                alig='flex-start' 
-                contents={["BtnAlynu","BtnProgram","BtnRec","BtnContact","BtnShirim"]}
-                audioContents={["BtnAlynu","BtnProgram","BtnRec","BtnContact","BtnShirimNew"]}
-                names={["קצת עלינו","התוכנית","המלצות","צור קשר","שירים וסרטונים"]}  
-                segments={[[0,90,10,80,0,90],[0,149,15,90,0,149],[37,135,37,135,37,135],[0,80,28,82,0,80],[0,120,0,120,0,120]]}/>
 
+        <SpecialMenuBar setValue={setValue} 
+                alig='flex-start'
+                contents={["BtnAlynu","BtnProgram","BtnShirim","BtnRec","BtnContact"]}
+                audioContents={["BtnAlynu","BtnProgram","BtnShirimNew","BtnRec","BtnContact"]}
+                names={["קצת עלינו","התוכנית","שירים וסרטונים","המלצות","צור קשר"]}  
+                segments={[[0,90,10,80,0,90],[0,149,15,90,0,149],[0,120,0,120,0,120],[37,135,37,135,37,135],[0,80,28,82,0,80]]}/>
         </Flex>
     </View>
     </Grid>

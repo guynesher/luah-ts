@@ -195,10 +195,14 @@ a {
   }
 
   .sidebar {
-
     position: sticky;
     top: 0;
     right: 5px;
     background-color: transparent;
     padding-top: 20px;
+  }
+
+  .card:hover {
+    background-color: hsl(300, 95%, 30%);
+    box-shadow: 10px 10px 10px ;
   }

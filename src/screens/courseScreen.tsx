@@ -115,7 +115,11 @@ useEffect(() => {
               color={"purple.100"}>
                    תוכניות הלימוד
             </Text>
-            <Flex direction={{ base: 'column', medium: 'row' }} gap="medium" margin="40px">
+            <Flex direction={'row'} gap="medium"  
+                 width="100%" 
+                 wrap={"wrap"} 
+                 justifyContent="center"
+                 alignItems="center">
           <LottieCard name="Program0101" data="Program0101" audioData="Program0101" segments={[0,120,10,80,0,120]} 
                 width="50%" height="50%" price='50 ש"ח' isOpen={lsPrograms.find(prog=>prog?.programName===PROGRAMS[0])?.isOpen}
               mainText='קורס קריאה הכנה לכיתה א לילדים שאוהבים ללמוד בכיף' setValue={setValue}/>
@@ -128,14 +132,6 @@ useEffect(() => {
           </Flex>
           </Card>
           </Grid>
-          {/* <div className='hp-button' style={{width: "30%", height: "30%", right: "50%", top: "10%"}}>
-            <div className='lottieButton'>
-              <ZipLottieSound loop={false} autoplay={true} data={"logo"} 
-                    isAudio={[true,true,true]} 
-                    segments={[0,40,0,40,0,40]} name={"logo"} 
-                    audioData={"logo"}/>
-            </div>
-          </div> */}
         </Flex> 
       )}
     </Authenticator>

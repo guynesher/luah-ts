@@ -75,7 +75,7 @@ const schema = a.schema({
         user: a.belongsTo('User', 'userId'),
         name: a.string(),
         email: a.email(),
-        phone: a.phone(),
+        phone: a.string(),
         text: a.string(),
         isAnswered: a.boolean(),
         createdAt: a.timestamp(),

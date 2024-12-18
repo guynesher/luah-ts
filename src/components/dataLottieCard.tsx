@@ -1,8 +1,6 @@
 
 import { Flex, Heading, Text } from '@aws-amplify/ui-react';
-//import ZipLottieBTN from './zipLottieBtn';
-//import LocalLottie from './localLottie';
-import ZipLottieBTN from './zipLottieBtn';
+import GlobalLottie from './globalLottie';
 
 interface LottieCardProps {
     mainText?: string;
@@ -13,26 +11,32 @@ interface LottieCardProps {
     audioData?: string;
     width?: string;
     height?: string;
+    cardWidth?: string;
+    cardHeight?: string;
 }
 
-const DataLottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments, width, height,heading, mainText}) => {
+const DataLottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments, width, height,heading, mainText,
+  cardWidth="350px", cardHeight="320px"}) => {
   return (
   <Flex
     gap="0"
     direction="column"
-    width="320px"
-    justifyContent="center"
-    alignItems="flex-start"
+    width={cardWidth}
+    height={cardHeight}
+    justifyContent="flex-start"
+    alignItems="center"
     position="relative"
-    backgroundColor="purple.10"
+    backgroundColor="white"
+    style={{boxShadow:"10px 5px 5px gray",   borderRadius: "25px"}}
   >
-    <div  style={{width: width, height: height, alignSelf: "center"}}>
-    <div >
-    <ZipLottieBTN loop={false} autoplay={true} data={data} 
-        isAudio={[false,true,false]} 
-        segments={segments} name={name} 
-        audioData={audioData}></ZipLottieBTN>
-        </div>
+    <div  style={{width: width, height: height, alignSelf: "center", padding:"10px"}}>
+      <div>
+      <GlobalLottie loop={false} autoplay={true} data={data} 
+          isAudio={[false,false,false]} 
+          segments={segments} name={name} 
+          audioData={audioData}>
+        </GlobalLottie>
+      </div>
     </div>
     <Flex
       gap="25px"
@@ -52,30 +56,33 @@ const DataLottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segm
         shrink="0"
         alignSelf="stretch"
         position="relative"
+        height="50px"
       >         
         <Heading level={1}
-          fontFamily="Inter"
+          fontFamily="sans-serif"
           fontSize="30px"
+          fontStyle={"italic"}
           fontWeight="700"
-          color="purple.80"
+          color="blue.80"
           lineHeight="30px"
-          textAlign="right"
+          textAlign="center"
           display="block"
           shrink="0"
           alignSelf="stretch"
           position="relative"
           whiteSpace="pre-wrap"
+          padding={"10px"}
         >
           {heading}
         </Heading>
       </Flex>
       <Text
-        fontFamily="Inter"
+        fontFamily="sans-serif"
         fontSize="25px"
         fontWeight="700"
-        color="purple.90"
+        color="blue.60"
         lineHeight="25px"
-        textAlign="right"
+        textAlign="center"
         display="block"
         shrink="0"
         alignSelf="stretch"

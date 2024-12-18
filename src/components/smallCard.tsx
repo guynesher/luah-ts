@@ -1,7 +1,7 @@
 
 //import ZipLottieBTN from './zipLottieBtn';
 //import LocalLottie from './localLottie';
-import ZipLottieBTN from './zipLottieBtn';
+import GlobalLottie from './globalLottie';
 
 interface LottieCardProps {
     setValue: (value: string) => void;
@@ -18,10 +18,10 @@ const SmallCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments,
   <>
     <div  style={{width: width, height: height, alignSelf: "center"}}>
     <div onClick={()=>{setValue(name)}}>
-    <ZipLottieBTN loop={false} autoplay={true} data={data} 
+    <GlobalLottie loop={false} autoplay={true} data={data} 
         isAudio={[false,true,false]} 
         segments={segments} name={name} 
-        audioData={audioData}></ZipLottieBTN>
+        audioData={audioData}></GlobalLottie>
         </div>
     </div>
   </>
