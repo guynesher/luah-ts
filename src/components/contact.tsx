@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Button, Card, Flex, Grid, Input, Label, Message, Text, TextAreaField } from "@aws-amplify/ui-react";
+import { useState } from "react";
+import { Button, Flex, Input, Label, Message, Text, TextAreaField } from "@aws-amplify/ui-react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { createNewContact } from "../reducers/misSlice";
 import { selectUser } from "../reducers/userSlice";
@@ -26,7 +26,7 @@ const Contact: React.FC<ScreenSize> = () => {
   const [email, setEmail] = useState<string>();
   const [validEmail, setValidEmail] = useState<boolean>(true);
   const [phone, setPhone] = useState<string>();
-  const [nav, setNav] = useState<boolean>(false);
+  //const [nav, setNav] = useState<boolean>(false);
   const dispatch = useAppDispatch()
   const lsUser = useAppSelector(selectUser)
 //   useEffect(() => {
