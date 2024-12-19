@@ -479,25 +479,26 @@ export const misSlice = createAppSlice({
     createNewContact: create.asyncThunk(
       async (params: string[]) => {
         const timestamp = Date.now().toString()+Math.abs(Date.now()).toString(16)
-        const f=await client.models.Contact.create(
+        const check=await client.models.Contact.create(
           { contactId: "CNT"+timestamp,  
             userId: params[0]==="X"?"273542832-4021-70e3-063a-86b143392525":params[0],
             name: params[1],
             email: params[2],
             phone: params[3],
             text: params[4], 
-          }
+            isAnswered: false,
+          }, {authMode:"apiKey"}
         )
         .catch((error: any)=>console.log('GET call failed: ',error))
-        console.log(f,params)
-        return 
+        return check?.data?.contactId?true:false
       },
       {
         pending: state => {
           state.misStatus = "loading"
         },
-        fulfilled: (state) => {
+        fulfilled: (state, action) => {
           state.misStatus = "idle"
+          if(action.payload) state.activeStatus = "contactDone"
         },
         rejected: state => {
           state.misStatus = "failed"

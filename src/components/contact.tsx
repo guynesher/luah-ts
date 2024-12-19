@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Flex, Input, Label, Message, Text, TextAreaField } from "@aws-amplify/ui-react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { createNewContact } from "../reducers/misSlice";
+import { createNewContact, selectActiveStatus, setActiveStatus } from "../reducers/misSlice";
 import { selectUser } from "../reducers/userSlice";
 
 
@@ -26,17 +26,17 @@ const Contact: React.FC<ScreenSize> = () => {
   const [email, setEmail] = useState<string>();
   const [validEmail, setValidEmail] = useState<boolean>(true);
   const [phone, setPhone] = useState<string>();
-  //const [nav, setNav] = useState<boolean>(false);
+  const [newContact, setNewContact] = useState<boolean>(false);
   const dispatch = useAppDispatch()
   const lsUser = useAppSelector(selectUser)
-//   useEffect(() => {
-//     if(nav) {
-//       setTimeout(function () {
-//         setNav(false)
-//         if(mode==="program") {dispatch(getAllPrograms([])); setMode("programs");}
-//       }, 1000);
-//     }
-//   }, [nav]);
+  const status = useAppSelector(selectActiveStatus)
+
+  useEffect(() => {
+    if(status==="contactDone") {
+        dispatch(setActiveStatus("contact"))
+        setNewContact(true)
+    }
+  }, [status]);
 
 function ValidateEmail(input:string) {
     var valid = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -54,7 +54,6 @@ function ValidateEmail(input:string) {
         setValidEmail(true)
         dispatch(createNewContact([lsUser.id?lsUser.id:"X",name?name:"",email?email:"", phone?phone:"", text?text:""]))
     }
-    // if(mode==="program") {}
   }  
 
   return (
@@ -78,7 +77,15 @@ function ValidateEmail(input:string) {
               width="100%">
                    טופס יצירת קשר
             </Text>
- 
+            {newContact &&
+              <Flex direction="row" justifyContent={"center"}>
+              <Message
+                variation="filled"
+                colorTheme="success"
+                heading="ההודעה התקבלה">
+                </Message>
+              </Flex>   
+                }
             <Flex direction={'column'} gap="large" justifyContent="center" margin="10px 10px">
                 
               <Flex direction="row">
