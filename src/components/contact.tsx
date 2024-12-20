@@ -4,17 +4,6 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { createNewContact, selectActiveStatus, setActiveStatus } from "../reducers/misSlice";
 import { selectUser } from "../reducers/userSlice";
 
-
-
-        // contactId: a.id().required(),
-        // user: a.belongsTo('User', 'userId'),
-        // name: a.string(),
-        // email: a.email(),
-        // phone: a.phone(),
-        // text: a.string(),
-        // isAnswered: a.boolean(),
-        // createdAt: a.timestamp(),
-        // userId: a.id()
 interface ScreenSize {
   width: number;
   height: number;
@@ -92,6 +81,7 @@ function ValidateEmail(input:string) {
               <Label htmlFor="name" color="purple.100" width={"50%"} fontSize={"20px"}> שם </Label>
               <Input id="name" name="name" size="large" 
                     value={name?name:""} 
+                    autoComplete="off"
                     onChange={(e)=>setName(e.target.value)}
                     width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
               </Flex>
@@ -99,6 +89,7 @@ function ValidateEmail(input:string) {
               <Label htmlFor="email" color="purple.100" width={"50%"} fontSize={"20px"}>  אי-מייל  </Label>
               <Input id="email" name="email" size="large"
                     value={email?email:""} 
+                    autoComplete="off"
                     onChange={(e)=>setEmail(e.target.value)}
                     width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
               </Flex>
@@ -115,6 +106,7 @@ function ValidateEmail(input:string) {
                 <Label htmlFor="phone" color="purple.100" width={"50%"} fontSize={"20px"}>  טלפון </Label>
                 <Input id="phone" name="phone" size="large" 
                       value={phone?phone:""} 
+                      autoComplete="off"
                       onChange={(e)=>setPhone(e.target.value)}
                       width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
                 </Flex>

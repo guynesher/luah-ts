@@ -43,7 +43,7 @@ const Home: React.FC<ScreenSize> = ({width}) => {
               loop={false}
               controls={true}
               width={width?width.toString():"640"}
-              //height={height?height.toString():"360"}
+              
             />
         </View>
         { Number(width.toString())>640 && 

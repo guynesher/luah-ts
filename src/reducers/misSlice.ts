@@ -46,6 +46,7 @@ export interface MisSliceState {
   buttons: ActionBtn[]
   audio: boolean
   test: boolean
+  recoms: any[] | undefined
   programs: any[] | undefined
   levels: any[] | undefined
   chapters: any[] | undefined
@@ -71,6 +72,7 @@ const initialState: MisSliceState = {
   buttons: [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}],
   audio:false,
   test:false,
+  recoms: undefined,
   programs: undefined,
   levels: undefined,
   chapters: undefined,
@@ -176,6 +178,32 @@ export const misSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.misStatus = "idle"
           state.items=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getBestRecom: create.asyncThunk(
+      async () => {
+        const response = await client.models.Recommendation.list(
+          { filter: {rating: {eq:5}}, selectionSet: ["recommendationId","name","text","rating","createdAt"],
+            authMode:"apiKey" }
+        ,)
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        const backsort=response?.data
+           .sort(function(a:any,b:any) {
+           return Number(b.recommendationId.slice(3,16)) - Number(a.recommendationId.slice(3,16))
+             })
+        return backsort
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.recoms=action.payload
         },
         rejected: state => {
           state.misStatus = "failed"
@@ -505,6 +533,35 @@ export const misSlice = createAppSlice({
         },
       },
     ),
+    createNewRecommendation: create.asyncThunk(
+      async (params: string[]) => {
+        const timestamp = Date.now().toString()+Math.abs(Date.now()).toString(16)
+        const check=await client.models.Recommendation.create(
+          { recommendationId: "RCM"+timestamp,  
+            userId: params[0],
+            name: params[1],
+            text: params[2],
+            rating: Number(params[3]),
+          }, {authMode:"apiKey"}
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return check?.data?.recommendationId?true:false
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          if(action.payload) {
+            state.activeStatus = "recomDone"
+          }
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
     createLevel: create.asyncThunk(
       async (params: string[]) => {
         const timestamp = Math.abs(Date.now()).toString(16)+params[0]
@@ -694,6 +751,7 @@ export const misSlice = createAppSlice({
     selectAudio: mis => mis.audio,
     selectTest: mis => mis.test,
     selectItems: mis => mis.items,
+    selectRecoms: mis => mis.recoms,
     selectPrograms: mis => mis.programs,
     selectLevels: mis => mis.levels,
     selectChapters: mis => mis.chapters,
@@ -702,13 +760,13 @@ export const misSlice = createAppSlice({
 })
 
 // Action creators are generated for each case reducer function.
-export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, 
+export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, getBestRecom,
         setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, clearPlay, createNewContact, 
-        getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest,
+        getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest, createNewRecommendation,
         clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems} = misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
 export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, 
         selectAudio , selectItems, selectPrograms, selectLevels, selectChapters,selectQuestions, 
-        selectTest} = misSlice.selectors
+        selectTest, selectRecoms} = misSlice.selectors
 

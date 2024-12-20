@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { selectActiveStatus, selectAudio, setAudio } from "../reducers/misSlice";
-import { Button, Card, Flex, Grid } from "@aws-amplify/ui-react";
+import { getBestRecom, selectActiveStatus, selectAudio, selectRecoms, setActiveStatus, setAudio } from "../reducers/misSlice";
+import { Button, Card, Flex, Link, Text, View } from "@aws-amplify/ui-react";
 import { Header } from "../components/Header";
 import Access from "../components/accessibility";
 import Sidebar from "../components/sideBar";
@@ -14,6 +14,7 @@ import Songs from "../components/songs";
 import Recommendations from "../components/recommendations";
 import HomeSmall from "../components/homeSmall";
 import Contact from "../components/contact";
+import { selectUser } from "../reducers/userSlice";
 
 function HomeScreen() {
   const activeStt: string = useAppSelector(selectActiveStatus);
@@ -27,6 +28,10 @@ function HomeScreen() {
   const page4 = useRef<HTMLDivElement | null>(null);
   const page5 = useRef<HTMLDivElement | null>(null);
   const page6 = useRef<HTMLDivElement | null>(null);
+  const [reg, setReg] = useState<boolean>();
+  const [items, setItems]=useState<any[]>([])
+  const lsUser = useAppSelector(selectUser)
+  const recoms = useAppSelector(selectRecoms)
 
   window.onclick = function() {
     if (!audio) {
@@ -41,6 +46,16 @@ function HomeScreen() {
     if (activeStt === "recom" && page5.current) {page5.current.scrollIntoView();}
     if (activeStt === "contact" && page6.current) {page6.current.scrollIntoView();}
   }, [activeStt]);
+
+  useEffect(() => {
+    if(Object.keys(items).length===0) {
+          dispatch(getBestRecom())
+          setItems([1])
+        }
+    if(recoms) {
+      setItems(recoms.slice(0, 6)) 
+    }
+  }, [recoms]);
 
   useEffect(() => {
     const initWidth = (window.innerWidth > 0) ? window.innerWidth : window.screen.width;
@@ -58,16 +73,20 @@ function HomeScreen() {
 
   window.onresize = resize;
 
+  useEffect(() => {
+    if(lsUser && lsUser.id==="") {
+       setReg(false)
+     }
+     else {
+        setReg(true)
+     }
+ }, [lsUser,reg]);
+
   return (
     <Flex direction={"column"}>
       <Header />
       <Access />
-      <Grid
-        columnGap="0.5rem"
-        rowGap="0.5rem"
-        templateColumns="1fr 1fr 1fr"
-        templateRows="1fr 3fr 1fr"
-      >
+
         <Card
           columnStart="1"
           columnEnd="-1"
@@ -78,40 +97,54 @@ function HomeScreen() {
           <Home width={width} height={height} />
           <br></br>
           <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={'#fc0303'}/> הרשמה (ללא תשלום)</Button>  
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/> {reg?'כניסה':'הרשמה (ללא תשלום)'} </Button>  
           <div ref={page2}>
             <Aleynu width={width} height={height} /> 
           </div>
           <br></br>
           <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={'#fc0303'}/> הרשמה (ללא תשלום)</Button>  
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/>{reg?'כניסה':'הרשמה (ללא תשלום)'}</Button>  
           <div ref={page3}>
             <Program width={width} height={height} /> 
           </div>
           <br></br>
           <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={'#fc0303'}/> הרשמה (ללא תשלום)</Button>  
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/>{reg?'כניסה':'הרשמה (ללא תשלום)'}</Button>  
           <div ref={page4}>
             <Songs width={width} height={height} /> 
           </div>
           <br></br>
           <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={'#fc0303'}/> הרשמה (ללא תשלום)</Button>  
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/> {reg?'כניסה':'הרשמה (ללא תשלום)'}</Button>  
           <div ref={page5}>
-            <Recommendations width={width} height={height} update={activeStt==="recom"}/> 
+            <Recommendations width={width} height={height} items={items}/> 
           </div>
           <br></br>
           <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={'#fc0303'}/> הרשמה (ללא תשלום)</Button> 
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/> {reg?'כניסה':'הרשמה (ללא תשלום)'}</Button> 
           <div ref={page6}>
             <Contact width={width} height={height} /> 
           </div>
           <br></br>
-          <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={'#fc0303'}/> הרשמה (ללא תשלום)</Button>   
-            {/* <button onClick={() => navigate('/LandingPage')}>Landing Page</button> */}
+  
+          <View color={"purple.80"} textAlign="center"padding={"12px"}>
+            <Text>
+              &copy; כל הזכויות שמורות לאתר לו"ח ולמפעיליו - אסור להשתמש בדמויות ובתכנים ללא אישור
+            </Text>
+            <Link
+            color="#007EB9" width={"50%"} padding={"30px"}
+            onClick={()=>{dispatch(setActiveStatus("takanon"));navigate("/Takanon");}}
+            >
+            תקנון אתר
+            </Link>
+            <Link
+            color="#007EB9" width={"50%"}
+            onClick={()=>{dispatch(setActiveStatus("pratiut"));navigate("/Takanon");}}
+            >
+            מדיניות פרטיות 
+            </Link>
+          </View>
         </Card>
-      </Grid>
     </Flex>
   );
 }

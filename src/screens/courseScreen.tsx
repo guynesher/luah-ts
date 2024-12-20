@@ -1,4 +1,4 @@
-import { Authenticator, Card, Flex, Grid, Text } from '@aws-amplify/ui-react';
+import { Authenticator, Card, Flex, Text } from '@aws-amplify/ui-react';
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import {components} from '../services/components'
 import { useEffect, useState} from 'react';
@@ -92,12 +92,6 @@ useEffect(() => {
         <Flex direction={"column"}>
           <AuthUtils email={user?.signInDetails?.loginId} user={user?.userId}/>
           <Header></Header>
-          <Grid
-          columnGap="0.5rem"
-          rowGap="0.5rem"
-          templateColumns="1fr 1fr 1fr"
-          templateRows="1fr 3fr 1fr"
-        >
           <Card 
             columnStart="1"
             columnEnd="-1"
@@ -108,14 +102,15 @@ useEffect(() => {
               as="p"
               lineHeight="1.5em"
               fontWeight={400}
-              fontSize="2em"
-              fontStyle="normal"
+              fontSize="2.5rem"
+              fontStyle="oblique"
               textDecoration="none"
-              width="70vw"
+              width="100%"
+              padding={"1rem"}
               color={"purple.100"}>
                    תוכניות הלימוד
             </Text>
-            <Flex direction={'row'} gap="medium"  
+            <Flex direction={'row'} gap="medium"  padding={"1.1rem"}
                  width="100%" 
                  wrap={"wrap"} 
                  justifyContent="center"
@@ -131,7 +126,6 @@ useEffect(() => {
               mainText='קורס משולב גם חשבון וגם קריאה' setValue={setValue}/>
           </Flex>
           </Card>
-          </Grid>
         </Flex> 
       )}
     </Authenticator>

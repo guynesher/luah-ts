@@ -54,14 +54,14 @@ const Program: React.FC<ScreenSize> = ({width}) => {
           </Flex>
          </View>
           <View  alignSelf={"center"}>
-              <ReactPlayer
+              {vid && <ReactPlayer
               url={`https://youtube.com/embed/${vid}?autoplay=0`}
               playing={false}
                 loop={false}
                 controls={true}
                 width={(width && width<400)?width:width*.7}
                 height={(width && width<400)?width:width*.7}
-              />
+              />}
           </View>
         </Flex>
   );

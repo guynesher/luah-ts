@@ -22,6 +22,7 @@ import ProfileSettings from './screens/profileSettings';
 import ShopScreen from './screens/shopScreen';
 import AdminUtilsScreen from './screens/admin/adminUtilsScreen';
 import ProgramsScreen from './screens/admin/programsScreen';
+import TakanonScreen from './screens/takanonScreen';
 
 const router = createBrowserRouter([
   { path: "/", element: <HomeScreen/>, },
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
   { path: "/accountSettings/", element: <AccountSettings/>, }, 
   { path: "/profileSettings/", element: <ProfileSettings/>, }, 
   { path: "/ShopScreen/", element: <ShopScreen/>, },
+  { path: "/Takanon/", element: <TakanonScreen/>, },
 
   { path: "/Login/", element: <Login/>, },
   { path: "/Data/", element: <Data/>, },
