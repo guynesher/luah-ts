@@ -5,11 +5,12 @@ import { selectActiveStatus, selectProfile, setActiveStatus } from "../reducers/
 import { selectUser, setUser } from "../reducers/userSlice";
 import { PROGRAMS } from "../constants/userConstants";
 //import { useEffect, useState } from "react";
-import { Authenticator, Button, Card, Flex, Grid, Input, Label, Text } from "@aws-amplify/ui-react";
+import { Authenticator, Button, Card, Flex, Input, Label, Loader, Text } from "@aws-amplify/ui-react";
 import { AuthUtils } from "../components/AuthUtils";
 import { Header } from "../components/Header";
 import {components} from '../services/components'
 import { useEffect, useState } from "react";
+import { Hub } from 'aws-amplify/utils';
 
 function ProfileSettings() {
   const navigate=useNavigate()
@@ -18,14 +19,25 @@ function ProfileSettings() {
   const [username, setUsername] = useState<string>("");  
   const [surname, setSurname] = useState<string>("");
   const [phone, setPhone] = useState<string>("");  
-  const [picture, setPicture] = useState<string>("");
+  const [picture] = useState<string>("");
   const [street, setStreet] = useState<string>("");  
   const [house, setHouse] = useState<string>("");
   const [appartment, setAppartment] = useState<string>("");
   const [city, setCity] = useState<string>("");  
   const [zipcode, setZipcode] = useState<string>("");
+  const[show,setShow]=useState(false)
   const activeStt = useAppSelector(selectActiveStatus)
   const dispatch = useAppDispatch()
+
+  Hub.listen('auth', (data) => {
+    if(!show && data.payload.event==="signedIn") {
+      setShow(true) 
+      navigate("/Courses") 
+    }
+    if(!show && data.payload.event==="signedOut") {
+      setShow(false) 
+    }
+  });
 
   useEffect(() => {
     if(activeStt!=="") { //If there was signIn it creates user and email for the Auth checks
@@ -43,6 +55,12 @@ function ProfileSettings() {
       }, 1500);}
       if(activeStt==="Update") {
         setTimeout(function () {
+        // dispatch(setUser({
+        //   id: "",cognitoUserName: lsUser.cognitoUserName.toString(), name: "", surname: "",phone: "", 
+        //   email: lsUser.email , picture: "", 
+        //   isAdmin: false, sessionStart: new Date().toString(), computerIP: lsUser.computerIP.toString(), 
+        //   address: { id: "", street: "", house: "", appartment: "", city: "", zipcode: "", } ,
+        //   programs: [], cards: [], orders: [], recommendation: [], contact: [], userData: [],}));
         dispatch(setActiveStatus(""))
       }, 1500);}
     }
@@ -50,6 +68,7 @@ function ProfileSettings() {
   //DB connections: 
   //Create New Profile/Update profile
   const  profileUpdate= () => {
+    dispatch(setActiveStatus("courses"))
     const newProfileNumber:string=(lsProfile?.profileList?.length+1).toString()
     //const currentProfileNumber:string=lsUser.id.slice(0,1)
     if(Number(newProfileNumber)<=9) {
@@ -60,7 +79,7 @@ function ProfileSettings() {
         (lsProfile.currentProfileNumber!=="" && lsUser?.id!=="Create")?lsProfile.currentProfileNumber:newProfileNumber,
         username,surname,phone,picture,street,house,appartment,city,zipcode,
         ...PROGRAMS]
-        console.log(params)
+        //console.log(params)
         if(lsUser?.id==="Create")createUserWithAdressAndPrograms(params)
         else updateUserWithAdress(params)
       setTimeout(function () {
@@ -75,12 +94,11 @@ function ProfileSettings() {
       <Flex direction={"column"}>
         <AuthUtils email={user?.signInDetails?.loginId} user={user?.userId}/>
         <Header></Header>
-        <Grid
-          columnGap="0.5rem"
-          rowGap="0.5rem"
-          templateColumns="1fr 1fr 1fr"
-          templateRows="1fr 3fr 1fr"
-        >
+          { activeStt!==""? <Card 
+            columnStart="1"
+            columnEnd="-1"
+            backgroundColor="purple.40"
+          ><Loader variation="linear"></Loader></Card>:
           <Card 
             columnStart="1"
             columnEnd="-1"
@@ -123,13 +141,13 @@ function ProfileSettings() {
                     onChange={(e)=>setPhone(e.target.value)}
                     width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
               </Flex>
-              <Flex direction="row">
+              {/* <Flex direction="row">
               <Label htmlFor="piccolor" color="purple.100" width={"50%"}> צבע פרופיל </Label>
               <Input id="piccolor" name="piccolor" size="large" placeholder={lsUser.picture}
                     value={picture} 
                     onChange={(e)=>setPicture(e.target.value)}
                     width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
-              </Flex>
+              </Flex> */}
             </Flex>
             <Text     variation="primary"
               as="p"
@@ -179,16 +197,11 @@ function ProfileSettings() {
               </Flex>
             </Flex>
             <Flex direction="row" gap="large" justifyContent="center" margin="30px">
-              <Button type="submit" onClick={()=>profileUpdate()}>עדכון פרטים</Button>
-              <Button onClick={()=>navigate('/Courses')}>חזרה  </Button>
+              <Button type="submit" className={"btn"}  onClick={()=>profileUpdate()}>עדכון פרטים</Button>
+              <Button className={"btn"} onClick={()=>navigate('/Courses')}>חזרה  </Button>
             </Flex>
           </Card>
-          <Card
-            columnStart="1"
-            columnEnd="-1"
-          >      
-          </Card>
-        </Grid>
+          }
       </Flex>
         )}
       </Authenticator>

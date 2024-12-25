@@ -21,7 +21,9 @@ const TakanonScreen: React.FC = () => {
         <Flex direction={"column"}> 
             <Flex width="100%">
             <Button width={"100%"} backgroundColor="purple.20" 
-                    onClick={()=>navigate(activeStt==="home"?"/":"/")}>חזרה</Button>
+                    onClick={()=>
+                        navigate((activeStt==="Program0101"||activeStt==="Program0102"||activeStt==="Programs01010102")?"/Payment":"/")}>
+                            חזרה</Button>
             </Flex>
             <div ref={takanon}></div>
             <Text     variation="primary"
@@ -41,7 +43,9 @@ const TakanonScreen: React.FC = () => {
             </Flex>
             <Flex width="100%">
             <Button width={"100%"} backgroundColor="purple.20" 
-                    onClick={()=>navigate(activeStt==="home"?"/":"/")}>חזרה</Button>
+                onClick={()=>
+                    navigate((activeStt==="Program0101"||activeStt==="Program0102"||activeStt==="Programs01010102")?"/Payment":"/")}>
+                        חזרה</Button>
             </Flex>
             <div ref={pratiut}></div>
             <Text     variation="primary"
@@ -60,7 +64,9 @@ const TakanonScreen: React.FC = () => {
                 {Tak2}
             </Flex>
             <Button width={"100%"} backgroundColor="purple.20" 
-                    onClick={()=>navigate(activeStt==="home"?"/":"/")}>חזרה</Button>
+                    onClick={()=>
+            navigate((activeStt==="Program0101"||activeStt==="Program0102"||activeStt==="Programs01010102")?"/Payment":"/")}>
+                חזרה</Button>
         </Flex>
         );
 };

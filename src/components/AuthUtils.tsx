@@ -82,7 +82,7 @@ export const AuthUtils = (user:any, email:any) => {
     }, [usrData]);
 
   useEffect(() => { //If there are user details put the details on the store 
-    console.log(usrData)
+    //console.log(usrData)
   if(usrData && Object.keys(usrData.res.data.getUserByEmail.items).length>0 && usrData.res2.data.getAdress) {
       
       dispatch(setUser({

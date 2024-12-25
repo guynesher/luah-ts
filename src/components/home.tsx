@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import ReactPlayer from 'react-player/lazy'
+//import ReactPlayer from 'react-player/lazy'
 import { Flex, View } from '@aws-amplify/ui-react';
 import SmallCard from './smallCard';
 import CounterCard from './counterCard';
+import ReactPlayer from 'react-player';
 
 interface ScreenSize {
   width: number;

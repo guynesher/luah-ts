@@ -42,7 +42,7 @@ export async function createUserWithAdressAndPrograms(params:string[]) { //[cogn
             computerIP: params[2],
             userPrograms: up, 
             cards:[],
-            name: params[4],surname: params[5],picture: params[7],//phone: params[6],
+            name: params[4],surname: params[5],picture: params[7],phone: params[6],
         }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
 
         if (user?.data?.userId) await client.models.Adress.create({
@@ -63,8 +63,8 @@ export async function createUserWithAdressAndPrograms(params:string[]) { //[cogn
                 treasure: 0,
                 chapterAverage: 100,
                 email:user?.data?.email,
-                currentStatus: JSON.stringify(CHAPTERS[0]),
-                nextQuestion: JSON.stringify(CHAPTERS[0]),
+                currentStatus: JSON.stringify(CHAPTERS[0]), //need to be changed for another PROGRAM
+                nextQuestion: JSON.stringify(CHAPTERS[0]),  //need to be changed for another PROGRAM
             })
             .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
         }
@@ -78,7 +78,7 @@ export async function updateUserWithAdress(params:string[]) { //[cognitoUserName
       const up:string[]=[]
       for (let i = 13; i < params.length; i++) {
         up.push(params[3]+params[0]+params[i]);
-      }console.log(params)
+      }//console.log(params)
       const user = await client.models.User.update({
           userId: params[3]+params[0], //Can have more than one profile
           email: params[1],
@@ -87,7 +87,7 @@ export async function updateUserWithAdress(params:string[]) { //[cognitoUserName
           sessionStart: Date.now(), 
           computerIP: params[2],
           userPrograms: up, 
-          name: params[4],surname: params[5],picture: params[7],//phone: params[6],
+          name: params[4],surname: params[5],picture: params[7],phone: params[6],
       }).catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
 
       if (user?.data?.userId) await client.models.Adress.update({

@@ -60,7 +60,7 @@ const Program: React.FC<ScreenSize> = ({width}) => {
                 loop={false}
                 controls={true}
                 width={(width && width<400)?width:width*.7}
-                height={(width && width<400)?width:width*.7}
+                height={(width && width<400)?width:width*.45}
               />}
           </View>
         </Flex>

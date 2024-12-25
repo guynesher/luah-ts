@@ -102,10 +102,11 @@ function ShopScreen() {
 
 //Handles the clicks on the app and update the userProgram to the DB and locally 
 const clickHandler = (ans:string,data:string) => {
+  console.log(ans,data)
     if(data==="BtnHP" || data==="BtnChangeUser") {navigate('/Courses')}
-    if(data==="BtnTreasure") {navigate('/ShopScreen')}
     if(data==="BtnShirTochnit") {navigate('/ShirScreen')}
     if(Number(ans)>=1) { setStep(Number(ans)+1) }
+    if(data==="BtnTreasure") {setStep(2)}
     if(!Number(ans) && ans.split("-")[0]==="Card" &&
     treasure-((Number(ans.split("-")[2])+1)<3?3:Number(ans.split("-")[2])+1)>=0 && //user have enough money 
     !lsUser.cards.includes("Q0101-"+ans)){ //user don't have this card already 

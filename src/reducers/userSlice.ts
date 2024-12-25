@@ -228,42 +228,65 @@ export const userSlice = createAppSlice({
       },
     ),
     getPrograms: create.asyncThunk(
-      async (param:string) => { 
-        const currentPrograms= await client.models.UserProgram.get(
-          { userProgramId: param},
+      async (params:string[]) => {
+        const check=await client.models.UserProgram.list( {filter:
+            { email: {eq: params[0]} }}
         ).catch((error: any)=>console.log('GET call failed: ',error))
-        if(!currentPrograms?.data?.isOpen){
-          await client.models.UserProgram.update(
-            { userProgramId: param, expiredAt: 100},
-          ).catch((error: any)=>console.log('GET call failed: ',error))
-          if(currentPrograms?.data?.programName===PROGRAMS[0]){ 
-            window.open(
-            'https://mrng.to/I6wUoZNVYt',
-            '_blank' // <- This is what makes it open in a new window.
-            );
+        const results:any=[] 
+        if(check) 
+          for (let index = 0; index < check?.data.length; index++) {
+            if(params.includes(check.data[index].userProgramId)) {
+              const r=await client.models.UserProgram.update(
+                { userProgramId: check.data[index].userProgramId, expiredAt: 100},
+              ).catch((error: any)=>console.log('GET call failed: ',error))  
+              results.push(r?.data)
+            }
+            else 
+            if(check.data[index].expiredAt===100) {
+              const r=await client.models.UserProgram.update(
+                { userProgramId: check.data[index].userProgramId, expiredAt: Date.now()},
+              ).catch((error: any)=>console.log('GET call failed: ',error))
+              if(check.data[index].userProgramId.slice(0,1)===params[1].slice(0,1)) results.push(r?.data)
+            }                     
           }
-        }
-        return currentPrograms
+
+        // const currentPrograms= await client.models.UserProgram.get(
+        //   { userProgramId: params[0]},
+        // ).catch((error: any)=>console.log('GET call failed: ',error))
+        // if(!currentPrograms?.data?.isOpen){
+        //   await client.models.UserProgram.update(
+        //     { userProgramId: param, expiredAt: 100},
+         // ).catch((error: any)=>console.log('GET call failed: ',error))
+          // if(currentPrograms?.data?.programName===PROGRAMS[0]){ 
+          //   window.open(
+          //   'https://mrng.to/I6wUoZNVYt',
+          //   '_blank' // <- This is what makes it open in a new window.
+          //   );
+          // }
+        //}
+        return results
       },
       {
         pending: state => {
           state.status = "loading"
         },
-        fulfilled: (state, action) => {
+        fulfilled: (state,action) => {
           state.status = "idle"
-          const params:any=action.payload?.data
-          const currprogls: Record<string, any> | null = localStorage.getItem('luah-programs') ? JSON.parse(localStorage.getItem('luah-programs') as string) : null;
-          const ind=currprogls?.findIndex((prog:any)=>prog.userProgramId===params.userProgramId)
-          //console.log(ind)
-          state.programs[ind].chapterAverage=params.chapterAverage
-          state.programs[ind].currentStatus=params.currentStatus
-          state.programs[ind].email=params.email
-          state.programs[ind].expiredAt=params.isOpen?params.expiredAt:100
-          state.programs[ind].isOpen=params.isOpen
-          state.programs[ind].nextQuestion=params.nextQuestion
-          state.programs[ind].programName=params.programName
-          state.programs[ind].treasure=params.treasure
-          state.programs[ind].userProgramId=params.userProgramId
+          for (let index = 0; index < action.payload.length; index++) {
+            const params:any = action.payload[index];
+            const currprogls: Record<string, any> | null = localStorage.getItem('luah-programs') ? JSON.parse(localStorage.getItem('luah-programs') as string) : null;
+            const ind=currprogls?.findIndex((prog:any)=>prog.userProgramId===params.userProgramId)
+            //console.log(ind,params)
+            state.programs[ind].chapterAverage=params.chapterAverage
+            state.programs[ind].currentStatus=params.currentStatus
+            state.programs[ind].email=params.email
+            state.programs[ind].expiredAt=params.expiredAt
+            state.programs[ind].isOpen=params.isOpen
+            state.programs[ind].nextQuestion=params.nextQuestion
+            state.programs[ind].programName=params.programName
+            state.programs[ind].treasure=params.treasure
+            state.programs[ind].userProgramId=params.userProgramId
+          }
           localStorage.setItem('luah-programs',JSON.stringify(state.programs))
         },
         rejected: state => {

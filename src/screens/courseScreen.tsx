@@ -8,11 +8,11 @@ import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
 import { Header } from '../components/Header';
 import { AuthUtils } from '../components/AuthUtils';
-import { selectAudio, setAudio } from '../reducers/misSlice';
+import { selectAudio, setActiveStatus, setAudio } from '../reducers/misSlice';
 import LottieCard from '../components/lottieCard';
 import { getPrograms, selectPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
-import { userLogout } from '../actions/userActions';
+//import { userLogout } from '../actions/userActions';
 I18n.putVocabularies(translations);
 I18n.setLanguage('he');
 I18n.putVocabularies({
@@ -33,10 +33,6 @@ I18n.putVocabularies({
     'Reset Password': 'אפס סיסמא',
   },
 });
-//import { generateClient } from 'aws-amplify/data';
-//import { type Schema } from '../../amplify/data/resource'
-
-//const client = generateClient<Schema>();
 
 function CoursesScreen() {
   const dispatch = useAppDispatch()
@@ -44,7 +40,8 @@ function CoursesScreen() {
   const navigate=useNavigate()
   const audio = useAppSelector(selectAudio)
   const [value, setValue] = useState<string>();
-  const [curUP, setCurUp] = useState<string>("");
+  //const [curUP, setCurUp] = useState<string>("");
+  const [cancelBtn, setCancelBtn] = useState<boolean>(false);
   const lsPrograms = useAppSelector(selectPrograms)
 
   Hub.listen('auth', (data) => {
@@ -56,25 +53,33 @@ function CoursesScreen() {
     }
   });
  
-  window.onclick = function() {if(!audio){dispatch(setAudio(true))}}       
+  window.onclick = function() {if(!audio){dispatch(setAudio(true))}}
+
+    const prog1 = lsPrograms.find((prog) => prog?.programName===PROGRAMS[0])
+    const prog2 = lsPrograms.find((prog) => prog?.programName===PROGRAMS[1])
 
   useEffect(() => {
-    let currentUP=lsPrograms.find((prog) => prog?.programName===PROGRAMS[0])
-    if(value==="Program0102") currentUP=lsPrograms.find((prog) => prog.programName===PROGRAMS[1])
-    if(value && currentUP) {
-      dispatch(getPrograms(currentUP?.userProgramId))
-      if(value==="Program0101" && currentUP?.isOpen) navigate('/CourseMap1')
-      if(value==="Program0102" && currentUP?.isOpen) navigate('/CourseMap2')
-      if(!currentUP?.isOpen) setCurUp(currentUP?.userProgramId)
+    setCancelBtn(false)
+    if(prog1?.isOpen && prog1?.isOpen) setCancelBtn(true)
+    if(value==="Program0101" && prog1?.isOpen) {navigate('/CourseMap1')}
+    if(value==="Program0102" && prog2?.isOpen) {navigate('/CourseMap2')}
+    if(value==="Program0101" && prog1 && !prog1?.isOpen) {
+      dispatch(getPrograms([prog1.email,prog1?.userProgramId]))
+      dispatch(setActiveStatus("Program0101"))
+      navigate('/Payment')
     }
-    setValue("")
-}, [value])
+    // if(value==="Program0102" && prog2 && !prog2?.isOpen) {
+    //   dispatch(getPrograms([prog2.email,prog2?.userProgramId]))
+    //   dispatch(setActiveStatus("Program0102"))
+    //   navigate('/Payment')
+    // }
+    // if(value==="Programs01010102" && prog1 && !prog1?.isOpen&& prog2 && !prog2?.isOpen) {
+    //   dispatch(getPrograms([prog1.email,prog1?.userProgramId,prog2?.userProgramId]))
+    //   dispatch(setActiveStatus("Programs01010102"))
+    //   navigate('/Payment')
+    // }
+}, [value,prog1,prog2])
 
-useEffect(() => {
-  if(curUP!=="") setTimeout(function() {
-    dispatch(userLogout())
-  }, 30000); 
-}, [value])
   //DB connections: 
   //If current user open status was changed - Change the price to "OPEN" in GREEN
   //when moving to billing update UserProgram expiredAt=100
@@ -121,9 +126,11 @@ useEffect(() => {
           <LottieCard name="Program0102" data="Program0102" audioData="logo" segments={[0,52,64,139,0,52]} 
                 width="50%" height="50%" price='בקרוב !!!' isOpen={lsPrograms.find(prog=>prog?.programName===PROGRAMS[1])?.isOpen}
               mainText='קורס חשבון הכנה לכיתה א לילדים שקצת מפחדים מחשבון' setValue={setValue}/>
-          <LottieCard name="takyHP" data="takyHP" audioData="takyHP" segments={[10,80,80,120,0,120]} 
+              {!cancelBtn && 
+          <LottieCard name="Programs01010102" data="takyHP" audioData="takyHP" segments={[10,80,80,120,0,120]} 
                 width="50%" height="50%" price='בקרוב !!!' 
               mainText='קורס משולב גם חשבון וגם קריאה' setValue={setValue}/>
+              }
           </Flex>
           </Card>
         </Flex> 
