@@ -210,6 +210,54 @@ export const misSlice = createAppSlice({
         },
       },
     ),
+    getAllUsers: create.asyncThunk(
+      async () => {
+        const response = await client.models.User.list(
+          {
+            selectionSet: ["userId","email","name","surname","cognitoUserName","computerIP","phone","isAdmin",
+              "createdAt","updatedAt"], limit: 50000
+          }
+        ,)
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return response?.data
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.items=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllUserPrograms: create.asyncThunk(
+      async () => {
+        const response = await client.models.UserProgram.list(
+          {
+            selectionSet: ["userProgramId","email","isOpen","programName","chapterAverage","treasure","currentStatus",
+              "nextQuestion","createdAt","updatedAt"], limit: 50000
+          }
+        ,)
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return response?.data
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.items=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
     getAllPrograms: create.asyncThunk(
       async (params: string[]) => {
         let response:any =[] 
@@ -763,7 +811,8 @@ export const misSlice = createAppSlice({
 export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, getBestRecom,
         setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, clearPlay, createNewContact, 
         getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest, createNewRecommendation,
-        clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems} = misSlice.actions
+        clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems, 
+        getAllUsers,getAllUserPrograms} = misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
 export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, 

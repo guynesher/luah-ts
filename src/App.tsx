@@ -20,8 +20,8 @@ import AdminScreen from './screens/admin/adminScreen';
 import AccountSettings from './screens/accountSettings';
 import ProfileSettings from './screens/profileSettings';
 import ShopScreen from './screens/shopScreen';
-import AdminUtilsScreen from './screens/admin/adminUtilsScreen';
-import ProgramsScreen from './screens/admin/programsScreen';
+//import AdminUtilsScreen from './screens/admin/adminUtilsScreen';
+//import ProgramsScreen from './screens/admin/programsScreen';
 import TakanonScreen from './screens/takanonScreen';
 import ShirScreen from './screens/shirScreen';
 import PaymentScreen from './screens/paymentScreen';
@@ -34,8 +34,8 @@ const router = createBrowserRouter([
   { path: "/CourseMap2/", element: <Map2/>, },
   { path: "/Question/", element: <QuestionScreen/>, },
   { path: "/Admin/", element: <AdminScreen/>, },  
-  { path: "/AdminPrograms/", element: <ProgramsScreen/>, },  
-  { path: "/AdminUtils/", element: <AdminUtilsScreen/>, },  
+  //{ path: "/AdminPrograms/", element: <ProgramsScreen/>, },  
+  //{ path: "/AdminUtils/", element: <AdminUtilsScreen/>, },  
   { path: "/accountSettings/", element: <AccountSettings/>, }, 
   { path: "/profileSettings/", element: <ProfileSettings/>, }, 
   { path: "/ShopScreen/", element: <ShopScreen/>, },
