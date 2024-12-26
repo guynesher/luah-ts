@@ -1,14 +1,17 @@
 import { Authenticator, Tabs } from '@aws-amplify/ui-react';
 import {components} from '../../services/components'
-import {  useState} from 'react';
+import {  useEffect, useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
 import AdminUtilsScreen from './adminUtilsScreen';
 import ProgramsScreen from './programsScreen';
+import { selectUser } from '../../reducers/userSlice';
+import { useAppSelector } from '../../store/hooks';
 
 function AdminScreen() {
   const[show,setShow]=useState(false)
   const navigate=useNavigate()
+  const user = useAppSelector(selectUser)
 
   Hub.listen('auth', (data) => {
     if(!show && data.payload.event==="signedIn") {
@@ -25,6 +28,11 @@ function AdminScreen() {
   //check user.isAdmin? CRUD all DB : navigate(/Courses) 
   //Recheck in lambda if user belongs to "Admin" group !!!
 
+    useEffect(() => {
+      if(!user?.isAdmin) {
+        navigate("/Courses")
+      }
+    }, [user])
 
   return (
     <Authenticator components={components}>

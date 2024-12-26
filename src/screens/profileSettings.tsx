@@ -40,6 +40,17 @@ function ProfileSettings() {
   });
 
   useEffect(() => {
+    setUsername(lsUser.name)
+    setSurname(lsUser.surname)
+    setPhone(lsUser.phone)
+    setStreet(lsUser.address.street)
+    setHouse(lsUser.address.house)
+    setAppartment(lsUser.address.appartment)
+    setCity(lsUser.address.city)
+    setZipcode(lsUser.address.zipcode)
+  }, [lsUser]);
+
+  useEffect(() => {
     if(activeStt!=="") { //If there was signIn it creates user and email for the Auth checks
       //console.log(activeStt)
       //if(activeStt==="Update")console.log(activeStt)
@@ -61,6 +72,14 @@ function ProfileSettings() {
         //   isAdmin: false, sessionStart: new Date().toString(), computerIP: lsUser.computerIP.toString(), 
         //   address: { id: "", street: "", house: "", appartment: "", city: "", zipcode: "", } ,
         //   programs: [], cards: [], orders: [], recommendation: [], contact: [], userData: [],}));
+        setUsername(lsUser.name)
+        setSurname(lsUser.surname)
+        setPhone(lsUser.phone)
+        setStreet(lsUser.address.street)
+        setHouse(lsUser.address.house)
+        setAppartment(lsUser.address.appartment)
+        setCity(lsUser.address.city)
+        setZipcode(lsUser.address.zipcode)
         dispatch(setActiveStatus(""))
       }, 1500);}
     }
@@ -77,11 +96,21 @@ function ProfileSettings() {
         lsUser.email,
         lsUser.computerIP.toString(),
         (lsProfile.currentProfileNumber!=="" && lsUser?.id!=="Create")?lsProfile.currentProfileNumber:newProfileNumber,
-        username,surname,phone,picture,street,house,appartment,city,zipcode,
+        username===""?"שלום"+Math.floor(Math.random() * 999):username,surname,phone,picture,street,house,appartment,city,zipcode,
         ...PROGRAMS]
-        //console.log(params)
+        console.log(params)
         if(lsUser?.id==="Create")createUserWithAdressAndPrograms(params)
-        else updateUserWithAdress(params)
+        else {
+          updateUserWithAdress(params)
+          setTimeout(function () {
+            dispatch(setUser({
+            id: "",cognitoUserName: lsUser.cognitoUserName.toString(), name: "", surname: "",phone: "", 
+            email: lsUser.email , picture: "", 
+            isAdmin: false, sessionStart: new Date().toString(), computerIP: lsUser.computerIP.toString(), 
+            address: { id: "", street: "", house: "", appartment: "", city: "", zipcode: "", } ,
+            programs: [], cards: [], orders: [], recommendation: [], contact: [], userData: [],}));
+          }, 4500);          
+        }
       setTimeout(function () {
         navigate('/Courses')
       }, 4000);
