@@ -127,7 +127,7 @@ function UsersScreen() {
 
       if(newlist && list==="send" && mode==="statistics") {
         async function sendEmail() {   
-            await getFromRestAPI(["sendEmail"])          
+            await getFromRestAPI(["sendEmail"])        
         }
         sendEmail()
       }      
