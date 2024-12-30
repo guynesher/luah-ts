@@ -416,6 +416,31 @@ export const misSlice = createAppSlice({
         },
       },
     ),
+    updateUserProgram: create.asyncThunk(
+      async (params: string[]) => {
+        const currentTimeAsMs = Number(Date.now());
+        const newTime = Number(currentTimeAsMs) + (1000 * 60 * 60 * 24 * 365);
+        await client.models.UserProgram.update(
+          { userProgramId: params[0],  
+            isOpen: params[1]==="true"?true:false,
+            expiredAt: newTime,
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
     updateProgram: create.asyncThunk(
       async (params: string[]) => {
         await client.models.Program.update(
@@ -812,7 +837,7 @@ export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurr
         setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, clearPlay, createNewContact, 
         getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest, createNewRecommendation,
         clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems, 
-        getAllUsers,getAllUserPrograms} = misSlice.actions
+        getAllUsers,getAllUserPrograms,updateUserProgram} = misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
 export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, 

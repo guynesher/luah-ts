@@ -6,7 +6,7 @@ import { generateClient } from 'aws-amplify/data';
 import { Schema } from '../../data/resource';
 import { getAdress, getUserByEmail, getUserProgram, listItemsByQuestionId } from "./graphql/queries";
 import { createAdress, createUser, createUserProgram, updateUserProgram } from "./graphql/mutations";
-
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
 Amplify.configure(
   {
@@ -37,6 +37,12 @@ Amplify.configure(
 );
 
 const dataClient = generateClient<Schema>();
+const sesClient = new SESClient({ region: env.AWS_REGION });
+type Message = {
+  subject: string;
+  body: string;
+  recipient: string;
+};
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   
@@ -53,6 +59,35 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   let res1:any ={}
   let res2:any ={}
   let res3:any =[]
+
+  //Send Email
+  const sendEmail = async (message: Message) => {
+    const { recipient, subject, body } = message;
+  
+    const command = new SendEmailCommand({
+      Source: "info.luah@gmail.com",
+      Destination: {
+        ToAddresses: [recipient]
+      },
+      Message: {
+        Body: {
+          Text: { Data: body }
+        },
+        Subject: { Data: subject }
+      }
+    });
+  
+    try {
+      const result = await sesClient.send(command);
+      console.log(`Email sent to ${recipient}: ${result.MessageId}`);
+    } catch (error) {
+      console.error(`Error sending email to ${recipient}: ${error}`);
+      throw new Error(`Failed to send email to ${recipient}`, { cause: error });
+    }
+  };
+  if(params[0]==="sendEmail") res = await sendEmail({
+    recipient:"guynesher2000@gmail.com", subject: "very nice", body:"very nice" 
+  }) 
 
   //Get User
           //params=["listUsersbyEmail",eml,usr,lsProfile.currentProfileNumber,ip?ip:"?",

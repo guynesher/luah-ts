@@ -256,20 +256,20 @@ function AdminUtilsScreen() {
           <h1>Hello {user?.signInDetails?.loginId}</h1>
           <button onClick={()=>dispatch(userLogout())}>Sign out </button>
           <button onClick={()=>navigate('/Courses')}>Courses Screen</button>
-          <div>Create Programs</div><input type="file" onChange={(e)=>createManyLines(e,"Program")}/>
-          <div>Create Levels</div><input type="file" onChange={(e)=>createManyLines(e,"Level")}/>
+          <div>Create Programs</div><input id="in1" type="file" onChange={(e)=>createManyLines(e,"Program")}/>
+          <div>Create Levels</div><input id="in2" type="file" onChange={(e)=>createManyLines(e,"Level")}/>
           <button onClick={()=>getLevelsByProgramId()}>Check that Levels are part of Program</button>
           <div>Create Chapters</div><input type="file" onChange={(e)=>createManyLines(e,"Chapter")}/>
           <button onClick={()=>getChaptersByLevelId()}>Check that Chapters are part of Level</button>
           <button onClick={()=>getQuestionssByChapterId()}>Check that Questions are part of Chapter</button>
-          <div>Create Items</div><input type="file" onChange={(e)=>createManyLines(e,"Item")}/>
+          <div>Create Items</div><input id="in3" type="file" onChange={(e)=>createManyLines(e,"Item")}/>
           <button onClick={()=>getItemsByQuestionId()}>Check that Items are part of Question</button> 
-          <Input onInput={(e) => setStart(e.currentTarget.value)}></Input>
-          <Input onInput={(e) => setEnd(e.currentTarget.value)}></Input>   
-          <div>List Chapters</div><input type="file" onChange={(e)=>createManyLines(e,"list")}/>
+          <Input id="in6" onInput={(e) => setStart(e.currentTarget.value)}></Input>
+          <Input id="in7" onInput={(e) => setEnd(e.currentTarget.value)}></Input>   
+          <div>List Chapters</div><input id="in4" type="file" onChange={(e)=>createManyLines(e,"list")}/>
           <button onClick={()=>matchQuestionIdToChapterIndex()}>Match QuestionId to Chapter Index</button>
           <button onClick={()=>matchChapterIdToChapterIndex()}>Match ChapterId to Chapter Index</button>
-          <div>Correct hoover</div><input type="file" onChange={(e)=>correctHoover(e)}/>
+          <div>Correct hoover</div><input id="in5" type="file" onChange={(e)=>correctHoover(e)}/>
           <button onClick={()=>correctHooverList()}>Correct hoover list</button>
         </main>
       )}

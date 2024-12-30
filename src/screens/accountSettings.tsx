@@ -49,9 +49,9 @@ function AccountSettings() {
 
             <Flex direction={{ base: 'column', large: 'row' }} gap="large" justifyContent="center" margin="10px 10px">
             <Flex direction="row">
-              <Label htmlFor="more" color="purple.100" width={"100%"}> פרופילים לאי מייל זה</Label>
-              {lsProfile.profileList? lsProfile.profileList.map((profile)=>
-                    <Input id={profile} name={profile} size="large" isDisabled value={profile} 
+              <Label htmlFor="more0" color="purple.100" width={"100%"}> פרופילים לאי מייל זה</Label>
+              {lsProfile.profileList? lsProfile.profileList.map((profile,index)=>
+                    <Input id={"more"+index} name={profile} size="large" isDisabled value={profile} 
                     width={{ base: '100%', large: '100%' }} backgroundColor="purple.20" color="purple.80"/>
               ):<></>
               }
@@ -63,8 +63,8 @@ function AccountSettings() {
                     width={{ base: '100%', large: '40%' }} backgroundColor="purple.20" color="purple.80"/>
             </Flex>
             <Flex direction="row" gap="medium" margin="40px">
-              <Label htmlFor="email" color="purple.100">אי-מייל </Label>
-              <Input id="email" name="email" isDisabled value={lsUser?.email} size="small" 
+              <Label htmlFor="email1" color="purple.100">אי-מייל </Label>
+              <Input id="email1" name="email1" isDisabled value={lsUser?.email} size="small" 
                     width={{ base: '100%', large: '40%' }} backgroundColor="purple.20" color="purple.80"/>
             </Flex>
             <Flex direction={{ base: 'column', large: 'row' }} gap="large" justifyContent="center" margin="10px 10px">
