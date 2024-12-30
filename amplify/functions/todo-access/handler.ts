@@ -85,9 +85,10 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       throw new Error(`Failed to send email to ${recipient}`, { cause: error });
     }
   };
-  if(params[0]==="sendEmail") res = await sendEmail({
-    recipient:"guynesher2000@gmail.com", subject: "very nice", body:"very nice" 
-  }) 
+  if(params[0]==="sendEmail") res="good"
+  // res = await sendEmail({
+  //   recipient:"guynesher2000@gmail.com", subject: "very nice", body:"very nice" 
+  // }) 
 
   //Get User
           //params=["listUsersbyEmail",eml,usr,lsProfile.currentProfileNumber,ip?ip:"?",
