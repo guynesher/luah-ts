@@ -87,7 +87,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   };
   if(params[0]==="sendEmail") //res="good"
       res = await sendEmail({
-        recipient:"guynesher2000@gmail.com", subject: "very nice", body:"very nice" 
+        recipient: params[1]?params[1]:"", subject: params[2]?params[2]:"", body: params[3]?params[3]:"" 
       }) 
 
   //Get User

@@ -393,7 +393,7 @@ const clickHandler = (ans:string,data:string) => {
   }
   if(answer==="BtnBack") {
       Howler.unload(); 
-      if(test) navigate("/AdminPrograms");
+      if(test) navigate("/Admin");
       else navigate("/CourseMap1");
   }
   if(answer==="Background") {
