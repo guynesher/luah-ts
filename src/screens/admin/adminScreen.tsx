@@ -8,6 +8,9 @@ import ProgramsScreen from './programsScreen';
 import { selectUser } from '../../reducers/userSlice';
 import { useAppSelector } from '../../store/hooks';
 import UsersScreen from './usersScreen';
+import ContactsScreen from './contactsScreen';
+import OrdersScreen from './ordersScreen';
+import ReportsScreen from './reportsScreen';
 
 function AdminScreen() {
   const[show,setShow]=useState(false)
@@ -45,9 +48,9 @@ function AdminScreen() {
             items={[
               { label: 'תוכניות', value: 'Tab 1', content: <ProgramsScreen/> },
               { label: 'משתמשים', value: 'Tab 2', content: <UsersScreen/> },
-              { label: 'הזמנות', value: 'Tab 3', content: 'Tab content #3' },
-              { label: 'דוחות', value: 'Tab 4', content: 'Tab content #4' },
-              { label: 'קשרים', value: 'Tab 5', content: 'Tab content #5' },
+              { label: 'קשרים', value: 'Tab 3', content: <ContactsScreen/> },
+              { label: 'הזמנות', value: 'Tab 4', content: <OrdersScreen/> },
+              { label: 'דוחות', value: 'Tab 5', content: <ReportsScreen/> },
               { label: 'UTILS', value: 'Tab 6', content: <AdminUtilsScreen/> },
             ]}
           />

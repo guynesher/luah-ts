@@ -98,7 +98,7 @@ function ProfileSettings() {
         (lsProfile.currentProfileNumber!=="" && lsUser?.id!=="Create")?lsProfile.currentProfileNumber:newProfileNumber,
         username===""?"שלום"+Math.floor(Math.random() * 999):username,surname,phone,picture,street,house,appartment,city,zipcode,
         ...PROGRAMS]
-        console.log(params)
+        //console.log(params)
         if(lsUser?.id==="Create")createUserWithAdressAndPrograms(params)
         else {
           updateUserWithAdress(params)

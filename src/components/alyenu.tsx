@@ -35,6 +35,12 @@ const Aleynu: React.FC<ScreenSize> = ({}) => {
           <DataLottieCard name="aInstrument" data="aInstrument" audioData="BtnAlynu" segments={[0,120,10,80,0,120]} 
                   width="30%" height="30%" heading='רכישת מיומניות טרום קריאה, ומוטוריקה עדינה'
                   mainText='למוד הבחנה בין דמות לרקע, מיקום במרחב, כיוונים וחריזה וכן כישורי שימוש בעכבר. ובכלל הפיכת זמן המחשב לזמן איכות.'/>           
+          <DataLottieCard name="aBird" data="aBird" audioData="BtnAlynu" segments={[0,10,0,90,0,90]} 
+                  width="30%" height="30%" heading="פיתוח עצמאות"
+                  mainText="הילד ילמד איך לעבוד בעצמו בתוכנית ואיך להעזר בתוכנית לצורך הבנתו"/>           
+          <DataLottieCard name="aDog" data="aDog" audioData="BtnAlynu" segments={[0,10,0,90,0,90]} 
+                  width="30%" height="30%" heading='מחיר שווה לכל נפש'
+                  mainText='הקורס הוא שנתי אך במחיר של חוברת כדי שכולם יוכלו ללמוד'/>           
           </Flex>
          </View>
   );

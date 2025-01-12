@@ -4,8 +4,9 @@ import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useEffect,
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getAllUserPrograms, getAllUsers, selectItems, updateUserProgram } from '../../reducers/misSlice';
+import { getAllUserPrograms, getAllUsers, selectUsers, updateUserProgram } from '../../reducers/misSlice';
 import getFromRestAPI from '../../actions/usersActions';
+import { NONMAILERLIST } from '../../constants/noMailer';
 
 function UsersScreen() {
   const[show,setShow]=useState(false)
@@ -17,7 +18,7 @@ function UsersScreen() {
   const [uplst, setUPLst]=useState<any>()
   const navigate=useNavigate()
   const dispatch = useAppDispatch()
-  let usersList = useAppSelector(selectItems)
+  let usersList = useAppSelector(selectUsers)
 
   Hub.listen('auth', (data) => {
     if(!show && data.payload.event==="signedIn") {
@@ -102,7 +103,9 @@ function UsersScreen() {
           }
           const len:any=Object.values(groupedItems)[index]
           const min = len.reduce(function (a:any, b:any) { return a < b ? a : b; });
-          newlst.push([Object.keys(groupedItems)[index],Array.from(len).length,min,openPrg,daysFromLast]);
+          //console.log(Math.ceil((Date.now()-Date.parse(min))/86400000))
+          newlst.push([Object.keys(groupedItems)[index],Array.from(len).length,min,
+                            Math.ceil((Date.now()-Date.parse(min))/86400000),openPrg,daysFromLast]);
         }
         setNewLst(newlst)
       }
@@ -125,11 +128,93 @@ function UsersScreen() {
         }, 2000); 
       }
 
-      if(newlist && list==="send" && mode==="statistics") {
-        async function sendEmail() {   
-            await getFromRestAPI(["sendEmail","guynesher2000@gmail.com","Working","Very good"])        
+      if(list==="welcomeEmail" || list==="welcomeUPEmail" || list==="reminderEmail"
+         || list==="reportEmail"  || list==="NoPurchaseEmail") {
+        async function sendEmail(recipient: string, subject: string, body: string) {   
+          await getFromRestAPI(["sendEmail",recipient,subject,body])        
         }
-        sendEmail()
+        if(lst && mode==="users" && list==="welcomeEmail") {
+          //Welcome new registered users (every day)
+          const numberOfDays=1
+          const groupedItems = lst.filter((item:{createdAt:any})=>Math.ceil((Date.now()-Date.parse(item.createdAt))/86400000)<=numberOfDays)
+                              .map((item:{email:any})=>item.email).filter( ( el:any ) => !NONMAILERLIST.includes( el ) )
+          const arr:string[]=Array.from(new Set(groupedItems))  
+          for (let index = 0; index < arr.length; index++) {
+            setTimeout(function() {
+              sendEmail(arr[index]?arr[index] :"","ברוך הבא לקהילת אתר לוח","אנו מודים לך על ההרשמה\n אתר לוח הוא אתר מונגש המיועד לכל ילד\n במידה ותרשם נשלח אליך דוח התקדמות שבועי של הילד ממנו תוכל ללמוד על התקדמותו של הילד\n אם אינך מעוניין לקבל מאיתנו אימיילים אנא ענה במייל חוזר למייל זה\n בבקשה הוציאו אותי מרשימת התפוצה\n תודה ויום טוב \n אתר לוח\n https://www.lu-ah.co.il/")
+              .finally(()=>console.log("Done"))
+            }, 200);
+          }     
+        }
+        if(uplst && mode==="userPrograms" && list==="welcomeUPEmail") {
+          //Welcome new purchase of program (every day)
+          const numberOfDays=1
+          const groupedItems = uplst.filter((item:{isOpen:any})=>item.isOpen)
+          .filter((item:{expiredAt:any})=>365-Math.ceil(item.expiredAt-Date.now())/86400000<=numberOfDays)
+                              .map((item:{email:any})=>item.email).filter( ( el:any ) => !NONMAILERLIST.includes( el ) )
+          const arr:string[]=Array.from(new Set(groupedItems))  
+          for (let index = 0; index < arr.length; index++) {
+            setTimeout(function() {
+              sendEmail(arr[index]?arr[index] :"","ברוך הבא לקהילת אתר לוח","אנו מודים לך על הרכישה\n אתר לוח הוא אתר מונגש המיועד לכל ילד\n פעם בשבוע נשלח אליך דוח התקדמות של הילד ממנו תוכל ללמוד על התקדמותו של הילד\n אם אינך מעוניין לקבל מאיתנו אימיילים אנא ענה במייל חוזר למייל זה\n בבקשה הוציאו אותי מרשימת התפוצה\n תודה ויום טוב \n אתר לוח\n https://www.lu-ah.co.il/")
+              .finally(()=>console.log("Done"))
+            }, 200);
+          }       
+        }
+        if(uplst && mode==="userPrograms" && list==="reminderEmail") {
+          //Reminder to use the program if the user wasn't using for 7 days or more (end of week)
+          const numberOfDays=7
+          const groupedItems1 = uplst.filter((item:{isOpen:any})=>item.isOpen)
+          .filter((item:{updatedAt:any})=>(Math.ceil(Date.now()-Date.parse(item.updatedAt))/86400000)>=numberOfDays)
+          .map((item:{userProgramId:any,email:any})=>!NONMAILERLIST.includes( item.email )?item.userProgramId:"")
+          function isNull(val:any) {return val !==""}
+          const groupedItems = groupedItems1.filter(isNull)
+          //console.log([...new Set(groupedItems)]) 
+          const arr:string[]=Array.from(new Set(groupedItems))  
+          for (let index = 0; index < arr.length; index++) {
+            setTimeout(function() {
+              sendEmail(arr[index]?arr[index] :"","תזכורת שאנו כאן כדי לעזור","לא היה זמן ללמוד השבוע \n לא נורא שבוע הבא תמשיך בתוכנית\n שים לב שהילד לא מתעצל ומנצל את התוכנית כדי ללמוד \n אם אינך מעוניין לקבל מאיתנו אימיילים אנא ענה במייל חוזר למייל זה\n בבקשה הוציאו אותי מרשימת התפוצה\n אם אתם זקוקים ליעוץ פנו אלינו דרך המייל\n תודה ויום טוב \n אתר לוח\n https://www.lu-ah.co.il/")
+              .finally(()=>console.log("Done"))
+            }, 200);
+          }  
+          //sendEmail("guynesher2000@gmail.com","Working","Very good")
+        }
+        if(uplst && mode==="userPrograms" && list==="reportEmail") {
+          //Progress report to users that used the program this week (end of week)
+          const numberOfDays=7
+          const groupedItems1 = uplst.filter((item:{isOpen:any})=>item.isOpen)
+          .filter((item:{updatedAt:any})=>(Math.ceil(Date.now()-Date.parse(item.updatedAt))/86400000)<numberOfDays)
+          .map((item:{userProgramId:any,email:any})=>!NONMAILERLIST.includes( item.email )?item.userProgramId:"")
+          const groupedItems2 = uplst.filter((item:{isOpen:any})=>item.isOpen)
+          .filter((item:{updatedAt:any})=>(Math.ceil(Date.now()-Date.parse(item.updatedAt))/86400000)<numberOfDays)
+          .map((item:{userProgramId:any,email:any})=>!NONMAILERLIST.includes( item.email )?item.email:"")
+          function isNull(val:any) {return val !==""}
+          const groupedItems = groupedItems1.filter(isNull)
+          const arr:string[]=Array.from(new Set(groupedItems)) 
+          const mailsList = groupedItems2.filter(isNull) 
+          const arr1:string[]=Array.from(new Set(mailsList))  
+          if(arr.length===arr1.length){
+            for (let index = 0; index < arr.length; index++) {
+              setTimeout(function() {
+                sendEmail(arr1[index]?arr1[index] :"","דוח ההתקדמות השבועי של הילד שלכם - אתר לוח","הילד למד השבוע \n אנא אמרו לו כל הכבוד גם בשמנו\n דוח ההתקדמות השבועי מצורף בתחתית העמוד \n אם אינך מעוניין לקבל מאיתנו אימיילים אנא ענה במייל חוזר למייל זה\n בבקשה הוציאו אותי מרשימת התפוצה\n אם אתם זקוקים ליעוץ פנו אלינו דרך המייל\n תודה ויום טוב \n אתר לוח\n https://www.lu-ah.co.il/UserReport/"+arr[index])
+                .finally(()=>console.log("Done"))
+              }, 200);
+            } 
+          } 
+        }
+        if(newlist && mode==="statistics" && list==="NoPurchaseEmail") {
+          //Reminder to purchase a program if the user only registered for more than 7 days (end of week)
+          const numberOfDays=7
+          const groupedItems1 = newlist.map((item:any)=>(item[3]>=numberOfDays && item[4]===0)?item[0]:"")
+          function isNull(val:any) {return val !==""}
+          const groupedItems = groupedItems1.filter(isNull).filter( ( el:any ) => !NONMAILERLIST.includes( el ) )
+          const arr:string[]=Array.from(new Set(groupedItems))  
+          for (let index = 0; index < arr.length; index++) {
+            setTimeout(function() {
+              sendEmail(arr[index]?arr[index] :"","תזכורת שאנו כאן כדי לעזור","עדיין לא נרשמת לתוכניות שלנו \n שים לב לכל הדברים היפים שיש לנו להציע באתר\n אם אינך מעוניין לקבל מאיתנו אימיילים אנא ענה במייל חוזר למייל זה\n בבקשה הוציאו אותי מרשימת התפוצה\n אם אתם זקוקים ליעוץ פנו אלינו דרך המייל\n תודה ויום טוב \n אתר לוח\n https://www.lu-ah.co.il/")
+              .finally(()=>console.log("Done"))
+            }, 200);
+          }  
+        }
       }      
 
     }
@@ -162,6 +247,8 @@ function UsersScreen() {
               onClear={()=>setEml("")}
               value={eml}
             />
+            <Button className='btn' style={{backgroundColor:"red"}} 
+                  onClick={()=>clickHandler("welcomeEmail")}>שלח אי מייל ברכה לנרשמים חדשים   </Button>
             </Flex>
             </Flex>
             <Table
@@ -210,6 +297,12 @@ function UsersScreen() {
             <Button className='btn' onClick={()=>clickHandler("programName")}>סדר לפי מצב נוכחי   </Button>
             <Button className='btn' onClick={()=>clickHandler("reverse")}>בסדר הפוך  </Button>
             <Button className='btn' onClick={()=>{setOpn(!opn);clickHandler("open")}}>להראות רק אם פתוח  </Button>
+            <Button className='btn' style={{backgroundColor:"red"}}
+                onClick={()=>clickHandler("welcomeUPEmail")}>שלח אי מייל ברכה ללומדים חדשים   </Button>
+            <Button className='btn' style={{backgroundColor:"red"}}
+                onClick={()=>clickHandler("reminderEmail")}>שלח אי מייל תזכורת שבועי ללומדים שלא למדו   </Button>
+            <Button className='btn' style={{backgroundColor:"red"}}
+                onClick={()=>clickHandler("reportEmail")}>שלח אי מייל התקדמות שבועית ללומדים שלמדו   </Button>
             </Flex>
             </Flex>
             <Table
@@ -265,7 +358,8 @@ function UsersScreen() {
             <>
             <Flex direction={{ base: 'column', large: 'row' }} gap="large" justifyContent="center" margin="10px 10px">
             <Flex direction="row">
-            <Button className='btn' onClick={()=>clickHandler("send")}>שלח אימייל לכל הנרשמים שלא שילמו </Button>
+            <Button className='btn' style={{backgroundColor:"red"}}
+                onClick={()=>clickHandler("NoPurchaseEmail")}>שלח אימייל לכל הנרשמים שלא רכשו תוכנית </Button>
             </Flex>
             </Flex>
             <Table
@@ -285,7 +379,7 @@ function UsersScreen() {
             </TableHead>
             <TableBody>
               {newlist && newlist.map((itm:any,index:any) => (
-              <TableRow key={"newlist"+index} className={itm[3]?"adminTableRow":"tableRow"}>
+              <TableRow key={"newlist"+index} className={itm[4]?"adminTableRow":"tableRow"}>
                 <TableCell>
                     {/* <VscEdit className={"iconBg"} onClick={() =>  {setItm(itm);setMode("chapter");}}/>
                     <VscAdd className={"iconBg"}/>
@@ -294,9 +388,9 @@ function UsersScreen() {
                 <TableCell >{itm[0]}</TableCell>
                 <TableCell >{itm[1]}</TableCell>
                 <TableCell >{itm[2]}</TableCell>
-                <TableCell >{itm[2]}</TableCell>
                 <TableCell >{itm[3]}</TableCell>
                 <TableCell >{itm[4]}</TableCell>
+                <TableCell >{itm[5]}</TableCell>
                 {/* <TableCell >{itm.updatedAt}</TableCell> */}
               </TableRow>
                 ))}

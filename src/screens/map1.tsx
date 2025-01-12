@@ -9,7 +9,7 @@ import { AuthUtils } from '../components/AuthUtils';
 import { selectPrograms, setPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
 //import LocalLottie from '../components/localLottie';
-import { CHAPTERS } from '../constants/program0101';
+import { CHAPTERS0101 } from '../constants/program0101';
 import { updateUserPrograms } from '../actions/usersActions';
 import ZipLottieBTN from '../components/zipLottieBtn';
 
@@ -124,12 +124,12 @@ const clickHandler = (ans:string,data:string) => {
         userIndex=JSON.parse(curStatus).userIndex
         userLevel=JSON.parse(curStatus)?.chapterDetails?.level
       }
-      const chpaterStartIndex=CHAPTERS.filter((chapter)=>Number(chapter.chapterIndex)===Number(ans)*1000000).map((chapter)=>chapter.userIndex)[0]
-      const lvl=CHAPTERS.filter((chapter)=>Number(chapter.chapterIndex)===Number(ans)*1000000).map((chapter)=>chapter.chapterDetails?.level)[0]
+      const chpaterStartIndex=CHAPTERS0101.filter((chapter)=>Number(chapter.chapterIndex)===Number(ans)*1000000).map((chapter)=>chapter.userIndex)[0]
+      const lvl=CHAPTERS0101.filter((chapter)=>Number(chapter.chapterIndex)===Number(ans)*1000000).map((chapter)=>chapter.chapterDetails?.level)[0]
       if(userIndex>=chpaterStartIndex && prog) {
         (async () => { 
-          const maxChapter=CHAPTERS[userIndex-1] 
-          const nextQuests=CHAPTERS[(userLevel!==lvl)?(chpaterStartIndex-1):(userIndex-1)] //if it is not the current level continue to the first chapter at the requested level
+          const maxChapter=CHAPTERS0101[userIndex-1] 
+          const nextQuests=CHAPTERS0101[(userLevel!==lvl)?(chpaterStartIndex-1):(userIndex-1)] //if it is not the current level continue to the first chapter at the requested level
           const tresure:string=prog.treasure?prog.treasure.toString():"0"
           const chapterAverage:string=prog.chapterAverage?prog.chapterAverage.toString():"100"
           updateUserPrograms([prog.userProgramId, JSON.stringify(maxChapter), JSON.stringify(nextQuests),

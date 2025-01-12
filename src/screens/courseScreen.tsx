@@ -8,7 +8,7 @@ import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
 import { Header } from '../components/Header';
 import { AuthUtils } from '../components/AuthUtils';
-import { selectAudio, setActiveStatus, setAudio } from '../reducers/misSlice';
+import { selectAudio, setActiveStatus, setAudio, setCurrentProgram } from '../reducers/misSlice';
 import LottieCard from '../components/lottieCard';
 import { getPrograms, selectPrograms } from '../reducers/userSlice';
 import { PROGRAMS } from '../constants/userConstants';
@@ -61,8 +61,8 @@ function CoursesScreen() {
   useEffect(() => {
     setCancelBtn(false)
     if(prog1?.isOpen && prog1?.isOpen) setCancelBtn(true)
-    if(value==="Program0101" && prog1?.isOpen) {navigate('/CourseMap1')}
-    if(value==="Program0102" && prog2?.isOpen) {navigate('/CourseMap2')}
+    if(value==="Program0101" && prog1?.isOpen) {dispatch(setCurrentProgram(PROGRAMS[0]));navigate('/CourseMap1')}
+    if(value==="Program0102" && prog2?.isOpen) {dispatch(setCurrentProgram(PROGRAMS[1]));navigate('/CourseMap2')}
     if(value==="Program0101" && prog1 && !prog1?.isOpen) {
       dispatch(getPrograms([prog1.email,prog1?.userProgramId]))
       dispatch(setActiveStatus("Program0101"))

@@ -103,7 +103,7 @@ function ShopScreen() {
 //Handles the clicks on the app and update the userProgram to the DB and locally 
 const clickHandler = (ans:string,data:string) => {
   console.log(ans,data)
-    if(data==="BtnHP" || data==="BtnChangeUser") {navigate('/Courses')}
+    if(data==="BtnHP" || data==="BtnChangeUser") {navigate('/CourseMap1')}
     if(data==="BtnShirTochnit") {navigate('/ShirScreen')}
     if(Number(ans)>=1) { setStep(Number(ans)+1) }
     if(data==="BtnTreasure") {setStep(2)}

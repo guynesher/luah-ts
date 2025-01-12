@@ -25,6 +25,7 @@ import ShopScreen from './screens/shopScreen';
 import TakanonScreen from './screens/takanonScreen';
 import ShirScreen from './screens/shirScreen';
 import PaymentScreen from './screens/paymentScreen';
+import UserReport from './screens/userReport';
 
 const router = createBrowserRouter([
   { path: "/", element: <HomeScreen/>, },
@@ -34,6 +35,9 @@ const router = createBrowserRouter([
   { path: "/CourseMap2/", element: <Map2/>, },
   { path: "/Question/", element: <QuestionScreen/>, },
   { path: "/Admin/", element: <AdminScreen/>, },  
+  { path: "/UserReport/*", element: <UserReport setMode={function (): void {
+    throw new Error('Function not implemented.');
+  } } itm={undefined} mode={'user'}/>, },  
   //{ path: "/AdminPrograms/", element: <ProgramsScreen/>, },  
   //{ path: "/AdminUtils/", element: <AdminUtilsScreen/>, },  
   { path: "/accountSettings/", element: <AccountSettings/>, }, 

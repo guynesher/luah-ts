@@ -1,0 +1,1 @@
+export const NONMAILERLIST=["info.luah@gmail.com","mirianticoli@hotmail.com"]

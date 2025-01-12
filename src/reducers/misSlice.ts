@@ -43,15 +43,20 @@ interface ActionBtn {
 export interface MisSliceState {
   profile: Profile 
   activeStatus: string
+  currentProgram: string
   buttons: ActionBtn[]
   audio: boolean
   test: boolean
+  users: any[] | undefined
   recoms: any[] | undefined
+  contacts: any[] | undefined
+  orders: any[] | undefined
   programs: any[] | undefined
   levels: any[] | undefined
   chapters: any[] | undefined
   questions: any[] | undefined
   items: any[] | undefined
+  datas: any[] | undefined
   misStatus: "idle" | "loading" | "failed"
 }
 
@@ -69,15 +74,20 @@ const initialState: MisSliceState = {
     profileIndexList: ls?.profileIndexList?ls.profileIndexList:[1]
   }, 
   activeStatus: "",
+  currentProgram: "",
   buttons: [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}],
   audio:false,
   test:false,
   recoms: undefined,
+  users: undefined,
+  contacts: undefined,
+  orders: undefined,
   programs: undefined,
   levels: undefined,
   chapters: undefined,
   questions: undefined,
   items: undefined,
+  datas: undefined,
   misStatus: "idle",
 }
 
@@ -114,6 +124,11 @@ export const misSlice = createAppSlice({
         state.activeStatus = action.payload
       },
     ),
+    setCurrentProgram: create.reducer(
+      (state, action: PayloadAction<string>) => {
+        state.currentProgram = action.payload
+      },
+    ),
     setButtons: create.reducer(
       (state, action: PayloadAction<ActionBtn>) => {
         state.buttons = [...state.buttons, action.payload]
@@ -134,6 +149,11 @@ export const misSlice = createAppSlice({
     clearButtons: create.reducer(
       (state) => {
         state.buttons = [{btnname: "focus", condition: ""},{btnname: "play", condition: ""}]
+      },
+    ),
+    clearDatas: create.reducer(
+      (state) => {
+        state.datas = undefined
       },
     ),
     clearPlay: create.reducer(
@@ -227,7 +247,7 @@ export const misSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.misStatus = "idle"
-          state.items=action.payload
+          state.users=action.payload
         },
         rejected: state => {
           state.misStatus = "failed"
@@ -239,7 +259,7 @@ export const misSlice = createAppSlice({
         const response = await client.models.UserProgram.list(
           {
             selectionSet: ["userProgramId","email","isOpen","programName","chapterAverage","treasure","currentStatus",
-              "nextQuestion","createdAt","updatedAt"], limit: 50000
+              "nextQuestion","createdAt","updatedAt","expiredAt"], limit: 50000
           }
         ,)
         .catch((error: any)=>console.log('GET call failed: ',error))
@@ -251,7 +271,87 @@ export const misSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.misStatus = "idle"
-          state.items=action.payload
+          state.users=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllContacts: create.asyncThunk(
+      async () => {
+        const response = await client.models.Contact.list(
+          {
+            selectionSet: ["contactId","user.userId","email","name","phone","text","isAnswered",
+                             "updatedAt","createdAt"], limit: 50000
+          }
+        ,)
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return response?.data
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.contacts=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllOrders: create.asyncThunk(
+      async () => {
+        const response = await client.models.Order.list(
+          {
+            selectionSet: ["orderId","refNumber","user.userId","billingDetails","totalPrice","isPaid","isDelivered",
+                             "updatedAt","createdAt"], limit: 50000
+          }
+        ,)
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        
+        return response?.data
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.orders=action.payload
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    getAllDatas: create.asyncThunk(
+      async (params: string[]) => {
+        const response = await client.models.UserData.listDatasByUser(
+          {
+            userId: params[0],
+            // programId: params[1],
+          }, 
+          {limit: 30000, 
+            selectionSet: ["userId","userDataId","questionId","answer","precent",
+              "question.chapter.level.program.programId", "question.chapter.level.levelId", "question.chapter.level.levelNumber",
+              "question.chapter.chapterId","question.chapter.chapterNumber","question.chapter.bundleNumber",
+              "question.questionNumber","question.questionSubject","question.questionDescription",
+              "nextQuestion","userStatus","updatedAt","user.email","user.name","user.picture"] 
+          }
+        ,)
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return response?.data
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state, action) => {
+          state.misStatus = "idle"
+          state.datas=action.payload
         },
         rejected: state => {
           state.misStatus = "failed"
@@ -424,6 +524,50 @@ export const misSlice = createAppSlice({
           { userProgramId: params[0],  
             isOpen: params[1]==="true"?true:false,
             expiredAt: newTime,
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    updateContact: create.asyncThunk(
+      async (params: string[]) => {
+        await client.models.Contact.update(
+          { contactId: params[0],  
+            isAnswered: true,
+          }
+        )
+        .catch((error: any)=>console.log('GET call failed: ',error))
+        return 
+      },
+      {
+        pending: state => {
+          state.misStatus = "loading"
+        },
+        fulfilled: (state) => {
+          state.misStatus = "idle"
+        },
+        rejected: state => {
+          state.misStatus = "failed"
+        },
+      },
+    ),
+    updateGender: create.asyncThunk(
+      async (params: string[]) => {
+        await client.models.User.update(
+          { userId: params[0],  
+            picture: params[1],
           }
         )
         .catch((error: any)=>console.log('GET call failed: ',error))
@@ -822,9 +966,14 @@ export const misSlice = createAppSlice({
     selectCurrentUserProfileNumber: mis => mis.profile.currentProfileNumber,
     selectButtons: mis => mis.buttons,
     selectAudio: mis => mis.audio,
+    selectCurrentProgram: mis => mis.currentProgram,
     selectTest: mis => mis.test,
     selectItems: mis => mis.items,
+    selectDatas: mis => mis.datas,
+    selectUsers: mis => mis.users,
     selectRecoms: mis => mis.recoms,
+    selectContacts: mis => mis.contacts,
+    selectOrders: mis => mis.orders,
     selectPrograms: mis => mis.programs,
     selectLevels: mis => mis.levels,
     selectChapters: mis => mis.chapters,
@@ -836,11 +985,12 @@ export const misSlice = createAppSlice({
 export const { setCurrentProfile, setActiveStatus, setCurrentProfileNum, setCurrentProfileName, setAudio, setButton, getBestRecom,
         setButtons , setItems, setItemsAsync, getAllPrograms, getAllLevels, getAllChapters, clearPlay, createNewContact, 
         getAllQuestions, updateProgram, updateLevel, updateChapter, updateQuestion, updateItem, setTest, createNewRecommendation,
-        clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems, 
-        getAllUsers,getAllUserPrograms,updateUserProgram} = misSlice.actions
+        clearButtons, createLevel, createChapter, createQuestion, createItem, deleteItem, createItems, getAllDatas,
+        getAllUsers,getAllUserPrograms,updateUserProgram, getAllContacts,updateContact,getAllOrders,
+        updateGender, clearDatas, setCurrentProgram} = misSlice.actions
 
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, 
+export const { selectProfile, selectActiveStatus, selectCurrentUserProfileNumber, selectButtons, selectCurrentProgram, 
         selectAudio , selectItems, selectPrograms, selectLevels, selectChapters,selectQuestions, 
-        selectTest, selectRecoms} = misSlice.selectors
+        selectTest, selectRecoms, selectContacts, selectOrders, selectUsers, selectDatas} = misSlice.selectors
 

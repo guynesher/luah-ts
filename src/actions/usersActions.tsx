@@ -2,9 +2,22 @@ import { get } from 'aws-amplify/api';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '../../amplify/data/resource'
-import { CHAPTERS } from '../constants/program0101';
+import { CHAPTERS0101 } from '../constants/program0101';
+import { CHAPTERS0102 } from '../constants/program0102';
+import { PROGRAMS } from '../constants/userConstants';
 
 const client = generateClient<Schema>();
+
+interface CHAPTER {
+  userIndex: number;
+  chapterIndex: number;
+  chapterDetails: {
+      level: number;
+      chapter: number;
+      bundle: number;
+  };
+  questions: string[];
+} 
 
 export default async function getFromRestAPI(params:any) {
     try {
@@ -55,7 +68,10 @@ export async function createUserWithAdressAndPrograms(params:string[]) { //[cogn
         })
             .catch((error)=>console.log('GET call failed: ',error)).finally(()=>console.log("Done"))
         for (let index = 13; index < params.length; index++) {
-            if (user?.data?.email) await client.models.UserProgram.create({
+          let CHAPTERS:CHAPTER[]=[]
+          if(params[index]===PROGRAMS[0]) CHAPTERS=CHAPTERS0101
+          if(params[index]===PROGRAMS[1]) CHAPTERS=CHAPTERS0102
+          if (user?.data?.email) await client.models.UserProgram.create({
                 userProgramId: params[3]+params[0]+params[index],
                 programName: params[index], 
                 isOpen: false,

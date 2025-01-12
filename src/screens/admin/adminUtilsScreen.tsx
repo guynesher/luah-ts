@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import ReadXlsxFile from 'read-excel-file'
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '../../../amplify/data/resource'
-import { CHAPTERS } from '../../constants/program0101';
+import { CHAPTERS0101 } from '../../constants/program0101';
 import { HVlist } from '../../constants/hv';
 
 function AdminUtilsScreen() {
@@ -193,14 +193,14 @@ function AdminUtilsScreen() {
 
       async function matchQuestionIdToChapterIndex() {
         try {
-              for (let index = 0; index < CHAPTERS.length; index++) {
-                for (let i = 0; i < CHAPTERS[index].questions.length; i++) {
+              for (let index = 0; index < CHAPTERS0101.length; index++) {
+                for (let i = 0; i < CHAPTERS0101[index].questions.length; i++) {
                   await client.models.Question.update({
-                    questionId:CHAPTERS[index].questions[i],
+                    questionId:CHAPTERS0101[index].questions[i],
                     questionSubject: "0101",
-                    questionDescription: CHAPTERS[index].chapterIndex.toString(),
+                    questionDescription: CHAPTERS0101[index].chapterIndex.toString(),
                   })
-                  console.log(CHAPTERS[index].questions[i],CHAPTERS[index].chapterIndex);
+                  console.log(CHAPTERS0101[index].questions[i],CHAPTERS0101[index].chapterIndex);
                 }                
               }
           } catch (error) {
@@ -210,14 +210,14 @@ function AdminUtilsScreen() {
 
       async function matchChapterIdToChapterIndex() {
         try {
-              for (let index = 0; index < CHAPTERS.length; index++) {
-                for (let i = 0; i < CHAPTERS[index].questions.length; i++) {
+              for (let index = 0; index < CHAPTERS0101.length; index++) {
+                for (let i = 0; i < CHAPTERS0101[index].questions.length; i++) {
                   await client.models.Chapter.update({
-                    chapterId:CHAPTERS[index].questions[i],
+                    chapterId:CHAPTERS0101[index].questions[i],
                     chapterSubject: "0101",
-                    chapterDescription: CHAPTERS[index].chapterIndex.toString(),
+                    chapterDescription: CHAPTERS0101[index].chapterIndex.toString(),
                   })
-                  console.log(CHAPTERS[index].questions[i],CHAPTERS[index].chapterIndex);
+                  console.log(CHAPTERS0101[index].questions[i],CHAPTERS0101[index].chapterIndex);
                 }                
               }
           } catch (error) {

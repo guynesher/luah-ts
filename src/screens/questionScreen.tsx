@@ -4,7 +4,7 @@ import {components} from '../services/components'
 import { useEffect,  useState} from 'react';
 import { Hub } from 'aws-amplify/utils';
 import { useNavigate } from 'react-router-dom';
-import { clearButtons, selectAudio, selectButtons, selectItems, selectTest, setAudio, setButton, setItemsAsync } from '../reducers/misSlice';
+import { clearButtons, selectAudio, selectButtons, selectCurrentProgram, selectItems, selectTest, setAudio, setButton, setItemsAsync } from '../reducers/misSlice';
 import { selectPrograms, selectUser, setPrograms } from '../reducers/userSlice';
 import { AuthUtils } from '../components/AuthUtils';
 //import { Howl, Howler } from 'howler';
@@ -20,8 +20,9 @@ import MovingBtn from '../components/movingBtn';
 import MovingFind from '../components/movingFind';
 import Cursor from '../components/cursor';
 import Draggable from 'react-draggable';
-import { CHAPTERS } from '../constants/program0101';
+import { CHAPTERS0101 } from '../constants/program0101';
 import { updateUserData, updateUserPrograms } from '../actions/usersActions';
+import { CHAPTERS0102 } from '../constants/program0102';
 
 const client = generateClient<Schema>();
 
@@ -54,7 +55,19 @@ function QuestionScreen() {
   const buttons = useAppSelector(selectButtons)
   const lsUser = useAppSelector(selectUser)
   const test = useAppSelector(selectTest)
+  const currentProgram = useAppSelector(selectCurrentProgram)
   const [updateBtns, setUpdateBtns] = useState<boolean>(false)
+
+  interface CHAPTER {
+    userIndex: number;
+    chapterIndex: number;
+    chapterDetails: {
+        level: number;
+        chapter: number;
+        bundle: number;
+    };
+    questions: string[];
+  } 
 
       const resize = () => {
         
@@ -119,7 +132,7 @@ function QuestionScreen() {
   //Remove items and return to step 0 
 
   useEffect(() => {
-    const prog=lsPrograms.find((program)=>program.programName===PROGRAMS[0])
+    const prog=lsPrograms.find((program)=>program.programName===currentProgram) //Change to currentProgram
     if(prog) {
       const sub=client.models.UserProgram.onUpdate({ filter: {  email: { eq: prog.email, }, },})
       .subscribe({ next: (data) => { (async () => {
@@ -198,14 +211,14 @@ function QuestionScreen() {
 }
 
 useEffect(() => {
-  if (step===Number(maxStep)+1 && !test) {
-      setStep(0)
-      setVoice(true)
+  if (step===Number(maxStep)+1 && !test) {//end of question case
+      setStep(0) //start from step=0 for next question
+      setVoice(true) 
       dispatch(clearButtons())
-      setAppear([])
+      setAppear([]) //clear buttons and appear arrays
       Howler.unload()
       //Create userData, Update userProgram, get new Items
-      const prog=lsPrograms.find((program)=>program.programName===PROGRAMS[0])
+      const prog=lsPrograms.find((program)=>program.programName===currentProgram) //need to be changed for other programs
       const curStatus=prog?.currentStatus?.toString();
       const currentQuestion=prog?.nextQuestion?.toString();
       let maxIndex:number=1
@@ -216,9 +229,12 @@ useEffect(() => {
         currentIndex= JSON.parse(currentQuestion).userIndex
         nextIndex=currentIndex+1
       }
+      let CHAPTERS:CHAPTER[]=[]
+      if(currentProgram===PROGRAMS[0]) CHAPTERS=CHAPTERS0101
+      if(currentProgram===PROGRAMS[1]) CHAPTERS=CHAPTERS0102
       const chpatersStartIndexes=CHAPTERS.filter((chapter)=>Number(chapter.chapterIndex)%1000000===0).map((chapter)=>chapter.userIndex)
       const precent:number=Calculate()
-      const progIndex=lsPrograms.findIndex((program)=>program.programName===PROGRAMS[0])
+      const progIndex=lsPrograms.findIndex((program)=>program.programName===currentProgram) //Change to currentProgram
       let treasure:number=Math.floor(Number(lsPrograms[progIndex].treasure))
       const chapAve:number=Math.floor(Number(lsPrograms[progIndex].chapterAverage))
       const chapterCount=Math.min(...chpatersStartIndexes.map((value)=> currentIndex - value).map((value)=>value<0? 100:value))
@@ -260,6 +276,9 @@ useEffect(() => {
         const quests=nextQuests.questions      //questions in the chapter object  
         dispatch(setItemsAsync(quests[Math.floor(Math.random() * quests.length)]))
         })() 
+      }
+      if(chpatersStartIndexes.includes(nextIndex)) { //end of chapter case
+        navigate("/ShopScreen")
       }
   }
 }, [dispatch,maxStep, pageItems, step, userData,Howler])
