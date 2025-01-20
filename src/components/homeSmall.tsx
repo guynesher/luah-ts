@@ -17,7 +17,7 @@ const HomeSmall: React.FC<ScreenSize> = ({width}) => {
       <>
           { Number(width.toString())<640 && 
          <Flex direction={'row' } 
-              width="110%" 
+              width="100%" 
               wrap={"wrap"} 
               alignContent={"center"}
               justifyContent="center"

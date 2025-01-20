@@ -94,10 +94,13 @@ function HomeScreen() {
         >
           <HomeSmall width={width} height={height} />
           <Sidebar />
+          <Flex width={{large:"35%" , small:"100%"}} justifyContent={"center"}>
+          <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/> {reg?'כניסה':'הרשמה (ללא תשלום)'} </Button>            
+          </Flex>
           <Home width={width} height={height} />
           <br></br>
-          <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/> {reg?'כניסה':'הרשמה (ללא תשלום)'} </Button>  
+
           <div ref={page2}>
             <Aleynu width={width} height={height} /> 
           </div>

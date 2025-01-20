@@ -55,7 +55,7 @@ const Program: React.FC<ScreenSize> = ({width}) => {
          </View>
           <View  alignSelf={"center"}>
               {vid && <ReactPlayer
-              url={`https://youtube.com/embed/${vid}?autoplay=0`}
+              url={`https://youtube-nocookie.com/embed/${vid}?autoplay=0`}
               playing={false}
                 loop={false}
                 controls={true}

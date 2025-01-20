@@ -39,7 +39,7 @@ const Home: React.FC<ScreenSize> = ({width}) => {
         <Flex direction={'row' } width="100%">
         <View  width="100%">
             <ReactPlayer
-              url={`https://youtube.com/embed/${'1ZDBLCUVBg4'}?autoplay=0`}
+              url={`https://youtube-nocookie.com/embed/${'1ZDBLCUVBg4'}?autoplay=0`}
               playing={false}
               loop={false}
               controls={true}

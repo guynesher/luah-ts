@@ -14,8 +14,8 @@ const CounterCard: React.FC<LottieCardProps> = ({ value ,heading,  bigSize=true}
   <Flex
     gap="0"
     direction="column"
-    width={bigSize?"150px":"40"}
-    height={bigSize?"100px":"40"}
+    width={bigSize?"150px":"70px"}
+    height={bigSize?"100px":"80px"}
     justifyContent="flex-start"
     alignItems="center"
     position="relative"
@@ -44,7 +44,7 @@ const CounterCard: React.FC<LottieCardProps> = ({ value ,heading,  bigSize=true}
       >         
         <Heading level={1}
           fontFamily="sans-serif"
-          fontSize={bigSize?"25px":"18px"}
+          fontSize={bigSize?"25px":"17px"}
           fontStyle={"italic"}
           fontWeight="700"
           color="blue.80"
@@ -60,7 +60,7 @@ const CounterCard: React.FC<LottieCardProps> = ({ value ,heading,  bigSize=true}
           {heading}
         </Heading>
       </Flex>
-        <ValueCounter start={value-10} end={value}/>
+        <ValueCounter start={value-10} end={value} bigSize={bigSize}/>
     </Flex>
   </Flex>
   )
