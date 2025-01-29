@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+
+# Allow all other pages
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.lu-ah.co.il/sitemap.xml
