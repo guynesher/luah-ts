@@ -142,7 +142,7 @@ function HomeScreen() {
             href="https://www.youtube.com/@Lu-ah-gv8py/featured"
             color="#007EB9" width={"50%"}
             >
-            <FaYoutube color="red"  size={50}/>
+            <FaYoutube color="red"  size={50}/> 
             </Link>
           </View> 
 
