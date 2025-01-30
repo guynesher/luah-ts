@@ -144,7 +144,7 @@ function HomeScreen() {
             >
             <FaYoutube color="red"  size={50}/>
             </Link>
-          </View>
+          </View> 
 
           <View color={"purple.80"} textAlign="center"padding={"12px"}>
             <Text>
