@@ -38,7 +38,7 @@ const router = createBrowserRouter([
   { path: "/UserReport/*", element: <UserReport setMode={function (): void {
     throw new Error('Function not implemented.');
   } } itm={undefined} mode={'user'}/>, },  
-  //{ path: "/AdminPrograms/", element: <ProgramsScreen/>, },  
+    
   //{ path: "/AdminUtils/", element: <AdminUtilsScreen/>, },  
   { path: "/accountSettings/", element: <AccountSettings/>, }, 
   { path: "/profileSettings/", element: <ProfileSettings/>, }, 
@@ -50,6 +50,7 @@ const router = createBrowserRouter([
   { path: "/Login/", element: <Login/>, },
   { path: "/Data/", element: <Data/>, },
   { path: "/Counter/", element: <Counter/>, },
+  { path: "*", element: <CoursesScreen/> },
 ]);
 
 Amplify.configure(outputs);

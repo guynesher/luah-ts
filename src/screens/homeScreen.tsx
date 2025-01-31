@@ -9,7 +9,7 @@ import Home from "../components/home";
 import { useEffect, useRef, useState } from "react";
 import Aleynu from "../components/alyenu";
 import { VscAccount } from "react-icons/vsc";
-import { FaYoutube, FaInstagramSquare  } from "react-icons/fa";
+import { FaYoutube, FaInstagramSquare, FaFacebook  } from "react-icons/fa";
 import Program from "../components/program";
 import Songs from "../components/songs";
 import Recommendations from "../components/recommendations";
@@ -133,14 +133,20 @@ function HomeScreen() {
   
           <View color={"purple.80"} textAlign="center"padding={"12px"}>
             <Link
-            href="https://www.instagram.com/miriamnesher?utm_source=qr&igsh=czA1aDIwNTZrYnVy"
-            color="#007EB9" width={"50%"} padding={"30px"}
+            href="https://www.instagram.com/miriam_atar_luah/"
+            color="#007EB9" padding={"30px"}
             >חפשו אותנו ב:
               <FaInstagramSquare color="orange" size={50}/>
             </Link>
             <Link
+            href="https://www.facebook.com/profile.php?id=61562778913647"
+            color="#007EB9" padding={"30px"}
+            >
+            <FaFacebook color="blue"  size={40}/> 
+            </Link>
+            <Link
             href="https://www.youtube.com/@Lu-ah-gv8py/featured"
-            color="#007EB9" width={"50%"}
+            color="#007EB9" padding={"30px"}
             >
             <FaYoutube color="red"  size={50}/> 
             </Link>
