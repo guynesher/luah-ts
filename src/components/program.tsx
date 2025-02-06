@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, View } from '@aws-amplify/ui-react';
+import { Flex, Text, View } from '@aws-amplify/ui-react';
 import DataLottieCard from './dataLottieCard';
 import ReactPlayer from 'react-player';
 
@@ -20,10 +20,21 @@ const Program: React.FC<ScreenSize> = ({width}) => {
         <View color={"blue.80"} width="100%">
           <br></br>
           <View color={"blue.80"} width="100%">
-          <h1> בתוכנית שלנו הילדים שלכם ילמדו את הכל הנושאים כדי להיות מוכנים לכיתה א'</h1>
-      <h2> הקורס מלמד מימנויות טרום קריאה כמו מיקום, מרחב וכיוונים, דמות ורקע, חריזה ואבחנה חזותית בפרטים. </h2>
-      <h2> הקורס מלמד אותיות דפוס וכתב ואת כל התנועות כולל שווא, וכן, שיטה לחיבור עיצור לתנועה לכדי יצירת הברה. תוך התייחסות לצליל פותח וסוגר וחלוקה להברות, והרכבת מילים מהברות.    </h2>
-      <h2>  לקראת סוף הקורס הילד ילמד לקרוא ולהבחין בין מילים אמיתיות למילות תפל.    </h2>
+          <Text     variation="primary" as="h2" color={"blue.80"} width="100%"
+                      lineHeight="2.5em" fontWeight={"bold"} fontSize="2em" fontStyle="normal">
+           בתוכנית שלנו הילדים שלכם ילמדו את הכל הנושאים כדי להיות מוכנים לכיתה א'</Text>
+           <Text     variation="primary" as="h3" color={"blue.80"} width="100%"
+                      lineHeight="2.5em" fontWeight={"bold"} fontSize="1.5em" fontStyle="normal">
+       הקורס מלמד מימנויות טרום קריאה כמו מיקום, מרחב וכיוונים, דמות ורקע, חריזה ואבחנה חזותית בפרטים. </Text>
+          <Text     variation="primary" as="h4" color={"blue.80"} width="100%"
+                      lineHeight="2.5em" fontWeight={"bold"} fontSize="1.5em" fontStyle="normal">         
+הקורס מלמד אותיות דפוס וכתב ואת כל התנועות כולל שווא, וכן, שיטה לחיבור עיצור לתנועה לכדי יצירת הברה. תוך התייחסות לצליל פותח וסוגר וחלוקה להברות, והרכבת מילים מהברות. </Text>
+          <Text     variation="primary" as="h5" color={"blue.80"} width="100%"
+                                lineHeight="2.5em" fontWeight={"bold"} fontSize="1.5em" fontStyle="normal">
+              לקראת סוף הקורס הילד ילמד לקרוא ולהבחין בין מילים אמיתיות למילות תפל.  </Text>
+          <Text     variation="primary" as="h6" color={"blue.80"} width="100%"
+                      lineHeight="2.5em" fontWeight={"bold"} fontSize="1.5em" fontStyle="normal">
+            הנה כמה דוגמאות להמחשה    </Text>
           </View>
           <Flex direction={'row' } 
               width="100%" 
@@ -62,7 +73,7 @@ const Program: React.FC<ScreenSize> = ({width}) => {
                 width={(width && width<400)?width:width*.7}
                 height={(width && width<400)?width:width*.45}
               />}
-          </View>
+          </View>        
         </Flex>
   );
 };
