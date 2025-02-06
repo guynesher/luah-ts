@@ -58,7 +58,7 @@ const DataLottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segm
         position="relative"
         height="50px"
       >         
-        <Heading level={1}
+        <Heading level={2}
           fontFamily="sans-serif"
           fontSize="26px"
           fontStyle={"italic"}

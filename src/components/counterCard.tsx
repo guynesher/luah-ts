@@ -42,7 +42,7 @@ const CounterCard: React.FC<LottieCardProps> = ({ value ,heading,  bigSize=true}
         position="relative"
         height="15px"
       >         
-        <Heading level={1}
+        <Heading level={2}
           fontFamily="sans-serif"
           fontSize={bigSize?"25px":"17px"}
           fontStyle={"italic"}

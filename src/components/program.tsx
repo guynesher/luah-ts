@@ -22,7 +22,7 @@ const Program: React.FC<ScreenSize> = ({width}) => {
           <View color={"blue.80"} width="100%">
           <Text     variation="primary" as="h2" color={"blue.80"} width="100%"
                       lineHeight="2.5em" fontWeight={"bold"} fontSize="2em" fontStyle="normal">
-           בתוכנית שלנו הילדים שלכם ילמדו את הכל הנושאים כדי להיות מוכנים לכיתה א'</Text>
+           בתוכנית שלנו הילדים שלכם ילמדו את כל הנושאים כדי להיות מוכנים לכיתה א'</Text>
            <Text     variation="primary" as="h3" color={"blue.80"} width="100%"
                       lineHeight="2.5em" fontWeight={"bold"} fontSize="1.5em" fontStyle="normal">
        הקורס מלמד מימנויות טרום קריאה כמו מיקום, מרחב וכיוונים, דמות ורקע, חריזה ואבחנה חזותית בפרטים. </Text>

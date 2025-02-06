@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 //import ReactPlayer from 'react-player/lazy'
-import { Flex, View } from '@aws-amplify/ui-react';
+import { Flex, Text, View } from '@aws-amplify/ui-react';
 import SmallCard from './smallCard';
 import CounterCard from './counterCard';
 import ReactPlayer from 'react-player';
@@ -21,8 +21,9 @@ const Home: React.FC<ScreenSize> = ({width}) => {
         <Flex direction={'row' } width="100%">
         <View color={"blue.80"} width="100%">
             <h1>הכינו את הילד שלכם לכיתה א'  </h1>
-            <h1><b>בקלות ובכיף </b></h1>
-            <h1>עם אתר לו"ח  </h1>
+            <h1><b>התוכנית שמלמדת את הילד בקלות ובכיף </b></h1>
+            <Text     variation="primary" as="h2" color={"blue.80"} width="100%"
+              lineHeight="2.5em" fontWeight={"bold"} fontSize="2em" fontStyle="normal">באתר לו"ח   </Text>
   
             <br></br>
             <h2>קורס מרתק עם בובות מצוירות  </h2>

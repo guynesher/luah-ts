@@ -124,8 +124,7 @@ function HomeScreen() {
             <Recommendations width={width} height={height} items={items}/> 
           </div>
           <br></br>
-          <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/> {reg?'כניסה':'הרשמה (ללא תשלום)'}</Button> 
+
           <div ref={page6}>
             <Contact width={width} height={height} /> 
           </div>
