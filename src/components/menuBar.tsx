@@ -29,6 +29,7 @@ const MenuBar: React.FC<BackToParent> = ({ setValue, contents, trig, current}) =
   return (
     <Flex direction="row" justifyContent="flex-start">
       <Menu
+          id="headerMenu" aria-label="תפריט מקוצר"
           menuAlign="start"
           size="large"
           alignItems={'center'}

@@ -18,6 +18,7 @@ const SpecialMenuBar: React.FC<BackToParent> = ({ setValue, contents, audioConte
   return (
     <Flex direction="row" justifyContent="flex-start">
       <Menu
+          id="sidebarMenu" aria-label="תפריט מקוצר"
           menuAlign="center"
           size="large"
           alignItems={alig}

@@ -133,19 +133,19 @@ function HomeScreen() {
           <View color={"purple.80"} textAlign="center"padding={"12px"}>
             <Link
             href="https://www.instagram.com/miriam_atar_luah/"
-            color="#007EB9" padding={"30px"}
+            color="blue.80" padding={"30px"} aria-label="קישור לאיסטגרם"
             >חפשו אותנו ב:
               <FaInstagramSquare color="orange" size={50}/>
             </Link>
             <Link
             href="https://www.facebook.com/profile.php?id=61562778913647"
-            color="#007EB9" padding={"30px"}
+            color="#007EB9" padding={"30px"} aria-label="קישור לפייסבוק"
             >
             <FaFacebook color="blue"  size={40}/> 
             </Link>
             <Link
             href="https://www.youtube.com/@Lu-ah-gv8py/featured"
-            color="#007EB9" padding={"30px"}
+            color="#007EB9" padding={"30px"} aria-label="קישור ליוטיוב"
             >
             <FaYoutube color="red"  size={50}/> 
             </Link>
@@ -156,13 +156,13 @@ function HomeScreen() {
               &copy; כל הזכויות שמורות לאתר לו"ח ולמפעיליו - אסור להשתמש בדמויות ובתכנים ללא אישור
             </Text>
             <Link
-            color="#007EB9" width={"50%"} padding={"30px"}
+            color="blue.80" width={"50%"} padding={"30px"}
             onClick={()=>{dispatch(setActiveStatus("takanon"));navigate("/Takanon");}}
             >
             תקנון אתר
             </Link>
             <Link
-            color="#007EB9" width={"50%"}
+            color="blue.80" width={"50%"}
             onClick={()=>{dispatch(setActiveStatus("pratiut"));navigate("/Takanon");}}
             >
             מדיניות פרטיות 
