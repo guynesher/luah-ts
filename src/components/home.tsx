@@ -14,6 +14,10 @@ const Home: React.FC<ScreenSize> = ({width}) => {
     const [value, setValue] = useState<string>();
 
         useEffect(() => {
+          if(width) {
+            let video = document.getElementById('video1');
+            if(video) video.setAttribute("src", 'https://dw9m3ez1dxtsh.cloudfront.net/Promo.mp4');
+          }
         }, [value]);  
         
   return (
@@ -41,9 +45,9 @@ const Home: React.FC<ScreenSize> = ({width}) => {
         <View  width="100%">
 
         <video width={"100%"} height={"100%"}
-                controls loop={false} autoPlay={false} controlsList="nodownload" 
+                controls loop={false} autoPlay={false} controlsList="nodownload" id='video1'
                 poster="https://dw9m3ez1dxtsh.cloudfront.net/MainPic.png">
-          <source src='https://dw9m3ez1dxtsh.cloudfront.net/Promo.mp4' type='video/mp4'>
+          <source src='' type='video/mp4'>
           </source>
         </video>
         
