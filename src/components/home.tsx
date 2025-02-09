@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Flex, Text, View } from '@aws-amplify/ui-react';
 import SmallCard from './smallCard';
 import CounterCard from './counterCard';
-import ReactPlayer from 'react-player';
+//import ReactPlayer from 'react-player';
 
 interface ScreenSize {
   width: number;
@@ -39,14 +39,22 @@ const Home: React.FC<ScreenSize> = ({width}) => {
         </Flex>
         <Flex direction={'row' } width="100%">
         <View  width="100%">
-            <ReactPlayer
+
+        <video width={"100%"} height={"100%"}
+                controls loop={false} autoPlay={false} controlsList="nodownload" 
+                poster="https://dw9m3ez1dxtsh.cloudfront.net/MainPic.png">
+          <source src='https://dw9m3ez1dxtsh.cloudfront.net/Promo.mp4' type='video/mp4'>
+          </source>
+        </video>
+        
+            {/* <ReactPlayer
+              //url={'https://dw9m3ez1dxtsh.cloudfront.net/global/Promo.mp4'}
               url={`https://youtube-nocookie.com/embed/${'1ZDBLCUVBg4'}?autoplay=0`}
               playing={false}
               loop={false}
               controls={true}
               width={width?width.toString():"640"}
-              
-            />
+            /> */}
         </View>
         { Number(width.toString())>640 && 
         <View color={"blue.80"} width="40%">

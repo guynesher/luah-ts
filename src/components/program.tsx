@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Text, View } from '@aws-amplify/ui-react';
 import DataLottieCard from './dataLottieCard';
-import ReactPlayer from 'react-player';
+//import ReactPlayer from 'react-player';
 
 interface ScreenSize {
   width: number;
@@ -12,6 +12,8 @@ const Program: React.FC<ScreenSize> = ({width}) => {
   const [vid,setVid]=useState<string>('XyCbNfRgEbU')
 
     useEffect(() => {
+      let video = document.getElementById('video');
+      if(video) video.setAttribute("src", `https://dw9m3ez1dxtsh.cloudfront.net/${vid}.mp4?autoplay=0`);
         //console.log(vid)
     }, [vid]);  
 
@@ -65,14 +67,22 @@ const Program: React.FC<ScreenSize> = ({width}) => {
           </Flex>
          </View>
           <View  alignSelf={"center"}>
-              {vid && <ReactPlayer
-              url={`https://youtube-nocookie.com/embed/${vid}?autoplay=0`}
-              playing={false}
-                loop={false}
-                controls={true}
-                width={(width && width<400)?width:width*.7}
-                height={(width && width<400)?width:width*.45}
-              />}
+              {vid && 
+              <video width={(width && width<400)?width:width*.7} id="video"
+                  height={(width && width<400)?width:width*.45} //poster="https://dw9m3ez1dxtsh.cloudfront.net/MainPic.png"
+                  controls loop={false} autoPlay={false} controlsList="nodownload">
+                <source src={`https://dw9m3ez1dxtsh.cloudfront.net/${vid}.mp4?autoplay=0`} type='video/mp4'>
+                </source>
+              </video>
+              // <ReactPlayer
+              // url={`https://youtube-nocookie.com/embed/${vid}?autoplay=0`}
+              // playing={false}
+              //   loop={false}
+              //   controls={true}
+              //   width={(width && width<400)?width:width*.7}
+              //   height={(width && width<400)?width:width*.45}
+              // />
+              }
           </View>        
         </Flex>
   );
