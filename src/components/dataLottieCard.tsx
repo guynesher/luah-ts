@@ -1,6 +1,8 @@
 
-import { Flex, Heading, Text } from '@aws-amplify/ui-react';
-import GlobalLottie from './globalLottie';
+import { Flex, Heading, Loader, Text } from '@aws-amplify/ui-react';
+//import GlobalLottie from './globalLottie';
+import { lazy, Suspense } from 'react';
+const GlobalLottie = lazy(() => import('./globalLottie.tsx'));
 
 interface LottieCardProps {
     mainText?: string;
@@ -31,11 +33,13 @@ const DataLottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segm
   >
     <div  style={{width: width, height: height, alignSelf: "center", padding:"10px"}}>
       <div>
+      <Suspense fallback={<Loader  />}>
       <GlobalLottie loop={false} autoplay={true} data={data} 
           isAudio={[false,false,false]} 
           segments={segments} name={name} 
           audioData={audioData}>
         </GlobalLottie>
+        </Suspense>
       </div>
     </div>
     <Flex

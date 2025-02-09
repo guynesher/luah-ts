@@ -1,20 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { getBestRecom, selectActiveStatus, selectAudio, selectRecoms, setActiveStatus, setAudio } from "../reducers/misSlice";
-import { Button, Card, Flex, Link, Text, View } from "@aws-amplify/ui-react";
+import { Button, Card, Flex, Link, Loader, Text, View } from "@aws-amplify/ui-react";
 import { Header } from "../components/Header";
 import Access from "../components/accessibility";
 import Sidebar from "../components/sideBar";
 import Home from "../components/home";
-import { useEffect, useRef, useState } from "react";
-import Aleynu from "../components/alyenu";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { VscAccount } from "react-icons/vsc";
 import { FaYoutube, FaInstagramSquare, FaFacebook  } from "react-icons/fa";
-import Program from "../components/program";
-import Songs from "../components/songs";
-import Recommendations from "../components/recommendations";
+//import Aleynu from "../components/alyenu";
+//import Program from "../components/program";
+//import Songs from "../components/songs";
+//import Recommendations from "../components/recommendations";
+//import Contact from "../components/contact";
+const Aleynu = lazy(() => import('../components/alyenu.tsx'));
+const Program = lazy(() => import('../components/program.tsx'));
+const Songs = lazy(() => import('../components/songs.tsx'));
+const Recommendations = lazy(() => import('../components/recommendations.tsx'));
+const Contact = lazy(() => import('../components/contact.tsx'));
 import HomeSmall from "../components/homeSmall";
-import Contact from "../components/contact";
 import { selectUser } from "../reducers/userSlice";
 
 function HomeScreen() {
@@ -102,6 +107,7 @@ function HomeScreen() {
           <Home width={width} height={height} />
           <br></br>
 
+          <Suspense fallback={<Loader  />}>
           <div ref={page2}>
             <Aleynu width={width} height={height} /> 
           </div>
@@ -144,7 +150,7 @@ function HomeScreen() {
             <FaFacebook color="blue"  size={40}/> 
             </Link>
             <Link
-            href="https://www.youtube.com/@Lu-ah-gv8py/featured"
+            href="https://www.youtube.com/@Lu-ah-gv8py"
             color="#007EB9" padding={"30px"} aria-label="קישור ליוטיוב"
             >
             <FaYoutube color="red"  size={50}/> 
@@ -168,10 +174,12 @@ function HomeScreen() {
             מדיניות פרטיות 
             </Link>
           </View>
+          </Suspense>
         </Card>
     </Flex>
   );
 }
 
 export default HomeScreen;
+
 
