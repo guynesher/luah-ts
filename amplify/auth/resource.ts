@@ -10,14 +10,14 @@ export const auth = defineAuth({
   loginWith: {
     email: true,
   },
-  senders: {
-    email: {
-      // configure using the email registered and verified in Amazon SES
-      fromEmail: "info.luah@gmail.co.il",
-      fromName: "Luah",
-      replyTo: "info.luah@gmail.co.il"
-    },
-  },
+  // senders: {
+  //   email: {
+  //     // configure using the email registered and verified in Amazon SES
+  //     fromEmail: "info.luah@gmail.co.il",
+  //     fromName: "Luah",
+  //     replyTo: "info.luah@gmail.co.il"
+  //   },
+  // },
   groups: ['Admins', 'Users'],
   triggers: {
     postConfirmation,
