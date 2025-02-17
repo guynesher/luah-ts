@@ -1,1 +1,1 @@
-export const NONMAILERLIST=["info.luah@gmail.com","mirianticoli@hotmail.com"]
+export const NONMAILERLIST=["info.luah@gmail.com","mirianticoli@hotmail.com","guynesher2000@yahoo.com","guynesher2000@gmail.com"]

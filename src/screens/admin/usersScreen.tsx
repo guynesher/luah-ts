@@ -171,6 +171,7 @@ function UsersScreen() {
           //console.log([...new Set(groupedItems)]) 
           const arr:string[]=Array.from(new Set(groupedItems))  
           for (let index = 0; index < arr.length; index++) {
+            //console.log(arr[index]?arr[index]:"h")
             setTimeout(function() {
               sendEmail(arr[index]?arr[index] :"","תזכורת שאנו כאן כדי לעזור","לא היה זמן ללמוד השבוע \n לא נורא שבוע הבא תמשיך בתוכנית\n שים לב שהילד לא מתעצל ומנצל את התוכנית כדי ללמוד \n אם אינך מעוניין לקבל מאיתנו אימיילים אנא ענה במייל חוזר למייל זה\n בבקשה הוציאו אותי מרשימת התפוצה\n אם אתם זקוקים ליעוץ פנו אלינו דרך המייל\n תודה ויום טוב \n אתר לוח\n https://www.lu-ah.co.il/")
               .finally(()=>console.log("Done"))
