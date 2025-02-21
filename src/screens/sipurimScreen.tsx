@@ -1,4 +1,4 @@
-import { Card, Flex, Text, View } from '@aws-amplify/ui-react';
+import { Button, Card, Flex, Text, View } from '@aws-amplify/ui-react';
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { Header } from '../components/Header';
 import { selectAudio, setAudio } from '../reducers/misSlice';
 import DataLottieCard from '../components/dataLottieCard';
 import { selectUser } from '../reducers/userSlice';
+import { VscAccount } from 'react-icons/vsc';
 
 function SipurimScreen() {
   const dispatch = useAppDispatch()
@@ -127,7 +128,8 @@ function SipurimScreen() {
                       </div>
                 </Flex>
               </View>
-
+          <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/>{reg?'כניסה':'הרשמה (ללא תשלום)'}</Button> 
             </Flex>
           </Card>
         </Flex> 
