@@ -122,7 +122,7 @@ function CoursesScreen() {
                  justifyContent="center"
                  alignItems="center">
           <LottieCard name="Sipurim" data="Sipurim" audioData="logo" segments={[0,100,0,100,0,100]} 
-                width="135%" height="135%" price='בחינם' isOpen={"true"}
+                width="50%" height="50%" price='' isOpen={"true"}
               mainText='סיפורים לפני השינה - פשוט ללכת לישון בכיף' setValue={setValue}/>
           <LottieCard name="Program0101" data="Program0101" audioData="Program0101" segments={[0,120,10,80,0,120]} 
                 width="50%" height="50%" price='50 ש"ח' isOpen={lsPrograms.find(prog=>prog?.programName===PROGRAMS[0])?.isOpen}

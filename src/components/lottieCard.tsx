@@ -89,7 +89,7 @@ const LottieCard: React.FC<LottieCardProps> = ({ name, data, audioData, segments
         position="relative"
         whiteSpace="pre-wrap"
       >
-        {isOpen?"":price}
+        {isOpen?"בהצלחה!":price}
       </Text>
       <Button className={isOpen?"openbtn":"btn"}
         shrink="0"
