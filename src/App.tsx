@@ -26,6 +26,8 @@ import TakanonScreen from './screens/takanonScreen';
 import ShirScreen from './screens/shirScreen';
 import PaymentScreen from './screens/paymentScreen';
 import UserReport from './screens/userReport';
+import SipurimScreen from './screens/sipurimScreen';
+import FailScreen from './screens/failScreen';
 
 const router = createBrowserRouter([
   { path: "/", element: <HomeScreen/>, },
@@ -46,11 +48,13 @@ const router = createBrowserRouter([
   { path: "/Takanon/", element: <TakanonScreen/>, },
   { path: "/ShirScreen/", element: <ShirScreen/>, },
   { path: "/Payment/", element: <PaymentScreen/>, },
+  { path: "/Sipurim/", element: <SipurimScreen/>, },
+  { path: "/404/", element: <FailScreen/>, },
 
   { path: "/Login/", element: <Login/>, },
   { path: "/Data/", element: <Data/>, },
   { path: "/Counter/", element: <Counter/>, },
-  { path: "*", element: <CoursesScreen/> },
+  { path: "*", element: <FailScreen/> },
 ]);
 
 Amplify.configure(outputs);

@@ -61,6 +61,7 @@ function CoursesScreen() {
   useEffect(() => {
     setCancelBtn(false)
     if(prog1?.isOpen && prog1?.isOpen) setCancelBtn(true)
+    if(value==="Sipurim") {navigate('/Sipurim')}
     if(value==="Program0101" && prog1?.isOpen) {dispatch(setCurrentProgram(PROGRAMS[0]));navigate('/CourseMap1')}
     if(value==="Program0102" && prog2?.isOpen) {dispatch(setCurrentProgram(PROGRAMS[1]));navigate('/CourseMap2')}
     if(value==="Program0101" && prog1 && !prog1?.isOpen) {
@@ -120,6 +121,9 @@ function CoursesScreen() {
                  wrap={"wrap"} 
                  justifyContent="center"
                  alignItems="center">
+          <LottieCard name="Sipurim" data="Sipurim" audioData="logo" segments={[0,100,0,100,0,100]} 
+                width="135%" height="135%" price='בחינם' isOpen={"true"}
+              mainText='סיפורים לפני השינה - פשוט ללכת לישון בכיף' setValue={setValue}/>
           <LottieCard name="Program0101" data="Program0101" audioData="Program0101" segments={[0,120,10,80,0,120]} 
                 width="50%" height="50%" price='50 ש"ח' isOpen={lsPrograms.find(prog=>prog?.programName===PROGRAMS[0])?.isOpen}
               mainText='קורס קריאה הכנה לכיתה א לילדים שאוהבים ללמוד בכיף' setValue={setValue}/>
@@ -130,7 +134,7 @@ function CoursesScreen() {
           <LottieCard name="Programs01010102" data="takyHP" audioData="takyHP" segments={[10,80,80,120,0,120]} 
                 width="50%" height="50%" price='בקרוב !!!' 
               mainText='קורס משולב גם חשבון וגם קריאה' setValue={setValue}/>
-              }
+              }             
           </Flex>
           </Card>
         </Flex> 
