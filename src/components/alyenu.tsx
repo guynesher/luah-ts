@@ -62,8 +62,8 @@ const Aleynu: React.FC<ScreenSize> = ({}) => {
           <DataLottieCard name="aTaky" data="aTaky" audioData="BtnAlynu" segments={[0,120,10,80,0,120]} 
                   width="30%" height="30%" heading='יחס אישי לכל ילד'
                 mainText='מורים פרטיים מצוירים ב"גילם" של הילדים המסבירים כל טעות ועוזרים לילד להתקדם בקצב שלו ולא מסתפקים בחיווי בלבד'/> 
-          <DataLottieCard name="aTanin" data="aTanin" audioData="BtnAlynu" segments={[20,30,70,80,0,120]} 
-                  width="30%" height="30%" heading='מונגש לילדים מתחת לגיל קריאה'
+          <DataLottieCard name="aDog" data="aDog" audioData="BtnAlynu" segments={[0,10,0,90,0,90]} 
+                  width="40%" height="30%" heading='מונגש לילדים מתחת לגיל קריאה'
                   mainText='כל הכפתורים באתר מדברים ומסבירים כך שלא דרושה נוכחות מבוגר'/>   
           <DataLottieCard name="aMashroom" data="aMashroom" audioData="BtnAlynu" segments={[0,120,10,80,0,120]} 
                   width="30%" height="30%" heading='  צוות חינוך מנוסה'
@@ -72,14 +72,14 @@ const Aleynu: React.FC<ScreenSize> = ({}) => {
                   width="30%" height="30%" heading="הכנה רגשית לכיתה א'"
                   mainText="הילד ילמד איך לחשוב, לפתור בעיות ולהגיע לבגרות הרגשית הדרושה בכיתה א'"/>           
           <DataLottieCard name="aInstrument" data="aInstrument" audioData="BtnAlynu" segments={[0,120,10,80,0,120]} 
-                  width="30%" height="30%" heading='רכישת מיומניות טרום קריאה, ומוטוריקה עדינה'
+                  width="40%" height="30%" heading='רכישת מיומניות טרום קריאה, ומוטוריקה עדינה'
                   mainText='למוד הבחנה בין דמות לרקע, מיקום במרחב, כיוונים וחריזה וכן כישורי שימוש בעכבר. ובכלל הפיכת זמן המחשב לזמן איכות.'/>           
           <DataLottieCard name="aBird" data="aBird" audioData="BtnAlynu" segments={[0,10,0,90,0,90]} 
-                  width="30%" height="30%" heading="פיתוח עצמאות"
+                  width="40%" height="30%" heading="פיתוח עצמאות"
                   mainText="הילד ילמד איך לעבוד בעצמו בתוכנית ואיך להעזר בתוכנית לצורך הבנתו"/>           
-          <DataLottieCard name="aDog" data="aDog" audioData="BtnAlynu" segments={[0,10,0,90,0,90]} 
-                  width="30%" height="30%" heading='מחיר שווה לכל נפש'
-                  mainText='הקורס הוא שנתי אך במחיר של חוברת, 50 ש"ח בלבד. כדי שכולם יוכלו ללמוד'/>           
+          <DataLottieCard name="aMivza" data="aMivza" audioData="BtnAlynu" segments={[0,90,0,90,0,90]} 
+                  width="70%" height="30%" heading='מחיר שווה לכל נפש'
+                  mainText='כדי שכולם יוכלו ללמוד, הקורס הוא שנתי אך במחיר של חוברת, 50 ש"ח בלבד (ל300 נרשמים רשונים).'/>           
           </Flex>
          </View>
   );

@@ -113,7 +113,7 @@ function HomeScreen() {
           </div>
           <br></br>
           <Button className="btn" style={{fontSize:"1.3rem"}} onClick={()=>navigate("/Courses")}> 
-              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/>{reg?'כניסה':'הרשמה (ללא תשלום)'}</Button>  
+              <VscAccount size={'40px'} color={reg?'#6bfc03':'#fc0303'}/>{reg?'כניסה':'הרשמה (ללא תשלום)'}</Button>
           <div ref={page3}>
             <Program width={width} height={height} /> 
           </div>
