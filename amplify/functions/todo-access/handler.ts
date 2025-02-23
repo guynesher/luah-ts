@@ -67,7 +67,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const command = new SendEmailCommand({
       Source: "info.luah@gmail.com",
       Destination: {
-        ToAddresses: [recipient]
+        ToAddresses: ["info.luah@gmail.com",recipient]
       },
       Message: {
         Body: {

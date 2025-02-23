@@ -79,7 +79,7 @@ const Aleynu: React.FC<ScreenSize> = ({}) => {
                   mainText="הילד ילמד איך לעבוד בעצמו בתוכנית ואיך להעזר בתוכנית לצורך הבנתו"/>           
           <DataLottieCard name="aMivza" data="aMivza" audioData="BtnAlynu" segments={[0,90,0,90,0,90]} 
                   width="70%" height="30%" heading='מחיר שווה לכל נפש'
-                  mainText='כדי שכולם יוכלו ללמוד, הקורס הוא שנתי אך במחיר של חוברת, 50 ש"ח בלבד (ל300 נרשמים רשונים).'/>           
+                  mainText='כדי שכולם יוכלו ללמוד, הקורס הוא שנתי אך במחיר של חוברת, 50 ש"ח בלבד (ל300 נרשמים ראשונים).'/>           
           </Flex>
          </View>
   );
