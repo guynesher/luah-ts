@@ -120,6 +120,12 @@ function SipurimScreen() {
                         cardWidth="300px" cardHeight="200px"
                         mainText=''/>  
                       </div>  
+                      <div onClick={()=>setVid("animalsWinter")} className='card'>
+                <DataLottieCard name="aDog" data="aDog" audioData="BtnAlynu" segments={[0,90,10,90,0,90]} 
+                        width="30%" height="20%" heading='החורף של החיות'
+                        cardWidth="300px" cardHeight="200px"
+                        mainText=''/>  
+                      </div>  
                       <div onClick={()=>navigate("/Courses/")} className='card'>
                 <DataLottieCard name="aBike" data="aBike" audioData="logo" segments={[0,120,10,80,0,120]} 
                   width="25%" height="20%" heading='אתר לו"ח - תכנים נוספים '
